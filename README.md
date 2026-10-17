@@ -1,199 +1,139 @@
-<div align="center">
-
-  # ⚡ LicenseVault & CDCMS SaaS Portal
-  ### *Next-Gen Software Licensing, Billing & Extension Management Platform*
-
-  <p align="center">
-    <b>A complete, turnkey platform for selling, licensing, and protecting Chrome extensions and software applications. Powered by Supabase PostgreSQL, Razorpay Instant Checkout, and Netlify Serverless Functions.</b>
-  </p>
-
-  <p align="center">
-    <a href="https://licensescript.netlify.app/"><img src="https://img.shields.io/badge/Live_Demo-Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo" /></a>
-    <a href="https://supabase.com"><img src="https://img.shields.io/badge/Database-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase" /></a>
-    <a href="https://razorpay.com"><img src="https://img.shields.io/badge/Payments-Razorpay-02042B?style=for-the-badge&logo=razorpay&logoColor=blue" alt="Razorpay" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/Security-256--bit_AES-blueviolet?style=for-the-badge&logo=shield" alt="Encryption" /></a>
-    <a href="#"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" /></a>
-  </p>
-
-  <br />
-
-  <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80" alt="LicenseVault SaaS Banner" width="100%" style="border-radius: 12px; max-height: 400px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);" />
-
-</div>
+# LicenseWala — Premium Software License Selling Platform
+### Complete Production-Ready SaaS for Chrome Extensions, Automation Scripts & Desktop Applications
 
 ---
 
-## 🚀 Key Highlights & What's Inside
+## 🚀 Overview
 
-<table>
-  <tr>
-    <td width="50%">
-      <h3>💳 Razorpay Instant Activation</h3>
-      <ul>
-        <li><b>Zero Wait Time:</b> 1-Click checkout with Google Pay, PhonePe, Paytm, Cards, and NetBanking.</li>
-        <li><b>Instant Key Delivery:</b> License automatically turns <code>Active</code> within 2 seconds of payment.</li>
-        <li><b>Automatic Downloads:</b> Customer receives an encrypted credentials file and itemized PDF invoice instantly.</li>
-        <li><b>Manual UPI Fallback:</b> Supports dynamic QR codes and 12-digit UTR verification.</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <h3>🗄️ Supabase PostgreSQL Cloud DB</h3>
-      <ul>
-        <li><b>Lightning-Fast:</b> Replaces slow spreadsheets with real-time relational PostgreSQL.</li>
-        <li><b>Row Level Security (RLS):</b> Protects sensitive customer keys and license records.</li>
-        <li><b>1-Click Migration:</b> Pre-built <code>supabase_schema.sql</code> script with default plans & products.</li>
-        <li><b>Live Health Check:</b> Real-time connection tester directly inside Admin Dashboard.</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>🔒 Hardware Device Binding & Expiry</h3>
-      <ul>
-        <li><b>Single-PC Locking:</b> Locks license key to the user's computer on first extension run.</li>
-        <li><b>Device Mismatch Detection:</b> Prevents unauthorized license sharing across agencies.</li>
-        <li><b>Auto-Expiry Engine:</b> Dynamically tracks 7 days, 90 days, 180 days, and 365 days durations.</li>
-        <li><b>1-Click Device Reset:</b> Admin can unlock and transfer devices effortlessly.</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <h3>📊 Unified Admin Control Center</h3>
-      <ul>
-        <li><b>Real-Time Analytics:</b> Total Revenue in ₹ INR, Active Users, Pending Verifications, Blocked.</li>
-        <li><b>Search & Filtering:</b> Instant filtering by Tool ID, status, name, company, or UTR.</li>
-        <li><b>Manual Trial Generator:</b> Generate custom trials or guest keys with custom expiry.</li>
-        <li><b>Catalog & Pricing Setup:</b> Dynamically add new extensions, features, and pricing tiers.</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+**LicenseWala** is an enterprise-grade software license generation, hardware binding, and subscription billing platform created and managed by **Super Admin RM Rahul**.
+
+- **Public Storefront**: Modern high-converting SaaS landing page, dynamic product & extension catalog, transparent pricing, customer registration, and self-service portal.
+- **Admin Command Center** (`/admin`): Complete control across 12 dedicated modules (Dashboard, User Licenses, Key Generator, Product Catalog, Pricing & Plans, Invoices, Company Profile, Integrations, Users Control, Activity Logs, System Settings, Theme).
+- **Extension Anti-Piracy API**: Hardware fingerprint verification (`/verify`) with automatic device lock enforcement, renewal notice alerts, and remote pause/lock/revocation.
+- **Dual Payment Gateways**: Built-in test & live modes for **Razorpay** and **Cashfree**.
 
 ---
 
-## 🖥️ Platform Showcase
+## 🛠 Tech Stack
 
-### 1. High-Converting Public Storefront
-- **Dynamic Pricing Engine:** Multi-product tab switchers with customized durations (7 Days, 3 Months, 6 Months, 1 Year).
-- **Interactive License Validator:** Real-time terminal for customers to test their license keys live.
-- **Client Testimonials:** Verified customer reviews carousel with ratings and company details.
-- **Dark & Light Mode:** Seamless glassmorphic visual aesthetic with radiant glowing borders.
-
-### 2. Customer Dashboard & Self-Service Portal
-- **License Status Chip:** 🟢 Active, 🔴 Expired, 🟡 Pending status.
-- **Remaining Days Counter:** Real-time visual countdown bar (e.g., *"45 days remaining"*).
-- **Hardware Binding Chip:** Displays current bound Device ID with transfer indicator.
-- **1-Click Renewal:** Direct Razorpay checkout button to renew expired plans instantly without re-registration.
-
-### 3. Full-Featured Admin Panel (`/admin`)
-- **Users & Licenses Management:** Approve, block, unblock, delete, reset hardware locks, or edit expiry dates.
-- **Database & Razorpay Config:** Test your live Supabase connection and verify Razorpay keys in real time.
-- **Review Moderator:** Approve, edit, or remove customer reviews.
-- **GST Invoice Generator:** Print itemized, GST-compliant tax invoices with printable CSS.
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion, Lucide Icons, Recharts, jsPDF, canvas-confetti |
+| **Backend & Database** | Supabase (PostgreSQL, Auth, RLS Policies, Realtime, Triggers) |
+| **Serverless API** | Netlify Edge Functions (`/verify` for Chrome extensions and scripts) |
+| **Payments** | Razorpay SDK + Cashfree Payments Checkout |
+| **Hosting** | Netlify (`publish = "dist"`, SPA redirect `/* -> /index.html 200`) |
 
 ---
 
-## 📂 Project Architecture
+## ⚡ Quick Start (Local Development)
 
-```plaintext
-├── index.html                           # Modern SaaS Landing, Storefront, User & Admin Panels
-├── style.css                            # Glassmorphism design system, responsive styles & animations
-├── portal.js                            # Frontend controller, Razorpay checkout, event handlers
-├── supabase-client.js                   # Client-side Supabase data access layer & fallback engine
-├── supabase_schema.sql                  # 1-Click PostgreSQL schema, tables, seed data & RLS policies
-├── netlify.toml                         # Netlify build configuration, redirects & CORS headers
-├── package.json                         # Node dependencies (@supabase/supabase-js, razorpay)
-├── SETUP_GUIDE.md                       # Comprehensive deployment & integration guide
-└── netlify/
-    └── functions/
-        ├── create-razorpay-order.js     # Serverless Razorpay order creation
-        ├── verify-razorpay-payment.js   # HMAC SHA256 signature verification & Supabase sync
-        ├── verify-license.js            # High-speed verification API for Chrome extensions
-        └── portal-api.js                # Serverless unified data router
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Run local development server
+npm run dev
+
+# 3. Build for production
+npm run build
 ```
 
----
-
-## ⚡ 3-Minute Quick Setup
-
-### Step 1: Database Setup (Supabase)
-1. Create a free project at [supabase.com](https://supabase.com).
-2. Go to **SQL Editor** &rarr; **New query**.
-3. Copy the entire contents of [`supabase_schema.sql`](./supabase_schema.sql) and click **Run**.
-4. Go to **Project Settings** &rarr; **API** and copy your **Project URL** and **`anon public` API key**.
-
-### Step 2: Payment Gateway Setup (Razorpay)
-1. Log into your [razorpay.com](https://razorpay.com) Dashboard.
-2. Go to **Settings** &rarr; **API Keys** and generate your **Key ID** (`rzp_test_...` or `rzp_live_...`).
-
-### Step 3: Connect Credentials in Admin Panel
-1. Open the website, click the user profile icon (top right) &rarr; switch to **Admin Panel**.
-2. Sign in using the default token: `admin@123`.
-3. Open the **⚡ Supabase & Razorpay** tab.
-4. Paste your **Supabase URL**, **Anon Key**, and **Razorpay Key ID**.
-5. Click **Save** and test the live connection!
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## 🔌 Chrome Extension Verification Code
+## 🔑 Login & Roles
 
-Add this lightweight snippet into your Chrome Extension's `background.js` or `popup.js`:
+We have a **unified single login screen** at `/login` for both Administrators and Customers:
+
+| Role | Email | Password | Destination |
+|---|---|---|---|
+| **Super Admin (RM Rahul)** | `admin@licensewala.com` | `Admin@12345` | `/admin` (Full Control) |
+| **Verified Customer** | `amit.patel@gmail.com` | `Customer@123` | `/account` (Customer Portal) |
+
+*(Quick demo 1-click pre-fill buttons are provided directly on the `/login` screen).*
+
+---
+
+## 📂 Admin Panel Modules (`/admin`)
+
+The sidebar matches the exact order requested:
+
+1. **Dashboard**: Animated KPI counters (Total, Active, Expiring in 30d, Expiring Today, Expired, Paused, Revoked), monthly revenue trends, payment gateway split charts, and upcoming expiration alerts.
+2. **User Licenses**: Searchable & filterable table + Kanban board view. Actions: View activations, Extend/Renew days, Pause/Resume, Lock/Unlock, Revoke, Reset HWID devices, Regenerate key, Print license certificate PDF, Bulk lock/export.
+3. **Key Generator**: Cryptographically secure keys using `crypto.getRandomValues`. Custom prefixes, segment counts, ambiguity filters (excludes 0/O/1/I), batch generation up to 1,000 keys, CSV export, and live key tester.
+4. **Product Catalog**: Add and edit browser extensions, automation scripts, version tags, download binaries, and marketing feature lists.
+5. **Pricing & Plans**: Configure monthly, quarterly, annual, and lifetime tiers linked to products with custom hardware PC limits.
+6. **Invoice Generator**: Automated GST invoices (`INV-YYYY-XXXX`), manual billing generator, and client-side PDF download using `jspdf-autotable`.
+7. **Company Profile**: Business identity, legal entity name, GSTIN, PAN, bank account details, and official UPI ID.
+8. **Supabase & Razorpay**: Live API keys for Supabase PostgreSQL, Razorpay Key ID, Cashfree App ID, test connection buttons, and webhook URLs.
+9. **Users Control**: Manage user profiles, promote staff to administrators, and toggle block/unblock statuses.
+10. **Activity Logs**: Append-only security audit trail of logins, payments, activations, and key alterations.
+11. **System Settings**: Platform currency (INR default), tax rates (18% GST default), device binding enforcement, and maintenance mode toggle.
+12. **Theme**: Light / Dark / System mode with instant accent color presets (Indigo, Emerald, Rose, Amber, Sky, Violet).
+
+---
+
+## 🔌 Extension Integration Example (Anti-Piracy Check)
+
+In your Chrome extension (`background.js` or `popup.js`):
 
 ```javascript
-// Verify license key and bind device ID
-async function verifyLicense(licenseKey, deviceId) {
+async function checkLicense(licenseKey, machineFingerprint) {
   try {
-    const url = `https://YOUR-SITE.netlify.app/api/verify-license?licenseKey=${encodeURIComponent(licenseKey)}&deviceId=${encodeURIComponent(deviceId)}`;
-    const response = await fetch(url);
-    const result = await response.json();
-
-    if (result.status === "active") {
-      console.log(`✅ License verified! Valid until: ${result.expiry}`);
-      return { success: true, expiry: result.expiry, name: result.name };
-    } else if (result.status === "device_mismatch") {
-      alert("⚠️ License is locked to another computer! Contact support.");
-      return { success: false, error: "device_mismatch" };
-    } else if (result.status === "expired") {
-      alert("⌛ Your license has expired. Please renew on the billing portal.");
-      return { success: false, error: "expired" };
+    const res = await fetch("https://licensewala.netlify.app/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        key: licenseKey,
+        hwid: machineFingerprint,
+        deviceName: "Chrome Extension"
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (data.valid) {
+      console.log(`License active! Days left: ${data.days_left}`);
+      enableExtensionFeatures();
     } else {
-      alert("❌ Invalid license key!");
-      return { success: false, error: "invalid" };
+      alert(data.message); // Prompts user to renew at https://licensewala.netlify.app/checkout/...
+      disableExtensionFeatures();
     }
   } catch (err) {
-    console.error("Network validation error:", err);
-    return { success: false, error: "network_error" };
+    console.error("Verification failed:", err);
   }
 }
 ```
 
 ---
 
-## 🌐 Netlify Deployment Environment Variables
+## 🗄 Database Setup (Supabase)
 
-When deploying to Netlify, set these under **Site Settings** &rarr; **Environment variables**:
+The complete SQL migration script is located at:
+`supabase/migrations/20261017000000_licensewala_full_schema.sql`
 
-| Variable | Description | Example |
-| :--- | :--- | :--- |
-| `SUPABASE_URL` | Your Supabase project URL | `https://xyzcompany.supabase.co` |
-| `SUPABASE_ANON_KEY` | Supabase public anonymous key | `eyJhbGciOi...` |
-| `RAZORPAY_KEY_ID` | Razorpay Key ID (Test or Live) | `rzp_live_1234567890` |
-| `RAZORPAY_KEY_SECRET` | Razorpay Key Secret | `5xXABC123XYZ...` |
-
----
-
-## 🔒 Security Best Practices
-- **HMAC SHA-256 Signature Verification:** Payments verified server-side to prevent spoofing.
-- **Hardware Footprint Matching:** Device IDs validated on every session check.
-- **CORS Restricted Endpoints:** Cross-origin security policies on API routes.
-- **Password Protection:** MD5 customer password hashing with OTP reset capability.
+To apply:
+1. Open your **Supabase Dashboard** -> **SQL Editor**.
+2. Paste the contents of `20261017000000_licensewala_full_schema.sql` and run.
+3. This creates all 15 tables (`profiles`, `products`, `plans`, `coupons`, `invoices`, `licenses`, `license_activations`, `license_keys_pool`, `orders`, `payments`, `company_profile`, `integration_settings`, `settings`, `salespersons`, `activity_logs`), triggers, sequential invoice numbering functions, RLS policies, and seed data.
 
 ---
 
-## 📄 License
-This project is licensed under the **MIT License**. Free for commercial and private use.
+## 🌐 Netlify Deployment
 
-<br />
+1. Connect your GitHub repository to **Netlify**.
+2. Netlify will auto-detect settings from `netlify.toml`:
+   - **Build Command**: `npm run build`
+   - **Publish Directory**: `dist`
+   - **Functions**: `netlify/functions`
+3. Add Environment Variables in Netlify Dashboard:
+   - `VITE_SUPABASE_URL` = `https://wyeejbncddpxhwtijkjt.supabase.co`
+   - `VITE_SUPABASE_ANON_KEY` = `sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u`
+   - `VITE_RAZORPAY_KEY_ID` = `rzp_test_1DP5mmOlF5G5ag`
+   - `VITE_CASHFREE_APP_ID` = `TEST10375628`
+4. Deploy! Your site will be live with full SPA routing and serverless verification endpoints.
 
-<div align="center">
-  <sub>Built with ❤️ by <a href="https://github.com/rahulmaithili">Mr.Rahul Scripts</a> · Powered by Supabase & Razorpay</sub>
-</div>
+---
+© 2026 LicenseWala Technologies. Designed & Managed by **RM Rahul**.

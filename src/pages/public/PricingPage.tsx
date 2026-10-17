@@ -1,0 +1,147 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Layers,
+  Check,
+  Lock,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+} from 'lucide-react';
+import { getPlans, getProducts } from '@/services/productService';
+import { formatCurrency } from '@/lib/utils';
+import type { Plan, Product } from '@/types';
+
+export const PricingPage: React.FC = () => {
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProductId, setSelectedProductId] = useState<string>('all');
+
+  useEffect(() => {
+    Promise.all([getPlans(), getProducts()]).then(([pl, pr]) => {
+      setPlans(pl);
+      setProducts(pr);
+    });
+  }, []);
+
+  const filteredPlans = plans.filter((p) => {
+    return selectedProductId === 'all' || p.product_id === selectedProductId;
+  });
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+      {/* Header */}
+      <div className="text-center max-w-2xl mx-auto space-y-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <span>Straightforward Licensing</span>
+        </div>
+        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white">
+          Simple, Transparent Plans
+        </h1>
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
+          Choose between affordable monthly licenses or lifetime agency licenses with unlimited updates.
+        </p>
+
+        {/* Product Filter Tabs */}
+        <div className="pt-4 flex items-center justify-center gap-2 flex-wrap">
+          <button
+            onClick={() => setSelectedProductId('all')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              selectedProductId === 'all'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+            }`}
+          >
+            All Products
+          </button>
+          {products.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setSelectedProductId(p.id)}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                selectedProductId === p.id
+                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              }`}
+            >
+              {p.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Pricing Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredPlans.map((plan) => {
+          const prod = products.find((p) => p.id === plan.product_id);
+          const isLifetime = plan.billing_period === 'lifetime' || plan.duration_days >= 3650;
+
+          return (
+            <div
+              key={plan.id}
+              className={`rounded-3xl p-8 flex flex-col justify-between shadow-xl transition-all relative ${
+                isLifetime
+                  ? 'bg-gradient-to-b from-indigo-950/80 to-slate-900 border-2 border-indigo-500 shadow-indigo-500/20'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'
+              }`}
+            >
+              {isLifetime && (
+                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider shadow-md">
+                  Lifetime Value
+                </span>
+              )}
+
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  {prod?.name || 'Software Tool'}
+                </span>
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1">
+                  {plan.name}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  {plan.description}
+                </p>
+
+                <div className="flex items-baseline gap-1 my-6">
+                  <span className="text-4xl font-black text-slate-900 dark:text-white">
+                    {formatCurrency(plan.price)}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    / {isLifetime ? 'Lifetime' : `${plan.duration_days} days`}
+                  </span>
+                </div>
+
+                <div className="space-y-3 py-6 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+                  <div className="flex items-center gap-2 font-semibold text-indigo-600 dark:text-indigo-400">
+                    <Lock className="w-4 h-4" />
+                    <span>{plan.max_devices} PC Hardware Lock</span>
+                  </div>
+                  {plan.features?.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <span>{f}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Link
+                to={`/checkout/${plan.id}`}
+                className={`w-full py-3.5 rounded-2xl font-bold text-sm text-center shadow-lg transition-all flex items-center justify-center gap-2 ${
+                  isLifetime
+                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/30'
+                    : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700'
+                }`}
+              >
+                <span>Buy License</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

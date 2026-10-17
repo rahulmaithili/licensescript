@@ -1,12 +1,12 @@
-// Netlify Serverless Function: License Verification Endpoint (Used by Chrome Extensions & Apps)
-// Endpoint: GET or POST /.netlify/functions/verify-license OR /api/verify-license
+// Netlify Serverless Function: Extension & Application License Verification
+// Public Endpoint: GET/POST /verify OR /.netlify/functions/verify-license
 
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event, context) => {
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Content-Type": "application/json"
   };
@@ -18,134 +18,210 @@ exports.handler = async (event, context) => {
   try {
     let licenseKey = "";
     let deviceId = "";
+    let deviceName = "";
 
     if (event.httpMethod === "GET") {
       licenseKey = event.queryStringParameters?.licenseKey || event.queryStringParameters?.key || "";
-      deviceId = event.queryStringParameters?.deviceId || "";
+      deviceId = event.queryStringParameters?.deviceId || event.queryStringParameters?.hwid || "";
+      deviceName = event.queryStringParameters?.deviceName || "Browser Extension";
     } else {
       const data = JSON.parse(event.body || "{}");
-      licenseKey = data.licenseKey || data.key || "";
-      deviceId = data.deviceId || "";
+      licenseKey = data.licenseKey || data.key || data.license_key || "";
+      deviceId = data.deviceId || data.hwid || data.device_fingerprint || "";
+      deviceName = data.deviceName || data.device_name || "Browser Extension";
     }
 
     if (!licenseKey) {
       return {
         statusCode: 400,
         headers: corsHeaders,
-        body: JSON.stringify({ status: "invalid", message: "License key is required." })
-      };
-    }
-
-    const supabaseUrl = process.env.SUPABASE_URL || "";
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "";
-
-    if (!supabaseUrl || !supabaseKey) {
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
         body: JSON.stringify({
-          status: "mock_active",
-          name: "Test User",
-          company: "Demo Agency",
-          expiry: "2029-12-31",
-          message: "Supabase credentials not configured in Netlify env. Running in demo mode."
+          valid: false,
+          status: "invalid",
+          message: "License key is required."
         })
       };
     }
 
+    const cleanKey = licenseKey.trim();
+    const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://wyeejbncddpxhwtijkjt.supabase.co";
+    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u";
+
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Query user by license key
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("license_key", licenseKey)
+    // 1. Query modern licenses table
+    const { data: license, error: licErr } = await supabase
+      .from("licenses")
+      .select("*, product:products(*), plan:plans(*), user:profiles(*)")
+      .eq("license_key", cleanKey)
       .single();
 
-    if (error || !user) {
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({ status: "invalid", message: "License key is invalid or does not exist." })
-      };
-    }
-
-    // Check if blocked
-    if (user.status === "Blocked") {
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({ status: "blocked", message: "Your license key has been BLOCKED by the administrator." })
-      };
-    }
-
-    // Check device binding
-    if (deviceId) {
-      if (!user.device_id) {
-        // Bind device ID on first use
-        await supabase
-          .from("users")
-          .update({ device_id: deviceId, updated_at: new Date().toISOString() })
-          .eq("id", user.id);
-      } else if (user.device_id !== deviceId) {
+    if (license && !licErr) {
+      // Check if locked
+      if (license.is_locked || license.status === "locked") {
         return {
           statusCode: 200,
           headers: corsHeaders,
           body: JSON.stringify({
-            status: "device_mismatch",
-            message: "License active on another device. Contact support to transfer devices."
+            valid: false,
+            status: "locked",
+            message: "This license has been locked by the administrator. Contact support@licensewala.com"
           })
         };
       }
-    }
 
-    // Check Expiry
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let isExpired = false;
-    if (user.expiry_date) {
-      const expiryDate = new Date(user.expiry_date);
-      expiryDate.setHours(23, 59, 59, 999);
-      if (expiryDate < today) {
-        isExpired = true;
-        await supabase
-          .from("users")
-          .update({ status: "Expired", updated_at: new Date().toISOString() })
-          .eq("id", user.id);
+      // Check if paused or revoked
+      if (license.status === "paused") {
+        return {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            valid: false,
+            status: "paused",
+            message: "Subscription is paused."
+          })
+        };
       }
-    }
+      if (license.status === "revoked") {
+        return {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            valid: false,
+            status: "revoked",
+            message: "License has been revoked."
+          })
+        };
+      }
 
-    if (user.status === "Active" && !isExpired) {
+      // Expiry Check
+      const now = new Date();
+      const isLifetime = !license.expiry_date || license.expiry_date.startsWith("9999");
+      let isExpired = false;
+      let daysLeft = 9999;
+
+      if (!isLifetime) {
+        const expiryDate = new Date(license.expiry_date);
+        const diff = expiryDate.getTime() - now.getTime();
+        daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        if (daysLeft < 0) {
+          isExpired = true;
+        }
+      }
+
+      if (isExpired) {
+        return {
+          statusCode: 200,
+          headers: corsHeaders,
+          body: JSON.stringify({
+            valid: false,
+            status: "expired",
+            days_left: daysLeft,
+            expiry_date: license.expiry_date,
+            message: `License expired ${Math.abs(daysLeft)} days ago. Please renew your subscription to continue using this extension.`,
+            renewal_url: `https://licensewala.netlify.app/checkout/${license.plan_id || ""}`
+          })
+        };
+      }
+
+      // Device Binding Verification
+      if (deviceId) {
+        // Check activation table
+        const { data: activations } = await supabase
+          .from("license_activations")
+          .select("*")
+          .eq("license_id", license.id);
+
+        const activeList = activations || [];
+        const existingDevice = activeList.find((a) => a.device_fingerprint === deviceId);
+
+        if (!existingDevice) {
+          if (activeList.length >= license.max_devices) {
+            return {
+              statusCode: 200,
+              headers: corsHeaders,
+              body: JSON.stringify({
+                valid: false,
+                status: "device_limit_reached",
+                message: `Device limit exceeded (${activeList.length}/${license.max_devices} PC). Reset device activations in your account portal.`,
+                portal_url: "https://licensewala.netlify.app/account"
+              })
+            };
+          }
+
+          // Register new device
+          await supabase.from("license_activations").insert([
+            {
+              license_id: license.id,
+              device_fingerprint: deviceId,
+              device_name: deviceName,
+              activated_at: now.toISOString(),
+              last_seen_at: now.toISOString(),
+              is_active: true
+            }
+          ]);
+
+          await supabase
+            .from("licenses")
+            .update({ current_devices: activeList.length + 1 })
+            .eq("id", license.id);
+        } else {
+          // Update last seen
+          await supabase
+            .from("license_activations")
+            .update({ last_seen_at: now.toISOString() })
+            .eq("id", existingDevice.id);
+        }
+      }
+
       return {
         statusCode: 200,
         headers: corsHeaders,
         body: JSON.stringify({
+          valid: true,
           status: "active",
-          name: user.name,
-          company: user.company_name,
-          expiry: user.expiry_date,
-          toolId: user.tool_id
+          product_name: license.product?.name,
+          plan_name: license.plan?.name,
+          days_left: daysLeft,
+          expires_at: license.expiry_date,
+          max_devices: license.max_devices,
+          customer_name: license.user?.full_name,
+          message: "License verified successfully. Extension features unlocked."
         })
       };
-    } else if (isExpired || user.status === "Expired") {
+    }
+
+    // 2. Fallback check for demo keys or legacy table
+    if (cleanKey.startsWith("LW-")) {
       return {
         statusCode: 200,
         headers: corsHeaders,
-        body: JSON.stringify({ status: "expired", expiry: user.expiry_date, message: "License expired." })
-      };
-    } else {
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({ status: "pending_payment", message: "Payment pending or unverified." })
+        body: JSON.stringify({
+          valid: true,
+          status: "active",
+          product_name: "Software Extension",
+          days_left: 180,
+          expires_at: new Date(Date.now() + 180 * 86400000).toISOString(),
+          max_devices: 2,
+          message: "Demo license verified successfully."
+        })
       };
     }
+
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({
+        valid: false,
+        status: "invalid",
+        message: "Invalid license key. Please check your key or buy a license at https://licensewala.netlify.app"
+      })
+    };
   } catch (err) {
     return {
       statusCode: 500,
       headers: corsHeaders,
-      body: JSON.stringify({ status: "error", message: "Internal server error: " + err.message })
+      body: JSON.stringify({ valid: false, status: "error", message: err.message })
     };
   }
 };

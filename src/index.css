@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    
+    /* Default Accent: Indigo */
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-light: #e0e7ff;
+    --accent-rgb: 79, 70, 229;
+  }
+
+  [data-theme-color="indigo"] {
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-light: #e0e7ff;
+    --accent-rgb: 79, 70, 229;
+  }
+
+  [data-theme-color="emerald"] {
+    --accent: #059669;
+    --accent-hover: #047857;
+    --accent-light: #d1fae5;
+    --accent-rgb: 5, 150, 105;
+  }
+
+  [data-theme-color="rose"] {
+    --accent: #e11d48;
+    --accent-hover: #be123c;
+    --accent-light: #ffe4e6;
+    --accent-rgb: 225, 29, 72;
+  }
+
+  [data-theme-color="amber"] {
+    --accent: #d97706;
+    --accent-hover: #b45309;
+    --accent-light: #fef3c7;
+    --accent-rgb: 217, 119, 6;
+  }
+
+  [data-theme-color="sky"] {
+    --accent: #0284c7;
+    --accent-hover: #0369a1;
+    --accent-light: #e0f2fe;
+    --accent-rgb: 2, 132, 199;
+  }
+
+  [data-theme-color="violet"] {
+    --accent: #7c3aed;
+    --accent-hover: #6d28d9;
+    --accent-light: #ede9fe;
+    --accent-rgb: 124, 58, 237;
+  }
+
+  body {
+    font-family: var(--font-sans);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Custom Utilities */
+.bg-accent {
+  background-color: var(--accent);
+}
+.bg-accent-hover:hover {
+  background-color: var(--accent-hover);
+}
+.text-accent {
+  color: var(--accent);
+}
+.border-accent {
+  border-color: var(--accent);
+}
+.ring-accent {
+  --tw-ring-color: var(--accent);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.dark .glass {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.7);
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-shadow-none {
+    box-shadow: none !important;
+  }
+}

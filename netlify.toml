@@ -1,9 +1,10 @@
 [build]
-  publish = "."
+  publish = "dist"
+  command = "npm run build"
   functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
 [[headers]]
   for = "/*"
@@ -23,4 +24,9 @@
 [[redirects]]
   from = "/verify"
   to = "/.netlify/functions/verify-license"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
