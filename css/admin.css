@@ -1,0 +1,785 @@
+/* ==========================================================================
+   LICENSEVAULT / IEMS ERP EXECUTIVE DASHBOARD - ADMIN CSS
+   Exact Match with Executive Financial Dashboard Specification
+   ========================================================================== */
+
+/* Layout Container */
+.admin-app {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0d0e13;
+  color: #f1f5f9;
+  font-family: var(--font-family);
+  overflow-x: hidden;
+}
+
+/* ================= 1. SIDEBAR NAVIGATION ================= */
+.admin-sidebar {
+  width: 250px;
+  background-color: #0b0c10;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.admin-sidebar-header {
+  padding: 18px 20px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-brand-icon {
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.admin-brand-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+}
+
+.admin-sidebar-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* User Profile Badge under Brand */
+.admin-profile-badge {
+  margin: 0 16px 16px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #f59e0b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1f293d;
+  font-weight: 800;
+  font-size: 13px;
+  color: #f59e0b;
+}
+
+.admin-profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-profile-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.admin-profile-role {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Sidebar Navigation Items */
+.admin-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 12px;
+  flex-grow: 1;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+/* Active Golden/Orange Pill from Screenshot */
+.admin-nav-item.active {
+  background: linear-gradient(90deg, #d97706, #b45309) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.35);
+  font-weight: 700;
+}
+
+.admin-nav-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Distinct Category Colors matching screenshot */
+.icon-cyan { color: #06b6d4; }
+.icon-emerald { color: #10b981; }
+.icon-red { color: #ef4444; }
+.icon-purple { color: #8b5cf6; }
+.icon-blue { color: #3b82f6; }
+.icon-amber { color: #f59e0b; }
+.icon-violet { color: #a855f7; }
+.icon-teal { color: #14b8a6; }
+.icon-pink { color: #ec4899; }
+.icon-gray { color: #94a3b8; }
+
+.admin-nav-item.active .admin-nav-icon svg {
+  color: #ffffff !important;
+}
+
+/* Sidebar Footer / Sign Out */
+.admin-sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-btn-signout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  width: 100%;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.admin-btn-signout:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* ================= 2. MAIN WORKSPACE PANEL ================= */
+.admin-main {
+  margin-left: 250px;
+  flex-grow: 1;
+  padding: 18px 24px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 100vh;
+  width: calc(100% - 250px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-sidebar-collapsed .admin-sidebar {
+  transform: translateX(-260px);
+}
+.admin-sidebar-collapsed .admin-main {
+  margin-left: 0;
+  width: 100%;
+}
+
+/* Top Bar */
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 6px;
+}
+
+.admin-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-sidebar-toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.admin-sidebar-toggle-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+}
+
+.admin-page-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.4px;
+}
+
+.admin-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-session-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-session-pill strong {
+  color: #f59e0b;
+}
+
+.admin-icon-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-icon-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ================= 3. TOP 5 METRIC CARDS (Exact Match to Image) ================= */
+.metric-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.metric-card {
+  border-radius: 12px;
+  padding: 16px 18px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 104px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+}
+
+.metric-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-card-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.metric-card-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.8;
+}
+
+.metric-card-value {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 6px 0 2px;
+  letter-spacing: -0.5px;
+}
+
+.metric-card-sub {
+  font-size: 11px;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+/* Top 5 Colors from Image */
+.card-green {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+}
+.card-red {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+.card-blue {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+}
+.card-purple {
+  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+}
+.card-amber {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+}
+
+/* ================= 4. DASHBOARD SECTION GRIDS ================= */
+.dashboard-grid-middle {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 16px;
+}
+
+.dashboard-grid-lower {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* Generic Panel Card */
+.admin-card {
+  background: #14161f;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.admin-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.admin-card-badge {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.admin-card-link {
+  font-size: 12px;
+  color: #f59e0b;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+.admin-card-link:hover {
+  text-decoration: underline;
+}
+
+/* Middle Line Chart Card */
+.chart-container-split {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 180px;
+}
+
+.chart-canvas-wrapper {
+  flex-grow: 1;
+  height: 100%;
+  position: relative;
+}
+
+.chart-legend-box {
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  padding-left: 14px;
+}
+
+.legend-item-stat {
+  display: flex;
+  flex-direction: column;
+}
+.legend-item-title {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+.legend-item-value {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Middle Circular Gauge Card */
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  position: relative;
+}
+
+.gauge-circle-outer {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 10px solid #1e2230;
+  border-top-color: #10b981;
+  border-right-color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.gauge-percentage {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.gauge-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.gauge-legend {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+  font-size: 11px;
+}
+.gauge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Shortcuts Card from Screenshot */
+.shortcut-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 180px;
+  overflow-y: auto;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shortcut-item:hover {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+
+.shortcut-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.shortcut-title {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.shortcut-sub {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.shortcut-arrow {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ================= 5. LOWER SECTION: ENTRIES & LOGS ================= */
+.ledger-list, .activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.ledger-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.ledger-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ledger-date-badge {
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.ledger-title {
+  font-weight: 600;
+  color: #ffffff;
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ledger-amount {
+  font-weight: 800;
+}
+.amount-green { color: #10b981; }
+.amount-red { color: #ef4444; }
+.amount-blue { color: #3b82f6; }
+
+/* Activity Log Items */
+.activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 11.5px;
+}
+
+.activity-user {
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+.activity-action {
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.activity-time {
+  font-size: 10.5px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* ================= 6. BOTTOM KPI SUMMARY STRIP (Exact Match) ================= */
+.bottom-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.kpi-mini-card {
+  background: #11131a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.kpi-mini-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.6px;
+}
+
+.kpi-mini-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 4px;
+}
+
+/* ================= 7. TAB SYSTEM FOR OTHER ADMIN FEATURES ================= */
+.admin-tab-pane {
+  display: none;
+}
+.admin-tab-pane.active {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Tables in other tabs */
+.admin-table-wrapper {
+  overflow-x: auto;
+  background: #14161f;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.admin-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.admin-data-table th {
+  background: rgba(255, 255, 255, 0.02);
+  color: #94a3b8;
+  font-weight: 700;
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.admin-data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+}
+
+.admin-data-table tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1280px) {
+  .metric-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .dashboard-grid-middle {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard-grid-lower {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bottom-kpi-strip {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+    box-shadow: 15px 0 50px rgba(0, 0, 0, 0.85);
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .admin-sidebar-close-btn {
+    display: inline-flex;
+  }
+  .admin-main {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px;
+  }
+  .metric-cards-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard-grid-middle {
+    grid-template-columns: 1fr;
+  }
+  .dashboard-grid-lower {
+    grid-template-columns: 1fr;
+  }
+  .bottom-kpi-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 580px) {
+  .metric-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .bottom-kpi-strip {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IEMS ERP · Financial &amp; License Executive Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for Executive Dashboard Graphics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <!-- Modular Style Architecture -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <div class="admin-app" id="admin-app-root">
+    
+    <!-- ================= 1. SIDEBAR NAVIGATION ================= -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      
+      <!-- Brand Header -->
+      <div class="admin-sidebar-header">
+        <div class="admin-brand">
+          <div class="admin-brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <span class="admin-brand-title">IEMS ERP</span>
+        </div>
+        <button class="admin-sidebar-close-btn" id="btn-admin-sidebar-close" aria-label="Close Sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- User Profile Card from Screenshot -->
+      <div class="admin-profile-badge">
+        <div class="admin-profile-avatar" id="admin-avatar-circle">
+          <span>RM</span>
+        </div>
+        <div class="admin-profile-info">
+          <span class="admin-profile-name" id="admin-user-name">RAHUL</span>
+          <span class="admin-profile-role">Super Admin</span>
+        </div>
+      </div>
+
+      <!-- Category-wise Navigation Links matching Screenshot -->
+      <nav class="admin-nav-list">
+        <button class="admin-nav-item active" data-tab="tab-dashboard">
+          <span class="admin-nav-icon icon-amber">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          </span>
+          <span>Dashboard</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-licenses">
+          <span class="admin-nav-icon icon-cyan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          </span>
+          <span>Bank Accounts</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-incomes">
+          <span class="admin-nav-icon icon-emerald">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+          </span>
+          <span>Income</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-expenses">
+          <span class="admin-nav-icon icon-red">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+          </span>
+          <span>Expenses</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-generator">
+          <span class="admin-nav-icon icon-purple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          </span>
+          <span>Transfers</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-invoices">
+          <span class="admin-nav-icon icon-blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          <span>Reports</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-licenses-list">
+          <span class="admin-nav-icon icon-amber">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2-1.5 1.5L8 5 6.5 6.5 5 5 2 8l4 4 1-1 2 2 1-1 2 2 1-1 4 4 5-5z"></path></svg>
+          </span>
+          <span>Loans</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-products">
+          <span class="admin-nav-icon icon-violet">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+          </span>
+          <span>Given Loans</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-plans">
+          <span class="admin-nav-icon icon-teal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+          </span>
+          <span>Quick Collect</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-users">
+          <span class="admin-nav-icon icon-pink">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </span>
+          <span>Users Control</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-activity">
+          <span class="admin-nav-icon icon-cyan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          </span>
+          <span>Activity Logs</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-settings">
+          <span class="admin-nav-icon icon-gray">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </span>
+          <span>System Settings</span>
+        </button>
+
+        <button class="admin-nav-item" id="btn-theme-toggle">
+          <span class="admin-nav-icon icon-blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </span>
+          <span>Theme Toggle</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Signout -->
+      <div class="admin-sidebar-footer">
+        <button class="admin-btn-signout" id="btn-admin-signout">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ================= 2. MAIN WORKSPACE ================= -->
+    <main class="admin-main" id="admin-main">
+      
+      <!-- Top Bar -->
+      <header class="admin-topbar">
+        <div class="admin-topbar-left">
+          <button class="admin-sidebar-toggle-btn" id="btn-admin-toggle-sidebar" aria-label="Toggle Sidebar" title="Collapse / Expand Sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h1 class="admin-page-title" id="admin-page-title">Financial Dashboard</h1>
+        </div>
+
+        <div class="admin-topbar-right">
+          <div class="admin-session-pill">
+            <span>Session:</span>
+            <strong>super admin</strong>
+          </div>
+          <a href="index.html" class="admin-icon-btn" title="View Public Website">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <!-- TAB 1: MAIN FINANCIAL DASHBOARD (Exact Match to Screenshot) -->
+      <div class="admin-tab-pane active" id="tab-dashboard">
+        
+        <!-- TOP 5 VIBRANT METRIC CARDS -->
+        <div class="metric-cards-grid">
+          
+          <!-- Card 1: Green -->
+          <div class="metric-card card-green">
+            <div class="metric-card-header">
+              <span class="metric-card-title">INCOME THIS MONTH</span>
+              <span class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline></svg>
+              </span>
+            </div>
+            <div class="metric-card-value" id="stat-income-val">₹0</div>
+            <div class="metric-card-sub" id="stat-income-sub">0 entries in October 2026</div>
+          </div>
+
+          <!-- Card 2: Red -->
+          <div class="metric-card card-red">
+            <div class="metric-card-header">
+              <span class="metric-card-title">EXPENSE THIS MONTH</span>
+              <span class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline></svg>
+              </span>
+            </div>
+            <div class="metric-card-value" id="stat-expense-val">₹0</div>
+            <div class="metric-card-sub" id="stat-expense-sub">0 entries in October 2026</div>
+          </div>
+
+          <!-- Card 3: Blue -->
+          <div class="metric-card card-blue">
+            <div class="metric-card-header">
+              <span class="metric-card-title">NET MARGIN</span>
+              <span class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              </span>
+            </div>
+            <div class="metric-card-value" id="stat-margin-val">₹0</div>
+            <div class="metric-card-sub">▲ Profit this month</div>
+          </div>
+
+          <!-- Card 4: Purple -->
+          <div class="metric-card card-purple">
+            <div class="metric-card-header">
+              <span class="metric-card-title">AVAILABLE BALANCE</span>
+              <span class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect></svg>
+              </span>
+            </div>
+            <div class="metric-card-value" id="stat-balance-val">-₹7,475.04</div>
+            <div class="metric-card-sub">All bank accounts</div>
+          </div>
+
+          <!-- Card 5: Amber -->
+          <div class="metric-card card-amber">
+            <div class="metric-card-header">
+              <span class="metric-card-title">LOAN OUTSTANDING</span>
+              <span class="metric-card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 2L2 7h20L12 2z"></path></svg>
+              </span>
+            </div>
+            <div class="metric-card-value" id="stat-loan-val">₹83,250.91</div>
+            <div class="metric-card-sub">Click to manage loans</div>
+          </div>
+
+        </div>
+
+        <!-- MIDDLE SECTION (3 Columns from Screenshot) -->
+        <div class="dashboard-grid-middle">
+          
+          <!-- Column 1: Financial Overview Line Chart -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Financial Overview (This Month)</span>
+              <span class="admin-card-badge">October 2026</span>
+            </div>
+            <div class="chart-container-split">
+              <div class="chart-canvas-wrapper">
+                <canvas id="overviewLineChart"></canvas>
+              </div>
+              <div class="chart-legend-box">
+                <div class="legend-item-stat">
+                  <span class="legend-item-title">Total Income</span>
+                  <span class="legend-item-value" style="color: #10b981;">₹0</span>
+                </div>
+                <div class="legend-item-stat">
+                  <span class="legend-item-title">Total Expense</span>
+                  <span class="legend-item-value" style="color: #ef4444;">₹0</span>
+                </div>
+                <div class="legend-item-stat">
+                  <span class="legend-item-title">Net Balance</span>
+                  <span class="legend-item-value" style="color: #06b6d4;">₹0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Overall Collection Gauge -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Overall collection position</span>
+              <span class="admin-card-badge">Budget Position</span>
+            </div>
+            <div class="gauge-container">
+              <div class="gauge-circle-outer">
+                <span class="gauge-percentage">0%</span>
+                <span class="gauge-label">COLLECTED</span>
+              </div>
+              <div class="gauge-legend">
+                <span style="color: #94a3b8;"><span class="gauge-dot" style="background:#10b981;"></span> Collected: ₹0</span>
+                <span style="color: #94a3b8;"><span class="gauge-dot" style="background:#f59e0b;"></span> Outstanding: ₹0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Shortcuts List -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Shortcuts</span>
+            </div>
+            <div class="shortcut-list">
+              <a class="shortcut-item" data-goto-tab="tab-licenses">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">Bank Accounts</span>
+                  <span class="shortcut-sub">Manage accounts &amp; balances</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-incomes">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">Log Income</span>
+                  <span class="shortcut-sub">Record incoming revenues</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-expenses">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">Log Expense</span>
+                  <span class="shortcut-sub">Record business expenses</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-licenses-list">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">Loans Received</span>
+                  <span class="shortcut-sub">Borrowed loans list</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-products">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">Lent Receivables</span>
+                  <span class="shortcut-sub">Track outgoing lent cash</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-invoices">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">Reports Center</span>
+                  <span class="shortcut-sub">Analyze &amp; export statements</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LOWER SECTION (4 Cards from Screenshot) -->
+        <div class="dashboard-grid-lower">
+          
+          <!-- Card 1: Income vs Expense Bar Chart -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Income vs Expense</span>
+              <button class="admin-card-link" style="background:none;border:none;">Show Forecast</button>
+            </div>
+            <div style="height: 200px; position: relative;">
+              <canvas id="incomeExpenseBarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Card 2: Top Expense Categories Donut Chart -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Top Expense Categories</span>
+              <span class="admin-card-badge">All Time</span>
+            </div>
+            <div style="height: 200px; position: relative;">
+              <canvas id="expenseDonutChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Card 3: Recent Ledger Entries -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Recent Ledger Entries</span>
+              <a class="admin-card-link" data-goto-tab="tab-incomes">View All</a>
+            </div>
+            <div class="ledger-list" id="recent-ledger-list">
+              <div class="ledger-item">
+                <div class="ledger-item-left">
+                  <span class="ledger-date-badge">04 Sept</span>
+                  <span class="ledger-title">Transfer Tran...</span>
+                </div>
+                <span class="ledger-amount amount-blue">₹2,000</span>
+              </div>
+              <div class="ledger-item">
+                <div class="ledger-item-left">
+                  <span class="ledger-date-badge">31 Aug</span>
+                  <span class="ledger-title">Loan EMI - Ba...</span>
+                </div>
+                <span class="ledger-amount amount-red">-₹5,582</span>
+              </div>
+              <div class="ledger-item">
+                <div class="ledger-item-left">
+                  <span class="ledger-date-badge">30 Aug</span>
+                  <span class="ledger-title">Cash to online...</span>
+                </div>
+                <span class="ledger-amount amount-green">+₹4,100</span>
+              </div>
+              <div class="ledger-item">
+                <div class="ledger-item-left">
+                  <span class="ledger-date-badge">28 Aug</span>
+                  <span class="ledger-title">Transfer Tran...</span>
+                </div>
+                <span class="ledger-amount amount-blue">₹1,100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Recent Activity -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Recent Activity</span>
+              <a class="admin-card-link" data-goto-tab="tab-activity">View All</a>
+            </div>
+            <div class="activity-list" id="recent-activity-list">
+              <div class="activity-item">
+                <div>
+                  <div class="activity-user">Rahul (Admin)</div>
+                  <div class="activity-action">Console login authenticated</div>
+                </div>
+                <span class="activity-time">15 sec ago</span>
+              </div>
+              <div class="activity-item">
+                <div>
+                  <div class="activity-user">Supabase DB</div>
+                  <div class="activity-action">Live cloud sync connected</div>
+                </div>
+                <span class="activity-time">28 sec ago</span>
+              </div>
+              <div class="activity-item">
+                <div>
+                  <div class="activity-user">Key Validator</div>
+                  <div class="activity-action">CDCMS license check passed</div>
+                </div>
+                <span class="activity-time">40 sec ago</span>
+              </div>
+              <div class="activity-item">
+                <div>
+                  <div class="activity-user">Payment Gate</div>
+                  <div class="activity-action">Razorpay API online</div>
+                </div>
+                <span class="activity-time">1 min ago</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- BOTTOM KPI SUMMARY STRIP (Exact Match to Screenshot) -->
+        <div class="bottom-kpi-strip">
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-title">TOTAL INFLOW</span>
+            <span class="kpi-mini-val" id="kpi-inflow">₹0</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-title">TOTAL OUTFLOW</span>
+            <span class="kpi-mini-val" id="kpi-outflow">₹0</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-title">NET MARGIN</span>
+            <span class="kpi-mini-val" id="kpi-margin">₹0</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-title">BANK ACCOUNTS</span>
+            <span class="kpi-mini-val" id="kpi-accounts">3 Active</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-title">BORROWED LOANS</span>
+            <span class="kpi-mini-val" id="kpi-loans">₹83,250.91</span>
+          </div>
+          <div class="kpi-mini-card">
+            <span class="kpi-mini-title">LENT RECEIVABLES</span>
+            <span class="kpi-mini-val" id="kpi-lent">₹0</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TAB 2: BANK ACCOUNTS & PAYMENTS -->
+      <div class="admin-tab-pane" id="tab-licenses">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Bank Accounts &amp; Payment Gateway Configuration</span>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Account / Gateway</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Current Balance</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="bank-accounts-table-body">
+                <tr>
+                  <td><strong>HDFC Corporate Current A/c</strong></td>
+                  <td>Primary Bank</td>
+                  <td><span style="color:#10b981;font-weight:700;">● Active</span></td>
+                  <td>₹2,45,000.00</td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Statement &rarr;</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Razorpay Live Gateway</strong></td>
+                  <td>Instant Checkout</td>
+                  <td><span style="color:#10b981;font-weight:700;">● Connected</span></td>
+                  <td>₹86,400.00</td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Settlements &rarr;</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Supabase PostgreSQL Database</strong></td>
+                  <td>Cloud DB</td>
+                  <td><span style="color:#10b981;font-weight:700;">● Synced</span></td>
+                  <td>Real-Time</td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Inspect Tables &rarr;</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: USER LICENSES & HARDWARE BINDINGS -->
+      <div class="admin-tab-pane" id="tab-licenses-list">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Active Software Licenses &amp; Device Binding</span>
+            <button class="admin-card-link" id="btn-quick-gen-key">+ Generate New Key</button>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>License Key</th>
+                  <th>Client / Email</th>
+                  <th>Product</th>
+                  <th>Status</th>
+                  <th>Hardware Device ID</th>
+                  <th>Expiry Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-licenses-tbody">
+                <!-- Dynamically populated via js/admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: INSTANT KEY GENERATOR -->
+      <div class="admin-tab-pane" id="tab-generator">
+        <div class="admin-card" style="max-width: 600px;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Generate Instant License Key</span>
+          </div>
+          <form id="admin-key-gen-form" style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Select Software Product</label>
+              <select id="gen-product-select" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+                <option value="cdcms_pro">CDCMS Multi-Tool Suite (PRO)</option>
+                <option value="cdc_tools">CDC Tools Multi Extension</option>
+                <option value="all_in_one">Ultimate All-in-One Master Bundle</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Client Name / Organization</label>
+              <input type="text" id="gen-client-name" required placeholder="e.g. John Doe" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Client Email Address</label>
+              <input type="email" id="gen-client-email" required placeholder="client@gmail.com" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Validity Duration (Days)</label>
+              <input type="number" id="gen-client-days" value="30" min="1" max="3650" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <button type="submit" style="padding:12px;background:linear-gradient(135deg, #f59e0b, #d97706);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-top:6px;">
+              ⚡ Generate &amp; Save License Key
+            </button>
+          </form>
+          <div id="gen-key-result" style="display:none;margin-top:16px;padding:14px;background:rgba(16,185,129,0.1);border:1px solid #10b981;border-radius:8px;">
+            <div style="font-size:12px;color:#10b981;font-weight:700;">Key Generated Successfully:</div>
+            <div id="gen-key-display" style="font-size:18px;font-family:monospace;font-weight:800;color:#fff;margin-top:4px;word-break:break-all;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: INVOICES & REPORTS -->
+      <div class="admin-tab-pane" id="tab-invoices">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Commercial Tax Invoices &amp; Billing History</span>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Download</th>
+                </tr>
+              </thead>
+              <tbody id="admin-invoices-tbody">
+                <!-- Dynamically populated via js/admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 6: USERS CONTROL -->
+      <div class="admin-tab-pane" id="tab-users">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Registered Customer Accounts</span>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Total Licenses</th>
+                  <th>Last Login</th>
+                  <th>Account Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-users-tbody">
+                <!-- Dynamically populated via js/admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 7: SYSTEM SETTINGS -->
+      <div class="admin-tab-pane" id="tab-settings">
+        <div class="admin-card" style="max-width: 650px;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">System &amp; Store Configuration</span>
+          </div>
+          <form id="admin-settings-form" style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Store Brand Name</label>
+              <input type="text" id="setting-store-name" value="IEMS LicenseVault" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Support Contact Email</label>
+              <input type="email" id="setting-support-email" value="support@licensevault.io" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Master Admin Username</label>
+              <input type="text" id="setting-admin-user" value="admin" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <button type="submit" style="padding:12px;background:linear-gradient(135deg, #10b981, #059669);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-top:6px;">
+              💾 Save System Settings
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Modular Scripts Architecture -->
+  <script src="supabase-client.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

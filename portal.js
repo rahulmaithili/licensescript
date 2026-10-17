@@ -992,26 +992,12 @@ function initEventListeners() {
           if (adminSuccess) {
             adminState.token = password;
             localStorage.setItem("cdcms_admin_token", password);
+            sessionStorage.setItem("admin_token", password);
 
-            // Close login modal
-            const userAccountModal = document.getElementById("user-account-modal");
-            if (userAccountModal) {
-              userAccountModal.classList.add("hidden");
-              document.body.style.overflow = "";
-            }
-
-            // Hide public website
-            const portalContainer = document.getElementById("portal-container-id");
-            const navbarHeader = document.getElementById("navbar-header-id");
-            if (portalContainer) portalContainer.style.display = "none";
-            if (navbarHeader) navbarHeader.style.display = "none";
-
-            // Show admin dashboard
-            const adminDashboard = document.getElementById("admin-dashboard");
-            if (adminDashboard) adminDashboard.style.display = "flex";
-
-            showToast("Logged in successfully as Master Admin!", "success");
-            loadDashboardData();
+            showToast("Authenticated as Super Admin! Opening ERP Dashboard...", "success");
+            setTimeout(() => {
+              window.location.href = "admin.html";
+            }, 500);
             return;
           }
         }
