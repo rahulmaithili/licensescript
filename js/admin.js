@@ -16,6 +16,7 @@ function initAdminDashboard() {
   loadAdminData();
   initKeyGenerator();
   initLicenseSearchAndFilter();
+  initCompanyProfile();
   initThemeToggle();
   initSignOut();
 }
@@ -607,4 +608,112 @@ function showToast(message, type = "success") {
   toast.innerText = message;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
+}
+
+
+// 9. Company Profile Fill Function & Live Invoice Preview
+function initCompanyProfile() {
+  const form = document.getElementById("form-company-profile");
+  if (!form) return;
+
+  const legalNameInput = document.getElementById("cp-legal-name");
+  const brandNameInput = document.getElementById("cp-brand-name");
+  const taglineInput = document.getElementById("cp-tagline");
+  const addressInput = document.getElementById("cp-address");
+  const emailInput = document.getElementById("cp-email");
+  const phoneInput = document.getElementById("cp-phone");
+  const gstinInput = document.getElementById("cp-gstin");
+  const invPrefixInput = document.getElementById("cp-inv-prefix");
+  const bankNameInput = document.getElementById("cp-bank-name");
+  const bankAccInput = document.getElementById("cp-bank-acc");
+  const bankIfscInput = document.getElementById("cp-bank-ifsc");
+  const upiInput = document.getElementById("cp-upi-id");
+  const signatoryInput = document.getElementById("cp-signatory");
+
+  // Preview elements
+  const prevName = document.getElementById("prev-cp-name");
+  const prevTagline = document.getElementById("prev-cp-tagline");
+  const prevAddress = document.getElementById("prev-cp-address");
+  const prevGstin = document.getElementById("prev-cp-gstin");
+  const prevInvNum = document.getElementById("prev-inv-num");
+  const prevUpi = document.getElementById("prev-cp-upi");
+  const prevSignatory = document.getElementById("prev-cp-signatory");
+
+  function updatePreview() {
+    if (prevName && legalNameInput) prevName.textContent = legalNameInput.value || "Your Company";
+    if (prevTagline && taglineInput) prevTagline.textContent = taglineInput.value || "";
+    if (prevAddress && addressInput) prevAddress.textContent = addressInput.value || "";
+    if (prevGstin && gstinInput) prevGstin.textContent = gstinInput.value || "N/A";
+    if (prevInvNum && invPrefixInput) prevInvNum.textContent = (invPrefixInput.value || "INV-") + "001";
+    if (prevUpi && upiInput) prevUpi.textContent = upiInput.value || "";
+    if (prevSignatory && signatoryInput) prevSignatory.textContent = signatoryInput.value || "";
+  }
+
+  // Live input binding
+  [legalNameInput, brandNameInput, taglineInput, addressInput, emailInput, phoneInput, gstinInput, invPrefixInput, bankNameInput, bankAccInput, bankIfscInput, upiInput, signatoryInput].forEach(inp => {
+    if (inp) inp.addEventListener("input", updatePreview);
+  });
+
+  // Load saved profile
+  const savedProfileStr = localStorage.getItem("company_profile");
+  if (savedProfileStr) {
+    try {
+      const p = JSON.parse(savedProfileStr);
+      if (legalNameInput && p.legalName) legalNameInput.value = p.legalName;
+      if (brandNameInput && p.brandName) brandNameInput.value = p.brandName;
+      if (taglineInput && p.tagline) taglineInput.value = p.tagline;
+      if (addressInput && p.address) addressInput.value = p.address;
+      if (emailInput && p.email) emailInput.value = p.email;
+      if (phoneInput && p.phone) phoneInput.value = p.phone;
+      if (gstinInput && p.gstin) gstinInput.value = p.gstin;
+      if (invPrefixInput && p.invPrefix) invPrefixInput.value = p.invPrefix;
+      if (bankNameInput && p.bankName) bankNameInput.value = p.bankName;
+      if (bankAccInput && p.bankAcc) bankAccInput.value = p.bankAcc;
+      if (bankIfscInput && p.bankIfsc) bankIfscInput.value = p.bankIfsc;
+      if (upiInput && p.upi) upiInput.value = p.upi;
+      if (signatoryInput && p.signatory) signatoryInput.value = p.signatory;
+      updatePreview();
+    } catch (e) {
+      console.warn("Error parsing saved company profile:", e);
+    }
+  }
+
+  // Handle Form Submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const profileData = {
+      legalName: legalNameInput?.value,
+      brandName: brandNameInput?.value,
+      tagline: taglineInput?.value,
+      address: addressInput?.value,
+      email: emailInput?.value,
+      phone: phoneInput?.value,
+      gstin: gstinInput?.value,
+      invPrefix: invPrefixInput?.value,
+      bankName: bankNameInput?.value,
+      bankAcc: bankAccInput?.value,
+      bankIfsc: bankIfscInput?.value,
+      upi: upiInput?.value,
+      signatory: signatoryInput?.value,
+      updated_at: new Date().toISOString()
+    };
+
+    localStorage.setItem("company_profile", JSON.stringify(profileData));
+
+    // Save to Supabase if connected
+    if (window.supabaseClient) {
+      try {
+        await window.supabaseClient.from("system_settings").upsert({
+          key: "company_profile",
+          value: profileData,
+          updated_at: new Date().toISOString()
+        });
+      } catch (err) {
+        console.warn("Supabase company profile save:", err);
+      }
+    }
+
+    updatePreview();
+    showToast("Official Company & Billing Profile saved successfully!", "success");
+  });
 }

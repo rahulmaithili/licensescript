@@ -3718,3 +3718,38 @@ body.light-mode .user-drawer-close-btn {
   border-color: rgba(0, 0, 0, 0.1);
   color: var(--text-primary);
 }
+
+
+/* ================= NAV ADMIN BADGE BUTTON ================= */
+.nav-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #f59e0b;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.nav-admin-btn:hover {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border-color: #f59e0b;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .nav-admin-btn span {
+    display: none;
+  }
+  .nav-admin-btn {
+    padding: 8px;
+    border-radius: 50%;
+  }
+}

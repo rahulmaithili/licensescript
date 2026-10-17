@@ -2057,21 +2057,17 @@ let adminState = {
 
 // Check cached admin session
 async function initAdminSession() {
-  const cachedToken = localStorage.getItem("cdcms_admin_token");
+  const cachedToken = localStorage.getItem("cdcms_admin_token") || sessionStorage.getItem("admin_token");
+  const navAdminBtn = document.getElementById("btn-nav-admin");
+  const navAdminText = document.getElementById("nav-admin-text");
+
   if (cachedToken) {
     adminState.token = cachedToken;
-    
-    // Hide portal website
-    const portalContainer = document.getElementById("portal-container-id");
-    const navbarHeader = document.getElementById("navbar-header-id");
-    if (portalContainer) portalContainer.style.display = "none";
-    if (navbarHeader) navbarHeader.style.display = "none";
-    
-    // Show admin dashboard
-    const adminDashboard = document.getElementById("admin-dashboard");
-    if (adminDashboard) adminDashboard.style.display = "flex";
-    
-    loadDashboardData();
+    if (navAdminBtn) {
+      navAdminBtn.style.display = "inline-flex";
+      navAdminBtn.classList.add("admin-active");
+      if (navAdminText) navAdminText.textContent = "Admin ERP (Active)";
+    }
   }
 }
 

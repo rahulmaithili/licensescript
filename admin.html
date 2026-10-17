@@ -98,6 +98,13 @@
           <span>Invoice Generator</span>
         </button>
 
+        <button class="admin-nav-item" data-tab="tab-company">
+          <span class="admin-nav-icon icon-amber">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 2L2 7h20L12 2z"></path></svg>
+          </span>
+          <span>Company Profile</span>
+        </button>
+
         <button class="admin-nav-item" data-tab="tab-database">
           <span class="admin-nav-icon icon-purple">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
@@ -691,6 +698,185 @@
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB: COMPANY PROFILE & BILLING CONFIGURATION ================= -->
+      <div class="admin-tab-pane" id="tab-company">
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
+          
+          <!-- Column 1: Fill Form -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">🏢 Company Profile &amp; Billing Details</span>
+              <span class="admin-card-badge" style="color: #10b981;">● Active on All Invoices</span>
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">
+              Yeh details aapke saare generated software license invoices aur frontend customer bills me auto-fill hongi.
+            </p>
+
+            <form id="form-company-profile" style="display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Company Legal Name *</label>
+                  <input type="text" id="cp-legal-name" required value="Mr. Rahul Scripts &amp; Tech Solutions" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px;">
+                </div>
+                <div>
+                  <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Brand / Trade Name</label>
+                  <input type="text" id="cp-brand-name" value="LicenseVault" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px;">
+                </div>
+              </div>
+
+              <div>
+                <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Company Tagline / Subtitle</label>
+                <input type="text" id="cp-tagline" value="Next-Gen Browser Extension Licensing &amp; Machine Binding" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px;">
+              </div>
+
+              <div>
+                <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Registered Business Address *</label>
+                <textarea id="cp-address" rows="2" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px; resize: vertical;">Connaught Place, Central Delhi, New Delhi, India - 110001</textarea>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Support Email</label>
+                  <input type="email" id="cp-email" value="support@licensescript.com" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px;">
+                </div>
+                <div>
+                  <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">WhatsApp / Phone</label>
+                  <input type="text" id="cp-phone" value="+91 98765 43210" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px;">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                  <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">GSTIN / Tax ID</label>
+                  <input type="text" id="cp-gstin" value="07AAAAA0000A1Z5" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px; font-family: monospace;">
+                </div>
+                <div>
+                  <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Invoice Number Prefix</label>
+                  <input type="text" id="cp-inv-prefix" value="INV-2026-" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px; font-family: monospace;">
+                </div>
+              </div>
+
+              <!-- Bank & Settlement Details -->
+              <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; margin-top: 4px;">
+                <div style="font-size: 12px; font-weight: 800; color: #f59e0b; margin-bottom: 10px;">💳 Official Settlement Bank &amp; UPI</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Bank Name</label>
+                    <input type="text" id="cp-bank-name" value="HDFC Bank" style="width: 100%; padding: 8px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 12px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Account Number</label>
+                    <input type="text" id="cp-bank-acc" value="50200012345678" style="width: 100%; padding: 8px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 12px; font-family: monospace;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">IFSC Code</label>
+                    <input type="text" id="cp-bank-ifsc" value="HDFC0001234" style="width: 100%; padding: 8px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 12px; font-family: monospace;">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 4px;">Official UPI ID</label>
+                    <input type="text" id="cp-upi-id" value="rahulscripts@okaxis" style="width: 100%; padding: 8px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; font-size: 12px; font-family: monospace;">
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label style="font-size: 11.5px; color: #94a3b8; font-weight: 700; display: block; margin-bottom: 5px;">Authorized Signatory Name</label>
+                <input type="text" id="cp-signatory" value="Rahul Maithili (Authorized Signatory)" style="width: 100%; padding: 9px 12px; background: #171a26; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 12.5px;">
+              </div>
+
+              <button type="submit" style="padding: 12px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px; color: #fff; font-weight: 800; cursor: pointer; font-size: 14px; margin-top: 6px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);">
+                💾 Save Company &amp; Billing Profile
+              </button>
+            </form>
+          </div>
+
+          <!-- Column 2: Live Tax Invoice Preview Card -->
+          <div class="admin-card" style="background: #ffffff; color: #0f172a; border-radius: 12px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 14px; margin-bottom: 16px;">
+              <div>
+                <h3 id="prev-cp-name" style="font-size: 18px; font-weight: 900; color: #0f172a; margin-bottom: 2px;">Mr. Rahul Scripts</h3>
+                <p id="prev-cp-tagline" style="font-size: 11px; color: #64748b; font-weight: 600;">Browser Extension Software &amp; Licensing</p>
+                <p id="prev-cp-address" style="font-size: 10.5px; color: #475569; max-width: 250px; line-height: 1.4; margin-top: 4px;">Connaught Place, New Delhi, India</p>
+                <p style="font-size: 10.5px; color: #475569;">GSTIN: <strong id="prev-cp-gstin">07AAAAA0000A1Z5</strong></p>
+              </div>
+              <div style="text-align: right;">
+                <span style="display: inline-block; background: #f1f5f9; color: #0f172a; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1;">TAX INVOICE</span>
+                <p style="font-size: 11px; font-weight: 800; color: #0f172a; margin-top: 6px;" id="prev-inv-num">INV-2026-001</p>
+                <p style="font-size: 10px; color: #64748b;">Date: 17 Oct 2026</p>
+              </div>
+            </div>
+
+            <!-- Billed To -->
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 16px;">
+              <span style="font-size: 9.5px; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px;">Billed To (Customer):</span>
+              <div style="font-weight: 800; font-size: 13px; color: #0f172a;">Sample Client Ltd</div>
+              <div style="font-size: 11px; color: #475569;">client@example.com · +91 98765 00000</div>
+              <div style="font-size: 10.5px; color: #0f172a; font-family: monospace; margin-top: 2px;">Key: <strong>CDCMS-8891-PROX-2026</strong></div>
+            </div>
+
+            <!-- Line Items Table -->
+            <table style="width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 16px;">
+              <thead>
+                <tr style="background: #0f172a; color: #fff;">
+                  <th style="padding: 6px 8px; text-align: left;">Item Description</th>
+                  <th style="padding: 6px 8px; text-align: center;">Validity</th>
+                  <th style="padding: 6px 8px; text-align: right;">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                  <td style="padding: 8px;">
+                    <strong>CDCMS Multi-Tool Suite (PRO Extension)</strong>
+                    <div style="font-size: 9.5px; color: #64748b;">Hardware Machine Binding (HWID Guard)</div>
+                  </td>
+                  <td style="padding: 8px; text-align: center;">1 Year</td>
+                  <td style="padding: 8px; text-align: right; font-weight: 700;">₹4,236.44</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Tax Calculation -->
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+              <div style="width: 200px; font-size: 11px; display: flex; flex-direction: column; gap: 4px;">
+                <div style="display: flex; justify-content: space-between; color: #64748b;">
+                  <span>Subtotal:</span>
+                  <span>₹4,236.44</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: #64748b;">
+                  <span>CGST (9%):</span>
+                  <span>₹381.28</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: #64748b;">
+                  <span>SGST (9%):</span>
+                  <span>₹381.28</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: 900; font-size: 14px; color: #0f172a; border-top: 1.5px solid #0f172a; padding-top: 4px; margin-top: 2px;">
+                  <span>Total Paid:</span>
+                  <span style="color: #10b981;">₹4,999.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Stamp -->
+            <div style="border-top: 1px dashed #cbd5e1; padding-top: 12px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 10px; color: #64748b;">
+              <div>
+                <div>Payment Mode: <strong>Razorpay Instant (Paid)</strong></div>
+                <div>UPI: <strong id="prev-cp-upi">rahulscripts@okaxis</strong></div>
+              </div>
+              <div style="text-align: right;">
+                <div style="color: #10b981; font-weight: 900; font-size: 11px; border: 1.5px solid #10b981; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 4px;">PAID &amp; VERIFIED</div>
+                <div id="prev-cp-signatory" style="font-weight: 700; color: #0f172a;">Rahul Maithili (Signatory)</div>
+              </div>
+            </div>
+
+            <button onclick="window.print()" style="margin-top: 14px; width: 100%; padding: 8px; background: #0f172a; color: #fff; border: none; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer;">
+              🖨️ Print Sample Commercial Invoice
+            </button>
+          </div>
+
         </div>
       </div>
 
