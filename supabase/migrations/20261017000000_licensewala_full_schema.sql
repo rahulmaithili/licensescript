@@ -44,6 +44,22 @@ EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
+-- Drop legacy/conflicting tables if they exist with obsolete types (e.g. bigint id)
+DROP TABLE IF EXISTS public.license_activations CASCADE;
+DROP TABLE IF EXISTS public.license_keys_pool CASCADE;
+DROP TABLE IF EXISTS public.licenses CASCADE;
+DROP TABLE IF EXISTS public.invoices CASCADE;
+DROP TABLE IF EXISTS public.coupons CASCADE;
+DROP TABLE IF EXISTS public.plans CASCADE;
+DROP TABLE IF EXISTS public.products CASCADE;
+DROP TABLE IF EXISTS public.orders CASCADE;
+DROP TABLE IF EXISTS public.payments CASCADE;
+DROP TABLE IF EXISTS public.salespersons CASCADE;
+DROP TABLE IF EXISTS public.activity_logs CASCADE;
+DROP TABLE IF EXISTS public.integration_settings CASCADE;
+DROP TABLE IF EXISTS public.settings CASCADE;
+DROP TABLE IF EXISTS public.company_profile CASCADE;
+
 -- 1. PROFILES TABLE (Linked to auth.users)
 CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
