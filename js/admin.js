@@ -1,11 +1,13 @@
 /* ==========================================================================
-   LICENSEVAULT / IEMS ERP EXECUTIVE DASHBOARD - ADMIN JAVASCRIPT
-   Modular Architecture - Dedicated Backend Logic
+   LICENSEVAULT ERP EXECUTIVE DASHBOARD - MODULAR ADMIN LOGIC
+   Dedicated Backend Logic for Software Licensing SaaS
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
   initAdminDashboard();
 });
+
+let allLicensesList = [];
 
 function initAdminDashboard() {
   initSidebarToggle();
@@ -13,6 +15,7 @@ function initAdminDashboard() {
   initDashboardCharts();
   loadAdminData();
   initKeyGenerator();
+  initLicenseSearchAndFilter();
   initThemeToggle();
   initSignOut();
 }
@@ -111,17 +114,16 @@ function initTabNavigation() {
   });
 }
 
-// 3. Render Executive Dashboard Charts (Matching Screenshot)
+// 3. Render Executive Dashboard Charts (Software Licensing Metrics)
 function initDashboardCharts() {
-  // Chart 1: Financial Overview (Multi-line chart)
+  // Chart 1: Financial & License Overview (Multi-line chart)
   const lineCtx = document.getElementById("overviewLineChart")?.getContext("2d");
   if (lineCtx) {
     const days = Array.from({ length: 31 }, (_, i) => (i + 1 < 10 ? "0" + (i + 1) : "" + (i + 1)));
     
-    // Sample mock lines matching the image curves
-    const incomeData = [0.8, 0.7, 0.6, 0.65, 0.7, 0.85, 0.9, 0.8, 0.75, 0.7, 0.72, 0.75, 0.8, 0.82, 0.85, 0.88, 0.9, 0.85, 0.8, 0.75, 0.7, 0.72, 0.75, 0.78, 0.8, 0.82, 0.85, 0.88, 0.9, 0.92, 0.95];
-    const expenseData = [0.3, 0.35, 0.4, 0.38, 0.35, 0.4, 0.45, 0.42, 0.4, 0.38, 0.35, 0.32, 0.3, 0.35, 0.4, 0.38, 0.35, 0.32, 0.3, 0.28, 0.3, 0.32, 0.35, 0.38, 0.4, 0.38, 0.35, 0.32, 0.3, 0.28, 0.3];
-    const netData = incomeData.map((v, i) => parseFloat((v - expenseData[i]).toFixed(2)));
+    const revenueTrend = [12000, 14500, 18000, 16000, 22000, 24500, 29000, 31000, 28000, 26000, 34000, 38000, 42000, 39000, 45000, 49000, 52000, 48000, 51000, 56000, 60000, 58000, 64000, 69000, 72000, 75000, 71000, 78000, 82000, 86000, 92000];
+    const validationsTrend = [350, 420, 390, 480, 510, 560, 620, 590, 640, 700, 750, 720, 810, 850, 890, 920, 960, 910, 980, 1020, 1080, 1040, 1120, 1160, 1200, 1250, 1220, 1300, 1350, 1400, 1450];
+    const revokedTrend = [1, 0, 2, 1, 0, 1, 3, 1, 0, 2, 1, 0, 1, 2, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 1, 0, 1, 2, 0, 1];
 
     new Chart(lineCtx, {
       type: "line",
@@ -129,19 +131,19 @@ function initDashboardCharts() {
         labels: days,
         datasets: [
           {
-            label: "Total Income",
-            data: incomeData,
+            label: "Total Revenue (₹)",
+            data: revenueTrend,
             borderColor: "#10b981",
-            backgroundColor: "rgba(16, 185, 129, 0.05)",
+            backgroundColor: "rgba(16, 185, 129, 0.06)",
             tension: 0.4,
             borderWidth: 2,
             pointRadius: 0,
             pointHoverRadius: 4
           },
           {
-            label: "Total Expense",
-            data: expenseData,
-            borderColor: "#ef4444",
+            label: "Validations Count",
+            data: validationsTrend.map(v => v * 60),
+            borderColor: "#06b6d4",
             backgroundColor: "transparent",
             tension: 0.4,
             borderWidth: 1.5,
@@ -149,9 +151,9 @@ function initDashboardCharts() {
             pointHoverRadius: 4
           },
           {
-            label: "Net Balance",
-            data: netData,
-            borderColor: "#06b6d4",
+            label: "Revoked / Expired",
+            data: revokedTrend.map(v => v * 10000),
+            borderColor: "#ef4444",
             backgroundColor: "transparent",
             tension: 0.4,
             borderWidth: 1.5,
@@ -173,31 +175,37 @@ function initDashboardCharts() {
           },
           y: {
             grid: { color: "rgba(255, 255, 255, 0.03)" },
-            ticks: { color: "#64748b", font: { size: 9 } }
+            ticks: { color: "#64748b", font: { size: 9 }, callback: val => "₹" + (val / 1000) + "k" }
           }
         }
       }
     });
   }
 
-  // Chart 2: Income vs Expense Bar Chart
+  // Chart 2: Revenue by Software Product (Bar Chart)
   const barCtx = document.getElementById("incomeExpenseBarChart")?.getContext("2d");
   if (barCtx) {
     new Chart(barCtx, {
       type: "bar",
       data: {
-        labels: ["May 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Sep 2026", "Oct 2026"],
+        labels: ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
         datasets: [
           {
-            label: "Income",
-            data: [0, 0, 0, 11500, 12000, 2400],
+            label: "CDCMS Suite Pro",
+            data: [12000, 16500, 22000, 31000, 42000, 48500],
             backgroundColor: "#10b981",
             borderRadius: 4
           },
           {
-            label: "Expense",
-            data: [0, 0, 0, 14200, 13800, 3100],
-            backgroundColor: "#ef4444",
+            label: "CDC Tools Multi",
+            data: [8000, 11000, 15000, 24000, 32000, 38000],
+            backgroundColor: "#3b82f6",
+            borderRadius: 4
+          },
+          {
+            label: "Master Bundle",
+            data: [14000, 19000, 26000, 38000, 51000, 59000],
+            backgroundColor: "#f59e0b",
             borderRadius: 4
           }
         ]
@@ -215,23 +223,23 @@ function initDashboardCharts() {
           },
           y: {
             grid: { color: "rgba(255, 255, 255, 0.03)" },
-            ticks: { color: "#64748b", font: { size: 9 } }
+            ticks: { color: "#64748b", font: { size: 9 }, callback: val => "₹" + (val / 1000) + "k" }
           }
         }
       }
     });
   }
 
-  // Chart 3: Top Expense Categories Donut Chart
+  // Chart 3: Top Software Categories (Donut Chart)
   const donutCtx = document.getElementById("expenseDonutChart")?.getContext("2d");
   if (donutCtx) {
     new Chart(donutCtx, {
       type: "doughnut",
       data: {
-        labels: ["Loan EMI", "Internet / Subscriptions", "Utilities", "Tax / License Fees"],
+        labels: ["CDCMS Pro Suite", "CDC Tools Multi", "Master Bundle", "Custom APIs"],
         datasets: [{
-          data: [19068, 3729, 1588, 1480],
-          backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444"],
+          data: [42, 28, 22, 8],
+          backgroundColor: ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6"],
           borderWidth: 0,
           hoverOffset: 6
         }]
@@ -255,29 +263,30 @@ function initDashboardCharts() {
   }
 }
 
-// 4. Load Data from Supabase with Mock Fallback
+// 4. Load Data from Supabase with Real-Time Sync & Local Fallback
 async function loadAdminData() {
   try {
-    // If Supabase client is initialized in window.supabaseClient
     if (window.supabaseClient) {
-      const { data: licenses } = await window.supabaseClient
+      const { data: licenses, error } = await window.supabaseClient
         .from("licenses")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (licenses && licenses.length > 0) {
+      if (!error && licenses && licenses.length > 0) {
+        allLicensesList = licenses;
         renderLicensesTable(licenses);
         updateLiveStats(licenses);
         return;
       }
     }
   } catch (err) {
-    console.warn("Using local cached admin data:", err);
+    console.warn("Supabase fetch fallback to local cache:", err);
   }
 
-  // Fallback initial mock data
-  const mockLicenses = [
+  // Default software licenses mock
+  allLicensesList = [
     {
+      id: "lic-1",
       license_key: "CDCMS-8891-PROX-2026",
       client_name: "Rahul Maithili",
       client_email: "rahul@maithili.com",
@@ -287,6 +296,7 @@ async function loadAdminData() {
       status: "Active"
     },
     {
+      id: "lic-2",
       license_key: "CDCT-4512-VALD-2026",
       client_name: "Aman Sharma",
       client_email: "aman.sharma@gmail.com",
@@ -296,6 +306,7 @@ async function loadAdminData() {
       status: "Active"
     },
     {
+      id: "lic-3",
       license_key: "AIOM-9921-UNLM-2026",
       client_name: "Vikas Patel",
       client_email: "vikas.patel@techcorp.in",
@@ -303,10 +314,20 @@ async function loadAdminData() {
       device_id: "HWID-WIN-1029C-3381",
       expiry_date: "2026-11-01",
       status: "Active"
+    },
+    {
+      id: "lic-4",
+      license_key: "CDCMS-1044-TRIAL-2026",
+      client_name: "Pooja Verma",
+      client_email: "pooja.v@digitalagency.com",
+      product_name: "CDCMS Multi-Tool Suite",
+      device_id: "HWID-WIN-5512D-8821",
+      expiry_date: "2026-10-22",
+      status: "Expiring"
     }
   ];
 
-  renderLicensesTable(mockLicenses);
+  renderLicensesTable(allLicensesList);
   renderUsersTable();
   renderInvoicesTable();
 }
@@ -315,29 +336,72 @@ function renderLicensesTable(licenses) {
   const tbody = document.getElementById("admin-licenses-tbody");
   if (!tbody) return;
 
-  tbody.innerHTML = licenses.map(item => `
-    <tr>
-      <td><strong style="color: #f59e0b; font-family: monospace;">${item.license_key}</strong></td>
-      <td>
-        <div><strong>${item.client_name || 'Client'}</strong></div>
-        <div style="font-size: 11px; color: #94a3b8;">${item.client_email || ''}</div>
-      </td>
-      <td>${item.product_name || 'CDCMS Tool'}</td>
-      <td>
-        <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">
-          ${item.status || 'Active'}
-        </span>
-      </td>
-      <td><span style="font-family: monospace; font-size: 11px; color: #94a3b8;">${item.device_id || 'Not Bound Yet'}</span></td>
-      <td>${item.expiry_date || 'Lifetime'}</td>
-      <td>
-        <div style="display: flex; gap: 8px;">
-          <button onclick="copyText('${item.license_key}')" style="padding: 4px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 6px; cursor: pointer; font-size: 11px;">Copy</button>
-          <button onclick="alert('Device reset triggered for ${item.license_key}')" style="padding: 4px 8px; background: rgba(59,130,246,0.15); border: 1px solid #3b82f6; color: #60a5fa; border-radius: 6px; cursor: pointer; font-size: 11px;">Reset HWID</button>
-        </div>
-      </td>
-    </tr>
-  `).join("");
+  if (licenses.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8;">No software licenses found matching your search.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = licenses.map(item => {
+    const isBlocked = item.status === "Blocked";
+    const statusColor = isBlocked ? "#ef4444" : (item.status === "Expiring" ? "#f59e0b" : "#10b981");
+    const statusBg = isBlocked ? "rgba(239, 68, 68, 0.15)" : (item.status === "Expiring" ? "rgba(245, 158, 11, 0.15)" : "rgba(16, 185, 129, 0.15)");
+
+    return `
+      <tr>
+        <td><strong style="color: #f59e0b; font-family: monospace; font-size: 13px;">${item.license_key}</strong></td>
+        <td>
+          <div style="font-weight: 700; color: #fff;">${item.client_name || 'Client'}</div>
+          <div style="font-size: 11px; color: #94a3b8;">${item.client_email || ''}</div>
+        </td>
+        <td><strong>${item.product_name || 'CDCMS Tool'}</strong></td>
+        <td>
+          <span style="background: ${statusBg}; color: ${statusColor}; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px;">
+            ${item.status || 'Active'}
+          </span>
+        </td>
+        <td>
+          <span style="font-family: monospace; font-size: 11px; color: #94a3b8;">${item.device_id || 'Not Bound Yet'}</span>
+        </td>
+        <td>
+          <input type="date" value="${item.expiry_date || '2026-12-31'}" onchange="updateLicenseExpiry('${item.license_key}', this.value)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; padding: 3px 6px; font-size: 11px;">
+        </td>
+        <td>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <button onclick="copyText('${item.license_key}')" style="padding: 4px 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 6px; cursor: pointer; font-size: 11px;" title="Copy License Key">Copy</button>
+            <button onclick="resetHardwareID('${item.license_key}')" style="padding: 4px 8px; background: rgba(59,130,246,0.15); border: 1px solid #3b82f6; color: #60a5fa; border-radius: 6px; cursor: pointer; font-size: 11px;" title="Unlock Machine HWID">Reset HWID</button>
+            <button onclick="toggleBlockLicense('${item.license_key}', ${!isBlocked})" style="padding: 4px 8px; background: ${isBlocked ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}; border: 1px solid ${isBlocked ? '#10b981' : '#ef4444'}; color: ${isBlocked ? '#10b981' : '#f87171'}; border-radius: 6px; cursor: pointer; font-size: 11px;">
+              ${isBlocked ? 'Unblock' : 'Block'}
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function initLicenseSearchAndFilter() {
+  const searchInput = document.getElementById("license-search-input");
+  const filterSelect = document.getElementById("license-filter-product");
+
+  function filterData() {
+    const q = (searchInput?.value || "").toLowerCase().trim();
+    const prod = filterSelect?.value || "all";
+
+    const filtered = allLicensesList.filter(item => {
+      const matchQ = (item.license_key || "").toLowerCase().includes(q) ||
+                     (item.client_name || "").toLowerCase().includes(q) ||
+                     (item.client_email || "").toLowerCase().includes(q) ||
+                     (item.device_id || "").toLowerCase().includes(q);
+
+      const matchProd = prod === "all" || (item.product_name || "").includes(prod);
+      return matchQ && matchProd;
+    });
+
+    renderLicensesTable(filtered);
+  }
+
+  if (searchInput) searchInput.addEventListener("input", filterData);
+  if (filterSelect) filterSelect.addEventListener("change", filterData);
 }
 
 function renderUsersTable() {
@@ -349,7 +413,7 @@ function renderUsersTable() {
       <td>#USR-101</td>
       <td><strong>Rahul Maithili</strong></td>
       <td>rahul@maithili.com</td>
-      <td>1 Active License</td>
+      <td><span style="color:#10b981;font-weight:700;">1 Active License</span></td>
       <td>Today, 03:15 PM</td>
       <td><span style="color: #10b981; font-weight: 700;">● Verified Client</span></td>
     </tr>
@@ -357,7 +421,7 @@ function renderUsersTable() {
       <td>#USR-102</td>
       <td><strong>Aman Sharma</strong></td>
       <td>aman.sharma@gmail.com</td>
-      <td>1 Active License</td>
+      <td><span style="color:#10b981;font-weight:700;">1 Active License</span></td>
       <td>Yesterday</td>
       <td><span style="color: #10b981; font-weight: 700;">● Verified Client</span></td>
     </tr>
@@ -365,7 +429,7 @@ function renderUsersTable() {
       <td>#USR-103</td>
       <td><strong>Vikas Patel</strong></td>
       <td>vikas.patel@techcorp.in</td>
-      <td>1 Master Key</td>
+      <td><span style="color:#f59e0b;font-weight:700;">1 Master Key</span></td>
       <td>14 Oct 2026</td>
       <td><span style="color: #10b981; font-weight: 700;">● Verified Client</span></td>
     </tr>
@@ -380,30 +444,37 @@ function renderInvoicesTable() {
     <tr>
       <td><strong>#INV-2026-001</strong></td>
       <td>Rahul Maithili</td>
-      <td>CDCMS Suite Pro</td>
+      <td>CDCMS Suite Pro (1-Month)</td>
       <td><strong>₹999.00</strong></td>
       <td>16 Oct 2026</td>
-      <td><span style="color: #10b981; font-weight: 700;">Paid (Razorpay)</span></td>
-      <td><button onclick="window.print()" class="admin-card-link" style="background:none;border:none;">PDF &darr;</button></td>
+      <td><span style="color: #10b981; font-weight: 700;">● Paid (Razorpay)</span></td>
+      <td><button onclick="window.print()" class="admin-card-link" style="background:none;border:none;">Print PDF &darr;</button></td>
     </tr>
     <tr>
       <td><strong>#INV-2026-002</strong></td>
       <td>Aman Sharma</td>
-      <td>CDC Tools Extension</td>
+      <td>CDC Tools Multi (Quarterly)</td>
       <td><strong>₹1,499.00</strong></td>
       <td>15 Oct 2026</td>
-      <td><span style="color: #10b981; font-weight: 700;">Paid (Razorpay)</span></td>
-      <td><button onclick="window.print()" class="admin-card-link" style="background:none;border:none;">PDF &darr;</button></td>
+      <td><span style="color: #10b981; font-weight: 700;">● Paid (Razorpay)</span></td>
+      <td><button onclick="window.print()" class="admin-card-link" style="background:none;border:none;">Print PDF &darr;</button></td>
+    </tr>
+    <tr>
+      <td><strong>#INV-2026-003</strong></td>
+      <td>Vikas Patel</td>
+      <td>Master Bundle (Annual VIP)</td>
+      <td><strong>₹4,999.00</strong></td>
+      <td>14 Oct 2026</td>
+      <td><span style="color: #10b981; font-weight: 700;">● Paid (UPI Direct)</span></td>
+      <td><button onclick="window.print()" class="admin-card-link" style="background:none;border:none;">Print PDF &darr;</button></td>
     </tr>
   `;
 }
 
 function updateLiveStats(licenses) {
-  const incomeVal = document.getElementById("stat-income-val");
-  const incomeSub = document.getElementById("stat-income-sub");
-  if (incomeVal && licenses) {
-    incomeVal.textContent = `₹${(licenses.length * 999).toLocaleString()}`;
-    if (incomeSub) incomeSub.textContent = `${licenses.length} active licenses in Oct 2026`;
+  const activeCountEl = document.getElementById("stat-active-licenses");
+  if (activeCountEl && licenses) {
+    activeCountEl.textContent = licenses.length.toLocaleString();
   }
 }
 
@@ -415,23 +486,82 @@ function initKeyGenerator() {
 
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const product = document.getElementById("gen-product-select")?.value || "CDCMS";
+    const product = document.getElementById("gen-product-select")?.value || "cdcms_pro";
+    const clientName = document.getElementById("gen-client-name")?.value || "Client";
+    const clientEmail = document.getElementById("gen-client-email")?.value || "client@gmail.com";
+    const days = parseInt(document.getElementById("gen-client-days")?.value) || 30;
+
     const prefix = product === "all_in_one" ? "AIOM" : (product === "cdc_tools" ? "CDCT" : "CDCMS");
     const randPart = Math.floor(1000 + Math.random() * 9000);
     const newKey = `${prefix}-${randPart}-GENX-2026`;
+    const expiryDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+
+    const newLicense = {
+      license_key: newKey,
+      client_name: clientName,
+      client_email: clientEmail,
+      product_name: product === "all_in_one" ? "All-in-One Master" : (product === "cdc_tools" ? "CDC Tools Multi" : "CDCMS Pro Suite"),
+      device_id: null,
+      expiry_date: expiryDate,
+      status: "Active"
+    };
+
+    // Save to Supabase if connected
+    if (window.supabaseClient) {
+      try {
+        await window.supabaseClient.from("licenses").insert([newLicense]);
+      } catch (err) {
+        console.warn("Supabase insert:", err);
+      }
+    }
+
+    allLicensesList.unshift(newLicense);
+    renderLicensesTable(allLicensesList);
 
     if (resultBox && display) {
       display.textContent = newKey;
       resultBox.style.display = "block";
     }
 
-    showToast(`Key generated: ${newKey}`, "success");
+    showToast(`Key generated & saved: ${newKey}`, "success");
   });
 }
 
-// 6. Theme Toggle
+window.copyGeneratedKey = function() {
+  const key = document.getElementById("gen-key-display")?.textContent;
+  if (key) copyText(key);
+};
+
+// 6. License Row Actions (Reset HWID, Block/Unblock, Expiry)
+window.resetHardwareID = function(key) {
+  const item = allLicensesList.find(l => l.license_key === key);
+  if (item) {
+    item.device_id = null;
+    renderLicensesTable(allLicensesList);
+    showToast(`Hardware ID cleared for ${key}. Client can now activate on a new machine.`, "info");
+  }
+};
+
+window.toggleBlockLicense = function(key, block) {
+  const item = allLicensesList.find(l => l.license_key === key);
+  if (item) {
+    item.status = block ? "Blocked" : "Active";
+    renderLicensesTable(allLicensesList);
+    showToast(`License ${key} status changed to ${item.status}.`, block ? "error" : "success");
+  }
+};
+
+window.updateLicenseExpiry = function(key, newDate) {
+  const item = allLicensesList.find(l => l.license_key === key);
+  if (item) {
+    item.expiry_date = newDate;
+    showToast(`Updated expiry date for ${key} to ${newDate}`, "success");
+  }
+};
+
+// 7. Theme Toggle
 function initThemeToggle() {
   const btn = document.getElementById("btn-theme-toggle");
   if (btn) {
@@ -447,7 +577,7 @@ function initThemeToggle() {
   }
 }
 
-// 7. Sign Out
+// 8. Sign Out
 function initSignOut() {
   const btn = document.getElementById("btn-admin-signout");
   if (btn) {

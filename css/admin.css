@@ -783,3 +783,27 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Form & Search Controls in Admin Tabs */
+.admin-card input,
+.admin-card select,
+.admin-card textarea {
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-card input:focus,
+.admin-card select:focus,
+.admin-card textarea:focus {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+}
+
+.admin-card button {
+  transition: all 0.2s ease;
+}
+
+.admin-card button:hover {
+  transform: translateY(-1px);
+}

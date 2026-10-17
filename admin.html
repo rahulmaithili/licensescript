@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IEMS ERP · Financial &amp; License Executive Dashboard</title>
+  <title>LicenseVault ERP · Software Licensing &amp; Activation Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -30,10 +30,10 @@
         <div class="admin-brand">
           <div class="admin-brand-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </div>
-          <span class="admin-brand-title">IEMS ERP</span>
+          <span class="admin-brand-title">LicenseVault ERP</span>
         </div>
         <button class="admin-sidebar-close-btn" id="btn-admin-sidebar-close" aria-label="Close Sidebar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <!-- Category-wise Navigation Links matching Screenshot -->
+      <!-- Category-wise Navigation Links for Software SaaS -->
       <nav class="admin-nav-list">
         <button class="admin-nav-item active" data-tab="tab-dashboard">
           <span class="admin-nav-icon icon-amber">
@@ -63,60 +63,46 @@
           <span>Dashboard</span>
         </button>
 
-        <button class="admin-nav-item" data-tab="tab-licenses">
+        <button class="admin-nav-item" data-tab="tab-licenses-list">
           <span class="admin-nav-icon icon-cyan">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2-1.5 1.5L8 5 6.5 6.5 5 5 2 8l4 4 1-1 2 2 1-1 2 2 1-1 4 4 5-5z"></path></svg>
           </span>
-          <span>Bank Accounts</span>
-        </button>
-
-        <button class="admin-nav-item" data-tab="tab-incomes">
-          <span class="admin-nav-icon icon-emerald">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-          </span>
-          <span>Income</span>
-        </button>
-
-        <button class="admin-nav-item" data-tab="tab-expenses">
-          <span class="admin-nav-icon icon-red">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
-          </span>
-          <span>Expenses</span>
+          <span>User Licenses</span>
         </button>
 
         <button class="admin-nav-item" data-tab="tab-generator">
-          <span class="admin-nav-icon icon-purple">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+          <span class="admin-nav-icon icon-emerald">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
           </span>
-          <span>Transfers</span>
-        </button>
-
-        <button class="admin-nav-item" data-tab="tab-invoices">
-          <span class="admin-nav-icon icon-blue">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-          </span>
-          <span>Reports</span>
-        </button>
-
-        <button class="admin-nav-item" data-tab="tab-licenses-list">
-          <span class="admin-nav-icon icon-amber">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5L13 7l-2-2-1.5 1.5L8 5 6.5 6.5 5 5 2 8l4 4 1-1 2 2 1-1 2 2 1-1 4 4 5-5z"></path></svg>
-          </span>
-          <span>Loans</span>
+          <span>Key Generator</span>
         </button>
 
         <button class="admin-nav-item" data-tab="tab-products">
           <span class="admin-nav-icon icon-violet">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
           </span>
-          <span>Given Loans</span>
+          <span>Product Catalog</span>
         </button>
 
         <button class="admin-nav-item" data-tab="tab-plans">
           <span class="admin-nav-icon icon-teal">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </span>
-          <span>Quick Collect</span>
+          <span>Pricing &amp; Plans</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-invoices">
+          <span class="admin-nav-icon icon-blue">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </span>
+          <span>Invoice Generator</span>
+        </button>
+
+        <button class="admin-nav-item" data-tab="tab-database">
+          <span class="admin-nav-icon icon-purple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          </span>
+          <span>Supabase &amp; Razorpay</span>
         </button>
 
         <button class="admin-nav-item" data-tab="tab-users">
@@ -175,7 +161,7 @@
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          <h1 class="admin-page-title" id="admin-page-title">Financial Dashboard</h1>
+          <h1 class="admin-page-title" id="admin-page-title">Financial &amp; License Dashboard</h1>
         </div>
 
         <div class="admin-topbar-right">
@@ -193,70 +179,70 @@
         </div>
       </header>
 
-      <!-- TAB 1: MAIN FINANCIAL DASHBOARD (Exact Match to Screenshot) -->
+      <!-- ================= TAB 1: EXECUTIVE SAAS DASHBOARD (EXACT SCREENSHOT LAYOUT) ================= -->
       <div class="admin-tab-pane active" id="tab-dashboard">
         
-        <!-- TOP 5 VIBRANT METRIC CARDS -->
+        <!-- TOP 5 VIBRANT SAAS METRIC CARDS -->
         <div class="metric-cards-grid">
           
-          <!-- Card 1: Green -->
+          <!-- Card 1: Green -> Active Licenses -->
           <div class="metric-card card-green">
             <div class="metric-card-header">
-              <span class="metric-card-title">INCOME THIS MONTH</span>
+              <span class="metric-card-title">ACTIVE LICENSES</span>
               <span class="metric-card-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline></svg>
               </span>
             </div>
-            <div class="metric-card-value" id="stat-income-val">₹0</div>
-            <div class="metric-card-sub" id="stat-income-sub">0 entries in October 2026</div>
+            <div class="metric-card-value" id="stat-active-licenses">1,420</div>
+            <div class="metric-card-sub" id="stat-active-sub">+18% entries in October 2026</div>
           </div>
 
-          <!-- Card 2: Red -->
+          <!-- Card 2: Red -> Expiring Licenses -->
           <div class="metric-card card-red">
             <div class="metric-card-header">
-              <span class="metric-card-title">EXPENSE THIS MONTH</span>
+              <span class="metric-card-title">EXPIRING LICENSES</span>
               <span class="metric-card-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
               </span>
             </div>
-            <div class="metric-card-value" id="stat-expense-val">₹0</div>
-            <div class="metric-card-sub" id="stat-expense-sub">0 entries in October 2026</div>
+            <div class="metric-card-value" id="stat-expiring-val">28</div>
+            <div class="metric-card-sub">Expiring within 7 days</div>
           </div>
 
-          <!-- Card 3: Blue -->
+          <!-- Card 3: Blue -> Verification Success Rate -->
           <div class="metric-card card-blue">
             <div class="metric-card-header">
-              <span class="metric-card-title">NET MARGIN</span>
+              <span class="metric-card-title">VERIFICATION RATE</span>
               <span class="metric-card-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
               </span>
             </div>
-            <div class="metric-card-value" id="stat-margin-val">₹0</div>
-            <div class="metric-card-sub">▲ Profit this month</div>
+            <div class="metric-card-value" id="stat-verify-rate">99.4%</div>
+            <div class="metric-card-sub">▲ 14,250 checks this month</div>
           </div>
 
-          <!-- Card 4: Purple -->
+          <!-- Card 4: Purple -> Total Revenue -->
           <div class="metric-card card-purple">
             <div class="metric-card-header">
-              <span class="metric-card-title">AVAILABLE BALANCE</span>
+              <span class="metric-card-title">TOTAL REVENUE</span>
               <span class="metric-card-icon">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect></svg>
               </span>
             </div>
-            <div class="metric-card-value" id="stat-balance-val">-₹7,475.04</div>
-            <div class="metric-card-sub">All bank accounts</div>
+            <div class="metric-card-value" id="stat-revenue-val">₹2,84,500</div>
+            <div class="metric-card-sub">All Razorpay &amp; UPI settlements</div>
           </div>
 
-          <!-- Card 5: Amber -->
+          <!-- Card 5: Amber -> Hardware Bound Machines -->
           <div class="metric-card card-amber">
             <div class="metric-card-header">
-              <span class="metric-card-title">LOAN OUTSTANDING</span>
+              <span class="metric-card-title">HARDWARE BOUND</span>
               <span class="metric-card-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 10v11M19 10v11M9 10v11M15 10v11M12 2L2 7h20L12 2z"></path></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
               </span>
             </div>
-            <div class="metric-card-value" id="stat-loan-val">₹83,250.91</div>
-            <div class="metric-card-sub">Click to manage loans</div>
+            <div class="metric-card-value" id="stat-hwid-val">942 HWIDs</div>
+            <div class="metric-card-sub">Locked to client machines</div>
           </div>
 
         </div>
@@ -264,10 +250,10 @@
         <!-- MIDDLE SECTION (3 Columns from Screenshot) -->
         <div class="dashboard-grid-middle">
           
-          <!-- Column 1: Financial Overview Line Chart -->
+          <!-- Column 1: Financial & License Overview Multi-Line Chart -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Financial Overview (This Month)</span>
+              <span class="admin-card-title">License &amp; Revenue Overview (This Month)</span>
               <span class="admin-card-badge">October 2026</span>
             </div>
             <div class="chart-container-split">
@@ -276,84 +262,84 @@
               </div>
               <div class="chart-legend-box">
                 <div class="legend-item-stat">
-                  <span class="legend-item-title">Total Income</span>
-                  <span class="legend-item-value" style="color: #10b981;">₹0</span>
+                  <span class="legend-item-title">Total Revenue</span>
+                  <span class="legend-item-value" style="color: #10b981;">₹2,84,500</span>
                 </div>
                 <div class="legend-item-stat">
-                  <span class="legend-item-title">Total Expense</span>
-                  <span class="legend-item-value" style="color: #ef4444;">₹0</span>
+                  <span class="legend-item-title">Validations</span>
+                  <span class="legend-item-value" style="color: #06b6d4;">14,250</span>
                 </div>
                 <div class="legend-item-stat">
-                  <span class="legend-item-title">Net Balance</span>
-                  <span class="legend-item-value" style="color: #06b6d4;">₹0</span>
+                  <span class="legend-item-title">Expiring / Revoked</span>
+                  <span class="legend-item-value" style="color: #ef4444;">28</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Column 2: Overall Collection Gauge -->
+          <!-- Column 2: Hardware Device Binding Position Gauge -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Overall collection position</span>
-              <span class="admin-card-badge">Budget Position</span>
+              <span class="admin-card-title">Hardware Device Binding Position</span>
+              <span class="admin-card-badge">Machine Lock</span>
             </div>
             <div class="gauge-container">
               <div class="gauge-circle-outer">
-                <span class="gauge-percentage">0%</span>
-                <span class="gauge-label">COLLECTED</span>
+                <span class="gauge-percentage">88%</span>
+                <span class="gauge-label">BOUND</span>
               </div>
               <div class="gauge-legend">
-                <span style="color: #94a3b8;"><span class="gauge-dot" style="background:#10b981;"></span> Collected: ₹0</span>
-                <span style="color: #94a3b8;"><span class="gauge-dot" style="background:#f59e0b;"></span> Outstanding: ₹0</span>
+                <span style="color: #94a3b8;"><span class="gauge-dot" style="background:#10b981;"></span> Bound: 942</span>
+                <span style="color: #94a3b8;"><span class="gauge-dot" style="background:#f59e0b;"></span> Pending: 128</span>
               </div>
             </div>
           </div>
 
-          <!-- Column 3: Shortcuts List -->
+          <!-- Column 3: Quick Action Shortcuts -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Shortcuts</span>
+              <span class="admin-card-title">Quick Action Shortcuts</span>
             </div>
             <div class="shortcut-list">
-              <a class="shortcut-item" data-goto-tab="tab-licenses">
+              <a class="shortcut-item" data-goto-tab="tab-generator">
                 <div class="shortcut-info">
-                  <span class="shortcut-title">Bank Accounts</span>
-                  <span class="shortcut-sub">Manage accounts &amp; balances</span>
-                </div>
-                <span class="shortcut-arrow">&rsaquo;</span>
-              </a>
-              <a class="shortcut-item" data-goto-tab="tab-incomes">
-                <div class="shortcut-info">
-                  <span class="shortcut-title">Log Income</span>
-                  <span class="shortcut-sub">Record incoming revenues</span>
-                </div>
-                <span class="shortcut-arrow">&rsaquo;</span>
-              </a>
-              <a class="shortcut-item" data-goto-tab="tab-expenses">
-                <div class="shortcut-info">
-                  <span class="shortcut-title">Log Expense</span>
-                  <span class="shortcut-sub">Record business expenses</span>
+                  <span class="shortcut-title">⚡ Instant Key Generator</span>
+                  <span class="shortcut-sub">Generate customized client key</span>
                 </div>
                 <span class="shortcut-arrow">&rsaquo;</span>
               </a>
               <a class="shortcut-item" data-goto-tab="tab-licenses-list">
                 <div class="shortcut-info">
-                  <span class="shortcut-title">Loans Received</span>
-                  <span class="shortcut-sub">Borrowed loans list</span>
+                  <span class="shortcut-title">🔒 Manage User Licenses</span>
+                  <span class="shortcut-sub">Edit expiry &amp; block/unblock keys</span>
                 </div>
                 <span class="shortcut-arrow">&rsaquo;</span>
               </a>
-              <a class="shortcut-item" data-goto-tab="tab-products">
+              <a class="shortcut-item" data-goto-tab="tab-licenses-list">
                 <div class="shortcut-info">
-                  <span class="shortcut-title">Lent Receivables</span>
-                  <span class="shortcut-sub">Track outgoing lent cash</span>
+                  <span class="shortcut-title">💻 Reset Machine HWID</span>
+                  <span class="shortcut-sub">Unlock device ID for transferred PC</span>
                 </div>
                 <span class="shortcut-arrow">&rsaquo;</span>
               </a>
               <a class="shortcut-item" data-goto-tab="tab-invoices">
                 <div class="shortcut-info">
-                  <span class="shortcut-title">Reports Center</span>
-                  <span class="shortcut-sub">Analyze &amp; export statements</span>
+                  <span class="shortcut-title">📄 Generate Tax Invoice</span>
+                  <span class="shortcut-sub">Commercial GST/Razorpay invoice</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-database">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">⚡ Supabase Database Sync</span>
+                  <span class="shortcut-sub">Inspect PostgreSQL cloud tables</span>
+                </div>
+                <span class="shortcut-arrow">&rsaquo;</span>
+              </a>
+              <a class="shortcut-item" data-goto-tab="tab-activity">
+                <div class="shortcut-info">
+                  <span class="shortcut-title">📜 Security Audit Log</span>
+                  <span class="shortcut-sub">Analyze real-time validation calls</span>
                 </div>
                 <span class="shortcut-arrow">&rsaquo;</span>
               </a>
@@ -365,10 +351,10 @@
         <!-- LOWER SECTION (4 Cards from Screenshot) -->
         <div class="dashboard-grid-lower">
           
-          <!-- Card 1: Income vs Expense Bar Chart -->
+          <!-- Card 1: Revenue by Software Product Bar Chart -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Income vs Expense</span>
+              <span class="admin-card-title">Revenue by Software Product</span>
               <button class="admin-card-link" style="background:none;border:none;">Show Forecast</button>
             </div>
             <div style="height: 200px; position: relative;">
@@ -376,10 +362,10 @@
             </div>
           </div>
 
-          <!-- Card 2: Top Expense Categories Donut Chart -->
+          <!-- Card 2: Top License Plans Donut Chart -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Top Expense Categories</span>
+              <span class="admin-card-title">Top Software Categories</span>
               <span class="admin-card-badge">All Time</span>
             </div>
             <div style="height: 200px; position: relative;">
@@ -387,76 +373,76 @@
             </div>
           </div>
 
-          <!-- Card 3: Recent Ledger Entries -->
+          <!-- Card 3: Recent License Purchases & Activations -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Recent Ledger Entries</span>
-              <a class="admin-card-link" data-goto-tab="tab-incomes">View All</a>
+              <span class="admin-card-title">Recent License Activations</span>
+              <a class="admin-card-link" data-goto-tab="tab-invoices">View All</a>
             </div>
             <div class="ledger-list" id="recent-ledger-list">
               <div class="ledger-item">
                 <div class="ledger-item-left">
-                  <span class="ledger-date-badge">04 Sept</span>
-                  <span class="ledger-title">Transfer Tran...</span>
+                  <span class="ledger-date-badge">Today</span>
+                  <span class="ledger-title">CDCMS Pro Suite</span>
                 </div>
-                <span class="ledger-amount amount-blue">₹2,000</span>
+                <span class="ledger-amount amount-green">+₹999</span>
               </div>
               <div class="ledger-item">
                 <div class="ledger-item-left">
-                  <span class="ledger-date-badge">31 Aug</span>
-                  <span class="ledger-title">Loan EMI - Ba...</span>
+                  <span class="ledger-date-badge">Today</span>
+                  <span class="ledger-title">CDC Tools Multi</span>
                 </div>
-                <span class="ledger-amount amount-red">-₹5,582</span>
+                <span class="ledger-amount amount-green">+₹1,499</span>
               </div>
               <div class="ledger-item">
                 <div class="ledger-item-left">
-                  <span class="ledger-date-badge">30 Aug</span>
-                  <span class="ledger-title">Cash to online...</span>
+                  <span class="ledger-date-badge">Yesterday</span>
+                  <span class="ledger-title">Master All-in-One</span>
                 </div>
-                <span class="ledger-amount amount-green">+₹4,100</span>
+                <span class="ledger-amount amount-blue">+₹2,499</span>
               </div>
               <div class="ledger-item">
                 <div class="ledger-item-left">
-                  <span class="ledger-date-badge">28 Aug</span>
-                  <span class="ledger-title">Transfer Tran...</span>
+                  <span class="ledger-date-badge">15 Oct</span>
+                  <span class="ledger-title">CDCMS 1-Year Plan</span>
                 </div>
-                <span class="ledger-amount amount-blue">₹1,100</span>
+                <span class="ledger-amount amount-green">+₹4,999</span>
               </div>
             </div>
           </div>
 
-          <!-- Card 4: Recent Activity -->
+          <!-- Card 4: Recent Security Activity Logs -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <span class="admin-card-title">Recent Activity</span>
+              <span class="admin-card-title">Live Security Activity</span>
               <a class="admin-card-link" data-goto-tab="tab-activity">View All</a>
             </div>
             <div class="activity-list" id="recent-activity-list">
               <div class="activity-item">
                 <div>
-                  <div class="activity-user">Rahul (Admin)</div>
-                  <div class="activity-action">Console login authenticated</div>
+                  <div class="activity-user">Rahul (Super Admin)</div>
+                  <div class="activity-action">Console authenticated</div>
                 </div>
                 <span class="activity-time">15 sec ago</span>
               </div>
               <div class="activity-item">
                 <div>
-                  <div class="activity-user">Supabase DB</div>
-                  <div class="activity-action">Live cloud sync connected</div>
+                  <div class="activity-user">HWID Validator</div>
+                  <div class="activity-action">CDCMS machine check passed</div>
                 </div>
                 <span class="activity-time">28 sec ago</span>
               </div>
               <div class="activity-item">
                 <div>
-                  <div class="activity-user">Key Validator</div>
-                  <div class="activity-action">CDCMS license check passed</div>
+                  <div class="activity-user">Supabase Cloud</div>
+                  <div class="activity-action">PostgreSQL live sync online</div>
                 </div>
                 <span class="activity-time">40 sec ago</span>
               </div>
               <div class="activity-item">
                 <div>
-                  <div class="activity-user">Payment Gate</div>
-                  <div class="activity-action">Razorpay API online</div>
+                  <div class="activity-user">Razorpay Gateway</div>
+                  <div class="activity-action">Webhook auto-activated key</div>
                 </div>
                 <span class="activity-time">1 min ago</span>
               </div>
@@ -468,84 +454,50 @@
         <!-- BOTTOM KPI SUMMARY STRIP (Exact Match to Screenshot) -->
         <div class="bottom-kpi-strip">
           <div class="kpi-mini-card">
-            <span class="kpi-mini-title">TOTAL INFLOW</span>
-            <span class="kpi-mini-val" id="kpi-inflow">₹0</span>
+            <span class="kpi-mini-title">TOTAL ISSUED KEYS</span>
+            <span class="kpi-mini-val" id="kpi-inflow">1,420</span>
           </div>
           <div class="kpi-mini-card">
-            <span class="kpi-mini-title">TOTAL OUTFLOW</span>
-            <span class="kpi-mini-val" id="kpi-outflow">₹0</span>
+            <span class="kpi-mini-title">REVOKED / BLOCKED</span>
+            <span class="kpi-mini-val" id="kpi-outflow">8</span>
           </div>
           <div class="kpi-mini-card">
-            <span class="kpi-mini-title">NET MARGIN</span>
-            <span class="kpi-mini-val" id="kpi-margin">₹0</span>
+            <span class="kpi-mini-title">ACTIVE HWID MACHINES</span>
+            <span class="kpi-mini-val" id="kpi-margin">942</span>
           </div>
           <div class="kpi-mini-card">
-            <span class="kpi-mini-title">BANK ACCOUNTS</span>
-            <span class="kpi-mini-val" id="kpi-accounts">3 Active</span>
+            <span class="kpi-mini-title">SUPABASE DB SYNC</span>
+            <span class="kpi-mini-val" id="kpi-accounts" style="color:#10b981;">Connected</span>
           </div>
           <div class="kpi-mini-card">
-            <span class="kpi-mini-title">BORROWED LOANS</span>
-            <span class="kpi-mini-val" id="kpi-loans">₹83,250.91</span>
+            <span class="kpi-mini-title">RAZORPAY GATEWAY</span>
+            <span class="kpi-mini-val" id="kpi-loans" style="color:#10b981;">Online</span>
           </div>
           <div class="kpi-mini-card">
-            <span class="kpi-mini-title">LENT RECEIVABLES</span>
-            <span class="kpi-mini-val" id="kpi-lent">₹0</span>
+            <span class="kpi-mini-title">SYSTEM UPTIME</span>
+            <span class="kpi-mini-val" id="kpi-lent">99.98%</span>
           </div>
         </div>
 
       </div>
 
-      <!-- TAB 2: BANK ACCOUNTS & PAYMENTS -->
-      <div class="admin-tab-pane" id="tab-licenses">
-        <div class="admin-card">
-          <div class="admin-card-header">
-            <span class="admin-card-title">Bank Accounts &amp; Payment Gateway Configuration</span>
-          </div>
-          <div class="admin-table-wrapper">
-            <table class="admin-data-table">
-              <thead>
-                <tr>
-                  <th>Account / Gateway</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Current Balance</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="bank-accounts-table-body">
-                <tr>
-                  <td><strong>HDFC Corporate Current A/c</strong></td>
-                  <td>Primary Bank</td>
-                  <td><span style="color:#10b981;font-weight:700;">● Active</span></td>
-                  <td>₹2,45,000.00</td>
-                  <td><button class="admin-card-link" style="background:none;border:none;">Statement &rarr;</button></td>
-                </tr>
-                <tr>
-                  <td><strong>Razorpay Live Gateway</strong></td>
-                  <td>Instant Checkout</td>
-                  <td><span style="color:#10b981;font-weight:700;">● Connected</span></td>
-                  <td>₹86,400.00</td>
-                  <td><button class="admin-card-link" style="background:none;border:none;">Settlements &rarr;</button></td>
-                </tr>
-                <tr>
-                  <td><strong>Supabase PostgreSQL Database</strong></td>
-                  <td>Cloud DB</td>
-                  <td><span style="color:#10b981;font-weight:700;">● Synced</span></td>
-                  <td>Real-Time</td>
-                  <td><button class="admin-card-link" style="background:none;border:none;">Inspect Tables &rarr;</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 3: USER LICENSES & HARDWARE BINDINGS -->
+      <!-- ================= TAB 2: USER LICENSES & HARDWARE BINDINGS ================= -->
       <div class="admin-tab-pane" id="tab-licenses-list">
         <div class="admin-card">
           <div class="admin-card-header">
-            <span class="admin-card-title">Active Software Licenses &amp; Device Binding</span>
-            <button class="admin-card-link" id="btn-quick-gen-key">+ Generate New Key</button>
+            <span class="admin-card-title">Client Software Licenses &amp; Machine Binding</span>
+            <div style="display:flex; gap:10px;">
+              <button class="admin-card-link" id="btn-quick-gen-key" data-goto-tab="tab-generator">+ Generate New Key</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
+            <input type="text" id="license-search-input" placeholder="Search by Client, Email, Key, or HWID..." style="flex-grow:1; min-width:240px; padding:10px 14px; background:#171a26; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:13px;">
+            <select id="license-filter-product" style="padding:10px 14px; background:#171a26; border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff; font-size:13px;">
+              <option value="all">All Products</option>
+              <option value="CDCMS">CDCMS Pro</option>
+              <option value="CDC">CDC Tools</option>
+              <option value="All-in-One">All-in-One Master</option>
+            </select>
           </div>
           <div class="admin-table-wrapper">
             <table class="admin-data-table">
@@ -553,9 +505,9 @@
                 <tr>
                   <th>License Key</th>
                   <th>Client / Email</th>
-                  <th>Product</th>
+                  <th>Software Product</th>
                   <th>Status</th>
-                  <th>Hardware Device ID</th>
+                  <th>Hardware Device HWID</th>
                   <th>Expiry Date</th>
                   <th>Actions</th>
                 </tr>
@@ -568,11 +520,11 @@
         </div>
       </div>
 
-      <!-- TAB 4: INSTANT KEY GENERATOR -->
+      <!-- ================= TAB 3: INSTANT KEY GENERATOR ================= -->
       <div class="admin-tab-pane" id="tab-generator">
-        <div class="admin-card" style="max-width: 600px;">
+        <div class="admin-card" style="max-width: 650px;">
           <div class="admin-card-header">
-            <span class="admin-card-title">Generate Instant License Key</span>
+            <span class="admin-card-title">Instant License Key Generator</span>
           </div>
           <form id="admin-key-gen-form" style="display:flex; flex-direction:column; gap:14px;">
             <div>
@@ -584,45 +536,154 @@
               </select>
             </div>
             <div>
-              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Client Name / Organization</label>
-              <input type="text" id="gen-client-name" required placeholder="e.g. John Doe" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Client Full Name</label>
+              <input type="text" id="gen-client-name" required placeholder="e.g. Rahul Sharma" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
             </div>
             <div>
-              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Client Email Address</label>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Client Registered Email</label>
               <input type="email" id="gen-client-email" required placeholder="client@gmail.com" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
             </div>
-            <div>
-              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Validity Duration (Days)</label>
-              <input type="number" id="gen-client-days" value="30" min="1" max="3650" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+              <div>
+                <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Validity Duration (Days)</label>
+                <input type="number" id="gen-client-days" value="30" min="1" max="3650" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Device Binding Allowed</label>
+                <select id="gen-device-limit" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+                  <option value="1">1 PC (Strict Hardware Lock)</option>
+                  <option value="2">2 PCs (Dual Workstation)</option>
+                  <option value="5">5 PCs (Team Commercial)</option>
+                </select>
+              </div>
             </div>
-            <button type="submit" style="padding:12px;background:linear-gradient(135deg, #f59e0b, #d97706);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-top:6px;">
-              ⚡ Generate &amp; Save License Key
+            <button type="submit" style="padding:12px;background:linear-gradient(135deg, #10b981, #059669);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-top:6px;font-size:14px;">
+              ⚡ Generate &amp; Save License to Supabase
             </button>
           </form>
-          <div id="gen-key-result" style="display:none;margin-top:16px;padding:14px;background:rgba(16,185,129,0.1);border:1px solid #10b981;border-radius:8px;">
-            <div style="font-size:12px;color:#10b981;font-weight:700;">Key Generated Successfully:</div>
-            <div id="gen-key-display" style="font-size:18px;font-family:monospace;font-weight:800;color:#fff;margin-top:4px;word-break:break-all;"></div>
+          <div id="gen-key-result" style="display:none;margin-top:16px;padding:16px;background:rgba(16,185,129,0.1);border:1px solid #10b981;border-radius:10px;">
+            <div style="font-size:12px;color:#10b981;font-weight:700;">✅ Key Generated Successfully:</div>
+            <div id="gen-key-display" style="font-size:20px;font-family:monospace;font-weight:800;color:#fff;margin:8px 0;word-break:break-all;"></div>
+            <button onclick="copyGeneratedKey()" style="padding:6px 12px;background:#10b981;border:none;border-radius:6px;color:#fff;font-weight:700;cursor:pointer;font-size:12px;">Copy Key to Clipboard</button>
           </div>
         </div>
       </div>
 
-      <!-- TAB 5: INVOICES & REPORTS -->
+      <!-- ================= TAB 4: PRODUCT CATALOG ================= -->
+      <div class="admin-tab-pane" id="tab-products">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Software Catalog &amp; Extension Releases</span>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Version</th>
+                  <th>Platforms</th>
+                  <th>Price Range</th>
+                  <th>Status</th>
+                  <th>Download Package</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>CDCMS Multi-Tool Suite</strong></td>
+                  <td>v4.2 PRO</td>
+                  <td>Windows 10/11, macOS</td>
+                  <td>₹499 - ₹4,999</td>
+                  <td><span style="color:#10b981;font-weight:700;">● Active Release</span></td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Update ZIP Link &rarr;</button></td>
+                </tr>
+                <tr>
+                  <td><strong>CDC Tools Multi Extension</strong></td>
+                  <td>v2.8 STABLE</td>
+                  <td>Windows, Mac, Linux</td>
+                  <td>₹799 - ₹7,999</td>
+                  <td><span style="color:#10b981;font-weight:700;">● Active Release</span></td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Update ZIP Link &rarr;</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Ultimate All-in-One Master Bundle</strong></td>
+                  <td>v2026 MASTER</td>
+                  <td>All OS Supported</td>
+                  <td>₹1,499 - ₹12,999</td>
+                  <td><span style="color:#10b981;font-weight:700;">● Active Release</span></td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Update ZIP Link &rarr;</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 5: PRICING & PLANS ================= -->
+      <div class="admin-tab-pane" id="tab-plans">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Subscription Tiers &amp; Pricing Rules</span>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Plan Tier</th>
+                  <th>Duration</th>
+                  <th>CDCMS Suite Price</th>
+                  <th>CDC Tools Price</th>
+                  <th>Master Bundle Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Starter Trial</strong></td>
+                  <td>30 Days</td>
+                  <td>₹499</td>
+                  <td>₹799</td>
+                  <td>₹1,499</td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Edit Pricing</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Quarterly Pro</strong></td>
+                  <td>90 Days</td>
+                  <td>₹1,299</td>
+                  <td>₹1,999</td>
+                  <td>₹3,499</td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Edit Pricing</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Annual Unlimited</strong></td>
+                  <td>365 Days</td>
+                  <td>₹4,999</td>
+                  <td>₹7,999</td>
+                  <td>₹12,999</td>
+                  <td><button class="admin-card-link" style="background:none;border:none;">Edit Pricing</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 6: INVOICES & REPORTS ================= -->
       <div class="admin-tab-pane" id="tab-invoices">
         <div class="admin-card">
           <div class="admin-card-header">
-            <span class="admin-card-title">Commercial Tax Invoices &amp; Billing History</span>
+            <span class="admin-card-title">Commercial Tax Invoices &amp; Razorpay Settlements</span>
           </div>
           <div class="admin-table-wrapper">
             <table class="admin-data-table">
               <thead>
                 <tr>
                   <th>Invoice #</th>
-                  <th>Customer</th>
-                  <th>Product</th>
+                  <th>Customer Name</th>
+                  <th>Software Product</th>
                   <th>Amount</th>
                   <th>Date</th>
-                  <th>Status</th>
-                  <th>Download</th>
+                  <th>Payment Status</th>
+                  <th>Download PDF</th>
                 </tr>
               </thead>
               <tbody id="admin-invoices-tbody">
@@ -633,7 +694,33 @@
         </div>
       </div>
 
-      <!-- TAB 6: USERS CONTROL -->
+      <!-- ================= TAB 7: SUPABASE & PAYMENTS ================= -->
+      <div class="admin-tab-pane" id="tab-database">
+        <div class="admin-card" style="max-width: 700px;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Supabase PostgreSQL Database &amp; Razorpay Integration</span>
+          </div>
+          <form id="admin-db-settings-form" style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Supabase Project URL</label>
+              <input type="url" id="setting-supabase-url" value="https://wyeejbncddpxhwtijkjt.supabase.co" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;font-family:monospace;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Supabase Publishable Anon Key</label>
+              <input type="text" id="setting-supabase-anon" value="sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;font-family:monospace;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Razorpay Key ID</label>
+              <input type="text" id="setting-razorpay-id" value="rzp_test_1DP5mmOlF5G5ag" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;font-family:monospace;">
+            </div>
+            <button type="submit" style="padding:12px;background:linear-gradient(135deg, #3b82f6, #2563eb);border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;margin-top:6px;">
+              💾 Save &amp; Test Cloud Database Connection
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ================= TAB 8: USERS CONTROL ================= -->
       <div class="admin-tab-pane" id="tab-users">
         <div class="admin-card">
           <div class="admin-card-header">
@@ -645,8 +732,8 @@
                 <tr>
                   <th>User ID</th>
                   <th>Full Name</th>
-                  <th>Email</th>
-                  <th>Total Licenses</th>
+                  <th>Registered Email</th>
+                  <th>Active Licenses</th>
                   <th>Last Login</th>
                   <th>Account Status</th>
                 </tr>
@@ -659,20 +746,76 @@
         </div>
       </div>
 
-      <!-- TAB 7: SYSTEM SETTINGS -->
+      <!-- ================= TAB 9: ACTIVITY & AUDIT LOGS ================= -->
+      <div class="admin-tab-pane" id="tab-activity">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Real-Time Security &amp; Validation Audit Trail</span>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-data-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Event Type</th>
+                  <th>License Key</th>
+                  <th>Client IP / HWID</th>
+                  <th>Result</th>
+                </tr>
+              </thead>
+              <tbody id="admin-audit-tbody">
+                <tr>
+                  <td>Just now</td>
+                  <td><strong style="color:#10b981;">KEY_VALIDATE</strong></td>
+                  <td>CDCMS-8891-PROX-2026</td>
+                  <td>HWID-WIN-8931A-F492 (103.21.24.11)</td>
+                  <td><span style="color:#10b981;font-weight:700;">VALID (200)</span></td>
+                </tr>
+                <tr>
+                  <td>1 min ago</td>
+                  <td><strong style="color:#3b82f6;">USER_LOGIN</strong></td>
+                  <td>-</td>
+                  <td>rahul@maithili.com (157.34.89.2)</td>
+                  <td><span style="color:#10b981;font-weight:700;">SUCCESS</span></td>
+                </tr>
+                <tr>
+                  <td>4 mins ago</td>
+                  <td><strong style="color:#f59e0b;">HWID_BIND</strong></td>
+                  <td>CDCT-4512-VALD-2026</td>
+                  <td>HWID-MAC-4192B-9912</td>
+                  <td><span style="color:#10b981;font-weight:700;">BOUND_TO_MACHINE</span></td>
+                </tr>
+                <tr>
+                  <td>12 mins ago</td>
+                  <td><strong style="color:#ef4444;">EXPIRED_ATTEMPT</strong></td>
+                  <td>CDCMS-1029-TRIAL-2025</td>
+                  <td>192.168.1.1</td>
+                  <td><span style="color:#ef4444;font-weight:700;">REJECTED (403)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 10: SYSTEM SETTINGS ================= -->
       <div class="admin-tab-pane" id="tab-settings">
         <div class="admin-card" style="max-width: 650px;">
           <div class="admin-card-header">
-            <span class="admin-card-title">System &amp; Store Configuration</span>
+            <span class="admin-card-title">Platform Branding &amp; Admin Security</span>
           </div>
           <form id="admin-settings-form" style="display:flex; flex-direction:column; gap:14px;">
             <div>
               <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Store Brand Name</label>
-              <input type="text" id="setting-store-name" value="IEMS LicenseVault" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+              <input type="text" id="setting-store-name" value="LicenseVault" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
             </div>
             <div>
               <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Support Contact Email</label>
               <input type="email" id="setting-support-email" value="support@licensevault.io" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
+            </div>
+            <div>
+              <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Support WhatsApp Number</label>
+              <input type="text" id="setting-support-whatsapp" value="+919876543210" style="width:100%;padding:10px;background:#171a26;border:1px solid rgba(255,255,255,0.1);color:#fff;border-radius:8px;">
             </div>
             <div>
               <label style="font-size:12px;color:#94a3b8;font-weight:600;display:block;margin-bottom:6px;">Master Admin Username</label>
