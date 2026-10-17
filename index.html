@@ -615,19 +615,30 @@
 
   <!-- USER ACCOUNT / DASHBOARD MODAL OVERLAY -->
   <div class="checkout-modal-overlay hidden" id="user-account-modal">
-    <div class="checkout-modal-card glass-panel" style="max-width: 600px;">
+    <div class="checkout-modal-card glass-panel auth-card" style="max-width: 480px;">
       <button class="modal-close-btn" id="btn-close-user-modal" aria-label="Close User Account">&times;</button>
       
       <!-- LOGGED OUT VIEW -->
       <div id="user-logged-out-view" class="user-view active">
+        <!-- Floating Ambient Glow Aura -->
+        <div class="auth-glow-aura"></div>
+
         <div class="login-header-banner">
           <div class="login-brand-icon">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </div>
-          <h2>Account Portal</h2>
-          <p>Access your software licenses, manage subscriptions, and renew your plans.</p>
+          
+          <div>
+            <span class="auth-security-pill">
+              <span class="auth-security-dot"></span>
+              <span>Secure Single Sign-On</span>
+            </span>
+          </div>
+
+          <h2 style="font-size: 26px; font-weight: 800; letter-spacing: -0.6px; margin: 12px 0 6px;">Sign In to Account</h2>
+          <p style="font-size: 13.5px; color: var(--text-secondary); max-width: 360px; margin: 0 auto; line-height: 1.5;">Access your active software licenses, renewals, or admin console seamlessly.</p>
         </div>
         
 
@@ -681,6 +692,21 @@
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </button>
+          <div id="login-unified-error-msg" class="error-text" style="display: none; margin-top: 12px; text-align: center;"></div>
+
+          <!-- Trust Badges & Help Footer -->
+          <div class="auth-card-footer">
+            <div class="auth-security-badges">
+              <span>🔒 256-Bit SSL</span>
+              <span class="auth-footer-dot">•</span>
+              <span>⚡ Cloud Synced</span>
+              <span class="auth-footer-dot">•</span>
+              <span>🛡️ Device Bound</span>
+            </div>
+            <div class="auth-footer-help">
+              Don't have a license yet? <a href="#pricing-section" id="btn-auth-goto-plans">View Software Plans &rarr;</a>
+            </div>
+          </div>
         </form>
 
         <!-- Forgot Password Inline Flow -->

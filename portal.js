@@ -856,6 +856,17 @@ function initEventListeners() {
       }
     });
   }
+
+  // Link in Auth footer to jump to pricing
+  const btnAuthGotoPlans = document.getElementById("btn-auth-goto-plans");
+  if (btnAuthGotoPlans && userAccountModal) {
+    btnAuthGotoPlans.addEventListener("click", () => {
+      userAccountModal.classList.add("hidden");
+      document.body.style.overflow = "";
+      const pricingSec = document.getElementById("pricing-section");
+      if (pricingSec) pricingSec.scrollIntoView({ behavior: "smooth" });
+    });
+  }
   
   // Single Unified Login (Both Admin & Clients)
   const formLoginEmailEl = document.getElementById("form-login-email");
