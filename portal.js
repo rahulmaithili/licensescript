@@ -827,33 +827,78 @@ function initEventListeners() {
     });
   }
 
-  // USER PROFILE / ACCOUNT DASHBOARD MODAL BINDINGS
+  // ================= USER ACCOUNT & LOGIN SIDEBAR CONTROLLERS =================
+  window.openUserSidebar = function() {
+    const modal = document.getElementById("user-account-modal");
+    if (modal) {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+      setTimeout(() => {
+        const emailInput = document.getElementById("login-email-id");
+        if (emailInput && !sessionStorage.getItem("user_portal_session")) {
+          emailInput.focus();
+        }
+      }, 150);
+    }
+  };
+
+  window.closeUserSidebar = function() {
+    const modal = document.getElementById("user-account-modal");
+    if (modal) {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  };
+
+  window.toggleUserSidebar = function() {
+    const modal = document.getElementById("user-account-modal");
+    if (!modal) return;
+    if (modal.classList.contains("hidden")) {
+      window.openUserSidebar();
+    } else {
+      window.closeUserSidebar();
+    }
+  };
+
   const btnUserProfile = document.getElementById("btn-user-profile");
   const userAccountModal = document.getElementById("user-account-modal");
   const btnCloseUserModal = document.getElementById("btn-close-user-modal");
   const btnUserLogout = document.getElementById("btn-user-logout");
+  const btnMobileLogin = document.getElementById("btn-mobile-login");
+  const btnMobileLoginDrawer = document.getElementById("btn-mobile-login-drawer");
   
-  if (btnUserProfile && userAccountModal) {
+  if (btnUserProfile) {
     btnUserProfile.addEventListener("click", () => {
-      userAccountModal.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
+      window.toggleUserSidebar();
     });
   }
   
-  if (btnCloseUserModal && userAccountModal) {
+  if (btnCloseUserModal) {
     btnCloseUserModal.addEventListener("click", () => {
-      userAccountModal.classList.add("hidden");
-      document.body.style.overflow = "";
+      window.closeUserSidebar();
     });
   }
 
-  // Close user modal on clicking outside content
+  // Close user sidebar drawer on clicking outside content
   if (userAccountModal) {
     userAccountModal.addEventListener("click", (e) => {
       if (e.target === userAccountModal) {
-        userAccountModal.classList.add("hidden");
-        document.body.style.overflow = "";
+        window.closeUserSidebar();
       }
+    });
+  }
+
+  if (btnMobileLogin) {
+    btnMobileLogin.addEventListener("click", () => {
+      if (window.closeMobileNav) window.closeMobileNav();
+      window.openUserSidebar();
+    });
+  }
+
+  if (btnMobileLoginDrawer) {
+    btnMobileLoginDrawer.addEventListener("click", () => {
+      if (window.closeMobileNav) window.closeMobileNav();
+      window.openUserSidebar();
     });
   }
 
@@ -873,7 +918,6 @@ function initEventListeners() {
   const mobileNavDrawer = document.getElementById("mobile-nav-drawer");
   const btnCloseMobileNav = document.getElementById("btn-close-mobile-nav");
   const mobileNavBackdrop = document.getElementById("mobile-nav-backdrop");
-  const btnMobileLogin = document.getElementById("btn-mobile-login");
 
   function openMobileNav() {
     if (mobileNavDrawer) mobileNavDrawer.classList.add("open");
@@ -886,6 +930,7 @@ function initEventListeners() {
     if (mobileNavBackdrop) mobileNavBackdrop.classList.remove("active");
     document.body.style.overflow = "";
   }
+  window.closeMobileNav = closeMobileNav;
 
   if (btnMobileMenuToggle) btnMobileMenuToggle.addEventListener("click", openMobileNav);
   if (btnCloseMobileNav) btnCloseMobileNav.addEventListener("click", closeMobileNav);
@@ -897,17 +942,6 @@ function initEventListeners() {
       closeMobileNav();
     });
   });
-
-  // Mobile login button opens auth modal
-  if (btnMobileLogin) {
-    btnMobileLogin.addEventListener("click", () => {
-      closeMobileNav();
-      if (userAccountModal) {
-        userAccountModal.classList.remove("hidden");
-        document.body.style.overflow = "hidden";
-      }
-    });
-  }
   
   // Single Unified Login (Both Admin & Clients)
   const formLoginEmailEl = document.getElementById("form-login-email");
@@ -1850,6 +1884,9 @@ function initUserSession() {
     document.getElementById("user-dashboard-email").textContent = userData.email || "";
     
     // Set initials in header
+    const navUserLabel = document.getElementById("nav-user-label");
+    if (navUserLabel) navUserLabel.textContent = "My Account";
+
     if (initialsEl && profileBtnSvg) {
       profileBtnSvg.style.display = "none";
       initialsEl.style.display = "inline-block";
@@ -1869,6 +1906,9 @@ function initUserSession() {
       outView.style.setProperty("display", "block", "important");
     }
     
+    const navUserLabel = document.getElementById("nav-user-label");
+    if (navUserLabel) navUserLabel.textContent = "Sign In";
+
     if (initialsEl && profileBtnSvg) {
       initialsEl.style.display = "none";
       profileBtnSvg.style.display = "inline-block";
@@ -2336,23 +2376,78 @@ function getMockAdminResponse(data) {
 
 // Initialize admin dashboard listeners
 function initAdminDashboardListeners() {
-  // Admin Mobile Off-Canvas Sidebar
-  const btnAdminMobileToggle = document.getElementById("btn-admin-mobile-toggle");
-  const adminSidebar = document.querySelector("#admin-dashboard .sidebar");
+  // Admin Sidebar Open/Close/Toggle Controllers (Desktop & Mobile)
+  window.openAdminSidebar = function() {
+    const adminDashboard = document.getElementById("admin-dashboard");
+    const adminSidebar = document.querySelector("#admin-dashboard .sidebar");
+    const adminSidebarBackdrop = document.getElementById("admin-sidebar-backdrop");
+    if (window.innerWidth <= 992) {
+      if (adminSidebar) adminSidebar.classList.add("mobile-open");
+      if (adminSidebarBackdrop) adminSidebarBackdrop.classList.add("active");
+    } else {
+      if (adminDashboard) adminDashboard.classList.remove("sidebar-collapsed");
+    }
+  };
+
+  window.closeAdminSidebar = function() {
+    const adminDashboard = document.getElementById("admin-dashboard");
+    const adminSidebar = document.querySelector("#admin-dashboard .sidebar");
+    const adminSidebarBackdrop = document.getElementById("admin-sidebar-backdrop");
+    if (window.innerWidth <= 992) {
+      if (adminSidebar) adminSidebar.classList.remove("mobile-open");
+      if (adminSidebarBackdrop) adminSidebarBackdrop.classList.remove("active");
+    } else {
+      if (adminDashboard) adminDashboard.classList.add("sidebar-collapsed");
+    }
+  };
+
+  window.toggleAdminSidebar = function() {
+    const adminDashboard = document.getElementById("admin-dashboard");
+    const adminSidebar = document.querySelector("#admin-dashboard .sidebar");
+    if (window.innerWidth <= 992) {
+      if (adminSidebar && adminSidebar.classList.contains("mobile-open")) {
+        window.closeAdminSidebar();
+      } else {
+        window.openAdminSidebar();
+      }
+    } else {
+      if (adminDashboard && adminDashboard.classList.contains("sidebar-collapsed")) {
+        window.openAdminSidebar();
+      } else {
+        window.closeAdminSidebar();
+      }
+    }
+  };
+
+  const btnAdminSidebarToggle = document.getElementById("btn-admin-sidebar-toggle") || document.getElementById("btn-admin-mobile-toggle");
+  const btnAdminSidebarClose = document.getElementById("btn-admin-sidebar-close");
   const adminSidebarBackdrop = document.getElementById("admin-sidebar-backdrop");
 
-  function toggleAdminMobileSidebar() {
-    if (adminSidebar) adminSidebar.classList.toggle("mobile-open");
-    if (adminSidebarBackdrop) adminSidebarBackdrop.classList.toggle("active");
+  if (btnAdminSidebarToggle) {
+    btnAdminSidebarToggle.addEventListener("click", () => {
+      window.toggleAdminSidebar();
+    });
   }
 
-  function closeAdminMobileSidebar() {
-    if (adminSidebar) adminSidebar.classList.remove("mobile-open");
-    if (adminSidebarBackdrop) adminSidebarBackdrop.classList.remove("active");
+  if (btnAdminSidebarClose) {
+    btnAdminSidebarClose.addEventListener("click", () => {
+      window.closeAdminSidebar();
+    });
   }
 
-  if (btnAdminMobileToggle) btnAdminMobileToggle.addEventListener("click", toggleAdminMobileSidebar);
-  if (adminSidebarBackdrop) adminSidebarBackdrop.addEventListener("click", closeAdminMobileSidebar);
+  if (adminSidebarBackdrop) {
+    adminSidebarBackdrop.addEventListener("click", () => {
+      window.closeAdminSidebar();
+    });
+  }
+
+  // Global Escape key binding for sidebars
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (window.closeUserSidebar) window.closeUserSidebar();
+      if (window.closeAdminSidebar) window.closeAdminSidebar();
+    }
+  });
 
   // 1. Tab Navigation
   const navBtns = document.querySelectorAll("#admin-dashboard .nav-btn");
@@ -2365,7 +2460,9 @@ function initAdminDashboardListeners() {
       tabContents.forEach(t => t.classList.remove("active"));
 
       btn.classList.add("active");
-      closeAdminMobileSidebar();
+      if (window.innerWidth <= 992) {
+        window.closeAdminSidebar();
+      }
       const tabId = btn.getAttribute("data-tab");
       const tabEl = document.getElementById(tabId);
       if (tabEl) tabEl.classList.add("active");

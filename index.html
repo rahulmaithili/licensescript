@@ -51,11 +51,12 @@
             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
           </svg>
         </button>
-        <button class="user-profile-btn" id="btn-user-profile" aria-label="User Account Login">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="user-profile-btn" id="btn-user-profile" aria-label="User Account Login" title="Sign In / Client Portal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
+          <span id="nav-user-label" class="nav-user-label">Sign In</span>
           <span id="nav-user-initials" style="display: none; font-weight: bold;">IM</span>
         </button>
         <button class="mobile-menu-btn" id="btn-mobile-menu-toggle" aria-label="Toggle Mobile Menu">
@@ -666,10 +667,21 @@
     </div>
   </div>
 
-  <!-- USER ACCOUNT / DASHBOARD MODAL OVERLAY -->
-  <div class="checkout-modal-overlay hidden" id="user-account-modal">
-    <div class="checkout-modal-card glass-panel auth-card" style="max-width: 480px;">
-      <button class="modal-close-btn" id="btn-close-user-modal" aria-label="Close User Account">&times;</button>
+  <!-- USER ACCOUNT & LOGIN SIDEBAR DRAWER -->
+  <div class="user-account-drawer-overlay checkout-modal-overlay hidden" id="user-account-modal">
+    <div class="user-account-drawer-panel checkout-modal-card glass-panel auth-card">
+      <div class="user-drawer-header-bar">
+        <div class="user-drawer-badge">
+          <span class="user-drawer-status-dot"></span>
+          <span id="user-drawer-header-title">License &amp; Account Portal</span>
+        </div>
+        <button class="user-drawer-close-btn modal-close-btn" id="btn-close-user-modal" aria-label="Close User Sidebar" title="Close Sidebar (Esc)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
       
       <!-- LOGGED OUT VIEW -->
       <div id="user-logged-out-view" class="user-view active">
@@ -849,6 +861,12 @@
           <h2 id="admin-sidebar-title-text">LicenseVault</h2>
           <span class="admin-brand-badge">PRO ADMIN v2.5</span>
         </div>
+        <button class="admin-sidebar-close-btn" id="btn-admin-sidebar-close" aria-label="Close Admin Sidebar" title="Close Sidebar (Esc)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
       
       <nav class="nav-links" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; padding-right: 2px;">
@@ -913,8 +931,8 @@
       <!-- Top navbar status -->
       <header class="top-nav glass-panel">
         <div style="display: flex; align-items: center; gap: 12px;">
-          <button class="admin-mobile-toggle-btn" id="btn-admin-mobile-toggle" aria-label="Toggle Navigation Menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button class="admin-sidebar-toggle-btn admin-mobile-toggle-btn" id="btn-admin-sidebar-toggle" aria-label="Toggle Navigation Sidebar" title="Open / Close Sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
