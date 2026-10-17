@@ -18,21 +18,6 @@ import {
   KeyRound,
   Download,
 } from 'lucide-react';
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from 'recharts';
 import { getLicenses } from '@/services/licenseService';
 import { getUsers } from '@/services/userService';
 import { getInvoices } from '@/services/invoiceService';
@@ -45,6 +30,7 @@ export const AdminDashboard: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
+  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
 
   useEffect(() => {
     loadData();
@@ -79,34 +65,48 @@ export const AdminDashboard: React.FC = () => {
     return isExpired || l.status === 'expired';
   }).length;
   const pausedLicenses = licenses.filter((l) => l.status === 'paused' || l.status === 'locked').length;
-  const revokedLicenses = licenses.filter((l) => l.status === 'revoked').length;
 
   const totalRevenue = invoices.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
-  const totalProfit = Math.round(totalRevenue * 0.85); // Estimated profit margin
+  const totalProfit = Math.round(totalRevenue * 0.85);
 
-  // Chart Data: Monthly Revenue
+  // Monthly Revenue Data
   const monthlyRevenueData = [
-    { month: 'Oct 25', revenue: 42000, profit: 35700, users: 14 },
-    { month: 'Nov 25', revenue: 58000, profit: 49300, users: 22 },
-    { month: 'Dec 25', revenue: 76000, profit: 64600, users: 28 },
-    { month: 'Jan 26', revenue: 94000, profit: 79900, users: 36 },
-    { month: 'Feb 26', revenue: 112000, profit: 95200, users: 44 },
-    { month: 'Mar 26', revenue: totalRevenue > 0 ? totalRevenue : 145000, profit: totalProfit > 0 ? totalProfit : 123250, users: users.length },
+    { month: 'Oct 25', revenue: 42000, profit: 35700 },
+    { month: 'Nov 25', revenue: 58000, profit: 49300 },
+    { month: 'Dec 25', revenue: 76000, profit: 64600 },
+    { month: 'Jan 26', revenue: 94000, profit: 79900 },
+    { month: 'Feb 26', revenue: 112000, profit: 95200 },
+    { month: 'Mar 26', revenue: totalRevenue > 0 ? totalRevenue : 145000, profit: totalProfit > 0 ? totalProfit : 123250 },
   ];
 
-  // Chart Data: Gateway Split
+  // Gateway Distribution
   const gatewayData = [
     { name: 'Razorpay', value: 68, color: '#3b82f6' },
     { name: 'Cashfree', value: 24, color: '#10b981' },
     { name: 'Direct UPI/Bank', value: 8, color: '#f59e0b' },
   ];
 
-  // Chart Data: Revenue by Product
-  const productRevenueData = [
-    { name: 'WhatsApp Sender', revenue: 78000 },
-    { name: 'Telegram Scraper', revenue: 42000 },
-    { name: 'B2B Leads Extractor', revenue: 56000 },
-  ];
+  // SVG Chart Geometry
+  const chartHeight = 220;
+  const chartWidth = 560;
+  const maxVal = Math.max(...monthlyRevenueData.map((d) => d.revenue), 160000);
+
+  const getPoints = (key: 'revenue' | 'profit') => {
+    return monthlyRevenueData
+      .map((d, i) => {
+        const x = (i / (monthlyRevenueData.length - 1)) * (chartWidth - 40) + 20;
+        const y = chartHeight - (d[key] / maxVal) * (chartHeight - 40) - 20;
+        return `${x},${y}`;
+      })
+      .join(' ');
+  };
+
+  const revenuePoints = getPoints('revenue');
+  const profitPoints = getPoints('profit');
+
+  // Closed area polygon for gradient fill
+  const revenueArea = `20,${chartHeight - 10} ${revenuePoints} ${chartWidth - 20},${chartHeight - 10}`;
+  const profitArea = `20,${chartHeight - 10} ${profitPoints} ${chartWidth - 20},${chartHeight - 10}`;
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
@@ -144,13 +144,11 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Decorative background glow */}
         <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
       </div>
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        {/* Total Licenses */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Total Licenses</span>
@@ -162,7 +160,6 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Active */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Active</span>
@@ -174,10 +171,9 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Expiring Soon */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400">
-            <span className="text-xs font-medium">Expiring &lt;= 30d</span>
+            <span className="text-xs font-medium">Expiring &le; 30d</span>
             <Clock className="w-4 h-4 text-amber-400" />
           </div>
           <div className="mt-2">
@@ -186,7 +182,6 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Expiring Today */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Expiring Today</span>
@@ -198,7 +193,6 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Expired */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Expired</span>
@@ -210,7 +204,6 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Paused / Locked */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Paused / Locked</span>
@@ -276,9 +269,9 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Charts Section */}
+      {/* SVG Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Monthly Revenue Trend Chart */}
+        {/* Monthly Revenue Trend SVG Chart */}
         <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -286,6 +279,14 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-xs text-slate-400">Monthly billing gross vs net revenue (INR)</p>
             </div>
             <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4 text-xs mr-2">
+                <span className="flex items-center gap-1.5 text-indigo-400 font-semibold">
+                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Gross
+                </span>
+                <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Profit
+                </span>
+              </div>
               {(['7d', '30d', '90d', 'all'] as const).map((r) => (
                 <button
                   key={r}
@@ -302,59 +303,157 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={monthlyRevenueData}>
-                <defs>
-                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorProf" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                <XAxis dataKey="month" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} tickFormatter={(val) => `₹${val / 1000}k`} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px' }}
-                  formatter={(val: any) => formatCurrency(Number(val))}
-                />
-                <Area type="monotone" dataKey="revenue" name="Gross Revenue" stroke="#4f46e5" fillOpacity={1} fill="url(#colorRev)" />
-                <Area type="monotone" dataKey="profit" name="Net Profit" stroke="#10b981" fillOpacity={1} fill="url(#colorProf)" />
-              </AreaChart>
-            </ResponsiveContainer>
+          {/* Pure SVG Area Graph */}
+          <div className="relative w-full overflow-hidden">
+            <svg
+              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+              className="w-full h-64 overflow-visible"
+            >
+              <defs>
+                <linearGradient id="svgRevGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+                </linearGradient>
+                <linearGradient id="svgProfGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              {/* Grid Lines */}
+              {[0, 0.25, 0.5, 0.75, 1].map((pct, idx) => {
+                const y = chartHeight - pct * (chartHeight - 40) - 20;
+                return (
+                  <g key={idx}>
+                    <line
+                      x1="20"
+                      y1={y}
+                      x2={chartWidth - 20}
+                      y2={y}
+                      stroke="#1e293b"
+                      strokeDasharray="4 4"
+                    />
+                    <text
+                      x="0"
+                      y={y + 3}
+                      fill="#64748b"
+                      fontSize="9"
+                      fontFamily="monospace"
+                    >
+                      ₹{Math.round((pct * maxVal) / 1000)}k
+                    </text>
+                  </g>
+                );
+              })}
+
+              {/* Area Fills */}
+              <polygon points={revenueArea} fill="url(#svgRevGrad)" />
+              <polygon points={profitArea} fill="url(#svgProfGrad)" />
+
+              {/* Lines */}
+              <polyline
+                fill="none"
+                stroke="#6366f1"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points={revenuePoints}
+              />
+              <polyline
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points={profitPoints}
+              />
+
+              {/* Points */}
+              {monthlyRevenueData.map((d, i) => {
+                const x = (i / (monthlyRevenueData.length - 1)) * (chartWidth - 40) + 20;
+                const yRev = chartHeight - (d.revenue / maxVal) * (chartHeight - 40) - 20;
+                const yProf = chartHeight - (d.profit / maxVal) * (chartHeight - 40) - 20;
+
+                return (
+                  <g key={i}>
+                    <circle
+                      cx={x}
+                      cy={yRev}
+                      r="4.5"
+                      fill="#6366f1"
+                      stroke="#0f172a"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx={x}
+                      cy={yProf}
+                      r="4"
+                      fill="#10b981"
+                      stroke="#0f172a"
+                      strokeWidth="2"
+                    />
+                    <text
+                      x={x}
+                      y={chartHeight + 12}
+                      textAnchor="middle"
+                      fill="#94a3b8"
+                      fontSize="10"
+                      fontWeight="600"
+                    >
+                      {d.month}
+                    </text>
+                  </g>
+                );
+              })}
+            </svg>
           </div>
         </div>
 
-        {/* Payment Gateways Split */}
+        {/* Payment Gateways Split SVG Donut */}
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between">
           <div>
             <h3 className="text-lg font-bold text-white">Gateway Distribution</h3>
             <p className="text-xs text-slate-400">Transactions processed by gateway</p>
           </div>
 
-          <div className="h-56 w-full flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={gatewayData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {gatewayData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px' }} />
-              </PieChart>
-            </ResponsiveContainer>
+          {/* SVG Donut Visualizer */}
+          <div className="flex items-center justify-center py-6">
+            <svg width="180" height="180" viewBox="0 0 100 100" className="transform -rotate-90">
+              <circle cx="50" cy="50" r="38" stroke="#1e293b" strokeWidth="12" fill="none" />
+              {/* Razorpay 68% */}
+              <circle
+                cx="50"
+                cy="50"
+                r="38"
+                stroke="#3b82f6"
+                strokeWidth="12"
+                strokeDasharray="162.4 238.7"
+                strokeDashoffset="0"
+                fill="none"
+              />
+              {/* Cashfree 24% */}
+              <circle
+                cx="50"
+                cy="50"
+                r="38"
+                stroke="#10b981"
+                strokeWidth="12"
+                strokeDasharray="57.3 238.7"
+                strokeDashoffset="-162.4"
+                fill="none"
+              />
+              {/* UPI 8% */}
+              <circle
+                cx="50"
+                cy="50"
+                r="38"
+                stroke="#f59e0b"
+                strokeWidth="12"
+                strokeDasharray="19.1 238.7"
+                strokeDashoffset="-219.7"
+                fill="none"
+              />
+            </svg>
           </div>
 
           <div className="space-y-2 pt-2 border-t border-slate-800">
@@ -373,7 +472,6 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Recent Purchases & Expirations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Purchases */}
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-white">Recent License Purchases</h3>
@@ -403,7 +501,6 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Upcoming Expirations Alert */}
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
