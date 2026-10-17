@@ -5,8 +5,8 @@
 
 // Global Supabase state
 window.SupabaseConfig = {
-  url: localStorage.getItem("lv_supabase_url") || "",
-  anonKey: localStorage.getItem("lv_supabase_anon_key") || "",
+  url: localStorage.getItem("lv_supabase_url") || "https://wyeejbncddpxhwtijkjt.supabase.co",
+  anonKey: localStorage.getItem("lv_supabase_anon_key") || "sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u",
   razorpayKeyId: localStorage.getItem("lv_razorpay_key_id") || "rzp_test_placeholder",
   client: null,
 
