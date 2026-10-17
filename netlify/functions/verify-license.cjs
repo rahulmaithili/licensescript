@@ -1,6 +1,9 @@
 // Netlify Serverless Function: Extension & Application License Verification
 // Public Endpoint: GET/POST /verify OR /.netlify/functions/verify-license
 
+if (typeof globalThis.WebSocket === "undefined") {
+  globalThis.WebSocket = class {};
+}
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event, context) => {
@@ -47,7 +50,9 @@ exports.handler = async (event, context) => {
     const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://wyeejbncddpxhwtijkjt.supabase.co";
     const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u";
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
 
     // 1. Query modern licenses table
     const { data: license, error: licErr } = await supabase

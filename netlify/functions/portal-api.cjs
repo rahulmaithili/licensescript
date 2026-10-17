@@ -1,6 +1,9 @@
 // Netlify Serverless Function: Unified Portal API Router
 // Endpoint: POST /.netlify/functions/portal-api OR /api/portal-api
 
+if (typeof globalThis.WebSocket === "undefined") {
+  globalThis.WebSocket = class {};
+}
 const { createClient } = require("@supabase/supabase-js");
 
 exports.handler = async (event, context) => {
@@ -29,7 +32,9 @@ exports.handler = async (event, context) => {
     };
   }
 
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
 
   try {
     let action = "";

@@ -1,6 +1,9 @@
 // Netlify Serverless Function: Verify Razorpay Payment & Activate License
 // Endpoint: POST /.netlify/functions/verify-razorpay-payment OR /api/verify-razorpay-payment
 
+if (typeof globalThis.WebSocket === "undefined") {
+  globalThis.WebSocket = class {};
+}
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 
@@ -77,7 +80,9 @@ exports.handler = async (event, context) => {
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || data.supabaseAnonKey || "";
 
     if (supabaseUrl && supabaseKey) {
-      const supabase = createClient(supabaseUrl, supabaseKey);
+      const supabase = createClient(supabaseUrl, supabaseKey, {
+        auth: { persistSession: false, autoRefreshToken: false }
+      });
 
       // 1. Update user license status to Active
       const { error: userError } = await supabase
