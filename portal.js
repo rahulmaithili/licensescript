@@ -867,6 +867,47 @@ function initEventListeners() {
       if (pricingSec) pricingSec.scrollIntoView({ behavior: "smooth" });
     });
   }
+
+  // Mobile Off-Canvas Navigation Drawer
+  const btnMobileMenuToggle = document.getElementById("btn-mobile-menu-toggle");
+  const mobileNavDrawer = document.getElementById("mobile-nav-drawer");
+  const btnCloseMobileNav = document.getElementById("btn-close-mobile-nav");
+  const mobileNavBackdrop = document.getElementById("mobile-nav-backdrop");
+  const btnMobileLogin = document.getElementById("btn-mobile-login");
+
+  function openMobileNav() {
+    if (mobileNavDrawer) mobileNavDrawer.classList.add("open");
+    if (mobileNavBackdrop) mobileNavBackdrop.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMobileNav() {
+    if (mobileNavDrawer) mobileNavDrawer.classList.remove("open");
+    if (mobileNavBackdrop) mobileNavBackdrop.classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  if (btnMobileMenuToggle) btnMobileMenuToggle.addEventListener("click", openMobileNav);
+  if (btnCloseMobileNav) btnCloseMobileNav.addEventListener("click", closeMobileNav);
+  if (mobileNavBackdrop) mobileNavBackdrop.addEventListener("click", closeMobileNav);
+
+  // Close drawer when clicking any link
+  document.querySelectorAll(".mobile-nav-link").forEach(link => {
+    link.addEventListener("click", () => {
+      closeMobileNav();
+    });
+  });
+
+  // Mobile login button opens auth modal
+  if (btnMobileLogin) {
+    btnMobileLogin.addEventListener("click", () => {
+      closeMobileNav();
+      if (userAccountModal) {
+        userAccountModal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+    });
+  }
   
   // Single Unified Login (Both Admin & Clients)
   const formLoginEmailEl = document.getElementById("form-login-email");
@@ -2295,6 +2336,24 @@ function getMockAdminResponse(data) {
 
 // Initialize admin dashboard listeners
 function initAdminDashboardListeners() {
+  // Admin Mobile Off-Canvas Sidebar
+  const btnAdminMobileToggle = document.getElementById("btn-admin-mobile-toggle");
+  const adminSidebar = document.querySelector("#admin-dashboard .sidebar");
+  const adminSidebarBackdrop = document.getElementById("admin-sidebar-backdrop");
+
+  function toggleAdminMobileSidebar() {
+    if (adminSidebar) adminSidebar.classList.toggle("mobile-open");
+    if (adminSidebarBackdrop) adminSidebarBackdrop.classList.toggle("active");
+  }
+
+  function closeAdminMobileSidebar() {
+    if (adminSidebar) adminSidebar.classList.remove("mobile-open");
+    if (adminSidebarBackdrop) adminSidebarBackdrop.classList.remove("active");
+  }
+
+  if (btnAdminMobileToggle) btnAdminMobileToggle.addEventListener("click", toggleAdminMobileSidebar);
+  if (adminSidebarBackdrop) adminSidebarBackdrop.addEventListener("click", closeAdminMobileSidebar);
+
   // 1. Tab Navigation
   const navBtns = document.querySelectorAll("#admin-dashboard .nav-btn");
   const tabContents = document.querySelectorAll("#admin-dashboard .tab-content");
@@ -2306,6 +2365,7 @@ function initAdminDashboardListeners() {
       tabContents.forEach(t => t.classList.remove("active"));
 
       btn.classList.add("active");
+      closeAdminMobileSidebar();
       const tabId = btn.getAttribute("data-tab");
       const tabEl = document.getElementById(tabId);
       if (tabEl) tabEl.classList.add("active");
