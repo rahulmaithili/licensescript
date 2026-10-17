@@ -948,6 +948,32 @@ function initEventListeners() {
     });
   }
 
+  // Password Visibility Toggle for Client Login
+  const btnToggleClientPass = document.getElementById("btn-toggle-client-pass");
+  const inputClientPass = document.getElementById("login-email-password");
+  if (btnToggleClientPass && inputClientPass) {
+    btnToggleClientPass.addEventListener("click", () => {
+      const isPass = inputClientPass.type === "password";
+      inputClientPass.type = isPass ? "text" : "password";
+      btnToggleClientPass.innerHTML = isPass 
+        ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+        : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    });
+  }
+
+  // Password Visibility Toggle for Admin Login
+  const btnToggleAdminPass = document.getElementById("btn-toggle-admin-pass");
+  const inputAdminPass = document.getElementById("login-admin-token");
+  if (btnToggleAdminPass && inputAdminPass) {
+    btnToggleAdminPass.addEventListener("click", () => {
+      const isPass = inputAdminPass.type === "password";
+      inputAdminPass.type = isPass ? "text" : "password";
+      btnToggleAdminPass.innerHTML = isPass 
+        ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`
+        : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    });
+  }
+
   // FP Step 1: Send OTP
   const formFpSendOtp = document.getElementById("form-fp-send-otp");
   if (formFpSendOtp) {
@@ -1857,71 +1883,84 @@ function renderUserDashboardLicenses(licenses) {
   
   licenses.forEach(lic => {
     const card = document.createElement("div");
-    card.style.cssText = "background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.2s;";
+    card.className = "user-license-card";
     
     // Status config
-    let statusClass = "invalid", statusLabel = lic.status || "Pending";
-    let borderGlow = "";
+    let statusClass = "badge-pill status-pending", statusLabel = lic.status || "Pending";
     if (lic.status === "Active") {
-      statusClass = "active"; statusLabel = "✅ Active";
-      borderGlow = "border-color: rgba(34,197,94,0.35);";
-    } else if (lic.status === "Pending Verification") {
-      statusClass = "pending animate-pulse-glow"; statusLabel = "⏳ Pending Verification";
+      statusClass = "badge-pill status-active"; statusLabel = "🟢 Active";
+      card.classList.add("status-active-card");
+    } else if (lic.status === "Pending Verification" || lic.status === "Pending Payment") {
+      statusClass = "badge-pill status-pending"; statusLabel = "⏳ Pending";
     } else if (lic.status === "Blocked") {
-      statusClass = "blocked"; statusLabel = "🚫 Blocked";
+      statusClass = "badge-pill status-blocked"; statusLabel = "🚫 Blocked";
     } else if (lic.status === "Expired") {
-      statusClass = "expired"; statusLabel = "⌛ Expired";
-      borderGlow = "border-color: rgba(239,68,68,0.35);";
+      statusClass = "badge-pill status-expired"; statusLabel = "⌛ Expired";
+      card.classList.add("status-expired-card");
     }
-    card.style.cssText += borderGlow;
     
-    // Expiry countdown
+    // Expiry countdown & percentage
     let expiryDisplay = lic.expiryDate || "N/A";
     let expiryWarning = "";
+    let progressPercent = 0;
     if (lic.expiryDate && lic.expiryDate !== "N/A") {
       const daysLeft = Math.ceil((new Date(lic.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+      const totalDuration = parseInt(lic.planDuration, 10) || 90;
+      progressPercent = Math.max(0, Math.min(100, Math.round((daysLeft / totalDuration) * 100)));
+
       if (daysLeft <= 0) {
         expiryDisplay = `${lic.expiryDate} (Expired!)`;
-        expiryWarning = `<div style="background: rgba(239,68,68,0.08); border-left: 3px solid #ef4444; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #f87171;">⚠️ License has expired. Please renew to continue using the tool.</div>`;
+        progressPercent = 0;
+        expiryWarning = `<div style="background: rgba(239,68,68,0.1); border-left: 3px solid #ef4444; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #f87171;">⚠️ License expired. Click Renew below to reactivate via Razorpay instantly.</div>`;
       } else if (daysLeft <= 15) {
         expiryDisplay = `${lic.expiryDate} (${daysLeft} days left!)`;
-        expiryWarning = `<div style="background: rgba(245,158,11,0.08); border-left: 3px solid #f59e0b; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #fbbf24;">⚡ Expiring soon! Renew now to avoid service interruption.</div>`;
+        expiryWarning = `<div style="background: rgba(245,158,11,0.1); border-left: 3px solid #f59e0b; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #fbbf24;">⚡ Expiring soon (${daysLeft} days remaining). Renew now to avoid service interruption.</div>`;
       } else {
-        expiryDisplay = `${lic.expiryDate} (${daysLeft} days left)`;
+        expiryDisplay = `${lic.expiryDate} (${daysLeft} days remaining)`;
       }
     }
 
     const deviceLabel = lic.deviceId
-      ? `🖥️ Locked to: <code style="font-size:10px;background:var(--bg-elevated);padding:1px 6px;border-radius:4px;">${String(lic.deviceId).substring(0, 18)}...</code>`
-      : `🔓 No device bound yet`;
+      ? `<span style="display:inline-flex;align-items:center;gap:6px;">🖥️ Bound: <code style="font-size:11px;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:6px;font-family:monospace;">${String(lic.deviceId).substring(0, 16)}...</code></span>`
+      : `<span style="color:var(--text-muted);display:inline-flex;align-items:center;gap:4px;">🔓 Device: Ready to bind on first activation</span>`;
 
     card.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+      <div class="license-card-header">
         <div>
-          <strong style="font-size: 15px; color: var(--text-primary); display: block; margin-bottom: 2px;">${lic.productName}</strong>
-          <span style="font-size: 12px; color: var(--text-muted);">${lic.planName || "—"}</span>
+          <div class="license-tool-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            ${lic.productName}
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">${lic.planName || "Standard Plan"} · Auto-renew eligible</span>
         </div>
-        <span class="status-badge ${statusClass}" style="font-size: 11px; padding: 3px 10px; white-space: nowrap;">${statusLabel}</span>
+        <span class="${statusClass}">${statusLabel}</span>
       </div>
-      
-      <div style="background: var(--bg-elevated); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">License Key</span>
-          <code style="font-family: monospace; font-weight: 700; color: var(--accent-cyan); font-size: 13px; letter-spacing: 1px;">${lic.licenseKey}</code>
+
+      <div class="license-key-pill">
+        <span>${lic.licenseKey}</span>
+        <button type="button" class="btn-copy-dashboard-key btn btn-secondary btn-sm" data-key="${lic.licenseKey}" style="padding: 4px 10px; font-size: 11px;">📋 Copy</button>
+      </div>
+
+      <div style="background: var(--bg-card-hover); border-radius: 10px; padding: 12px 14px; border: 1px solid var(--border-light);">
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
+          <span style="color: var(--text-muted);">Expiration</span>
+          <span style="color: var(--text-primary); font-weight: 600;">${expiryDisplay}</span>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Expiry</span>
-          <span style="font-size: 12px; color: var(--text-secondary);">${expiryDisplay}</span>
+        <div class="license-progress-track">
+          <div class="license-progress-bar ${progressPercent < 20 ? 'warning' : ''}" style="width: ${progressPercent}%;"></div>
         </div>
-        <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); border-top: 1px dashed var(--border-light); padding-top: 6px; margin-top: 2px;">${deviceLabel}</div>
+        <div style="margin-top: 10px; font-size: 11px; color: var(--text-secondary);">${deviceLabel}</div>
       </div>
 
       ${expiryWarning}
 
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button class="btn btn-secondary btn-sm btn-copy-dashboard-key" data-key="${lic.licenseKey}" style="flex: 1; min-width: 100px; font-size: 12px;">📋 Copy Key</button>
-        <button class="btn btn-primary btn-sm btn-renew-license" data-tool-id="${lic.toolId}" style="flex: 1; min-width: 100px; font-size: 12px;">🔄 Renew Plan</button>
-        <a href="${getDirectDriveFileUrl(lic.downloadUrl)}" target="_blank" class="btn btn-secondary btn-sm dashboard-download-btn" style="flex: 1; min-width: 100px; font-size: 12px; text-decoration: none; text-align: center;">⬇️ Download</a>
+      <div class="license-actions-row">
+        <button class="btn btn-primary btn-sm btn-renew-license animate-pulse-glow" data-tool-id="${lic.toolId}" style="flex: 1; min-width: 130px; font-size: 12px; padding: 8px 14px;">
+          ⚡ Renew with Razorpay
+        </button>
+        <a href="${getDirectDriveFileUrl(lic.downloadUrl)}" target="_blank" class="btn btn-secondary btn-sm dashboard-download-btn" style="flex: 1; min-width: 110px; font-size: 12px; text-decoration: none; text-align: center; padding: 8px 14px;">
+          ⬇️ Download Extension
+        </a>
       </div>
     `;
 
@@ -2325,6 +2364,20 @@ function initAdminDashboardListeners() {
       if (adminDashboard) adminDashboard.style.display = "none";
       
       showToast("Logged out successfully.", "info");
+    });
+  }
+
+  // Preview Public Site from Admin Panel
+  const btnAdminPreviewSite = document.getElementById("btn-admin-preview-site");
+  if (btnAdminPreviewSite) {
+    btnAdminPreviewSite.addEventListener("click", () => {
+      const portalContainer = document.getElementById("portal-container-id");
+      const navbarHeader = document.getElementById("navbar-header-id");
+      const adminDashboard = document.getElementById("admin-dashboard");
+      if (portalContainer) portalContainer.style.display = "block";
+      if (navbarHeader) navbarHeader.style.display = "block";
+      if (adminDashboard) adminDashboard.style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 
@@ -2960,49 +3013,59 @@ function renderUsersTable() {
     const tr = document.createElement("tr");
     
     let statusClass = "status-expired";
-    if (user.status === "Active") statusClass = "status-active";
-    else if (user.status === "Pending Verification") statusClass = "status-pending animate-pulse-glow";
-    else if (user.status === "Blocked") statusClass = "status-blocked";
+    let statusDot = "⚪";
+    if (user.status === "Active") {
+      statusClass = "status-active";
+      statusDot = "🟢";
+    } else if (user.status === "Pending Verification") {
+      statusClass = "status-pending animate-pulse-glow";
+      statusDot = "🟡";
+    } else if (user.status === "Blocked") {
+      statusClass = "status-blocked";
+      statusDot = "🔴";
+    }
 
     // Setup action buttons based on status
     let actionButtons = "";
     if (user.status === "Pending Verification") {
-      actionButtons += `<button class="btn btn-success btn-sm btn-approve" data-row="${user.rowIndex}">Approve Payment</button> `;
+      actionButtons += `<button class="btn-icon-action success btn-approve" data-row="${user.rowIndex}" title="Approve Payment">✓ Approve</button>`;
     }
     if (user.status !== "Blocked") {
-      actionButtons += `<button class="btn btn-danger btn-sm btn-block-user" data-row="${user.rowIndex}">Block</button> `;
+      actionButtons += `<button class="btn-icon-action danger btn-block-user" data-row="${user.rowIndex}" title="Block Key">⛔ Block</button>`;
     } else {
-      actionButtons += `<button class="btn btn-primary btn-sm btn-unblock-user" data-row="${user.rowIndex}">Unblock</button> `;
+      actionButtons += `<button class="btn-icon-action success btn-unblock-user" data-row="${user.rowIndex}" title="Unblock Key">🔓 Unblock</button>`;
     }
     if (user.deviceId) {
-      actionButtons += `<button class="btn btn-secondary btn-sm btn-reset-dev" data-row="${user.rowIndex}">Reset Device</button> `;
+      actionButtons += `<button class="btn-icon-action btn-reset-dev" data-row="${user.rowIndex}" title="Reset Browser Device Binding">🔄 Reset Dev</button>`;
     }
-    actionButtons += `<button class="btn btn-secondary btn-sm btn-make-invoice" data-idx="${adminState.users.indexOf(user)}">Invoice</button> `;
-    actionButtons += `<button class="btn btn-danger btn-sm btn-delete-user" data-row="${user.rowIndex}">Delete</button>`;
+    actionButtons += `<button class="btn-icon-action btn-make-invoice" data-idx="${adminState.users.indexOf(user)}" title="Generate Invoice Receipt">🧾 Invoice</button>`;
+    actionButtons += `<button class="btn-icon-action danger btn-delete-user" data-row="${user.rowIndex}" title="Permanently Delete License">🗑️</button>`;
 
     tr.innerHTML = `
       <td>
-        <strong>${user.companyName}</strong><br>
-        <span style="font-size: 11px; color: var(--text-muted);">${user.name} | ${user.mobileNumber}</span><br>
-        <span style="font-size: 11px; color: var(--text-muted);">${user.email}</span>
+        <div style="font-weight: 700; color: var(--text-primary); font-size: 14px;">${user.companyName}</div>
+        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">${user.name} · <span style="color: var(--accent-blue);">${user.mobileNumber}</span></div>
+        <div style="font-size: 11px; color: var(--text-muted);">${user.email}</div>
       </td>
       <td>
-        <span style="font-family: monospace; font-weight: 700; color: var(--accent-cyan); font-size: 13px;">${user.licenseKey}</span><br>
-        <span style="font-size: 11px; color: var(--text-muted);">Tool: <strong>${user.toolId}</strong></span>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span style="font-family: monospace; font-weight: 700; color: var(--accent-purple); font-size: 13px; background: rgba(99, 102, 241, 0.1); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(99, 102, 241, 0.2);">${user.licenseKey}</span>
+        </div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Tool: <strong style="color: var(--text-secondary);">${user.toolId}</strong> ${user.deviceId ? '<span style="color: #10b981;" title="Device Bound">🔒 Bound</span>' : '<span style="color: var(--text-muted);" title="Unbound">🔓 Unbound</span>'}</div>
       </td>
       <td>
-        <strong>${user.plan || "N/A"}</strong><br>
-        Expiry: <input type="date" class="input-expiry-edit" data-row="${user.rowIndex}" value="${user.expiryDate || ''}" style="padding: 2px 5px; font-size: 11px; background: transparent; border: 1px dashed var(--border-light); width: 115px; color: var(--text-primary);">
+        <strong style="color: var(--text-primary);">${user.plan || "N/A"}</strong>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Expiry: <input type="date" class="input-expiry-edit" data-row="${user.rowIndex}" value="${user.expiryDate || ''}" style="padding: 2px 6px; font-size: 11px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-primary); width: 120px;"></div>
       </td>
       <td>
-        UTR: <strong>${user.utrNumber || "N/A"}</strong><br>
-        <span style="font-size: 11px; color: var(--text-muted);">${user.timestamp}</span>
+        <div style="font-family: monospace; font-weight: 600; color: var(--text-primary); font-size: 12px;">UTR: ${user.utrNumber || '<span style="color: var(--text-muted);">None</span>'}</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">${user.timestamp || ''}</div>
       </td>
       <td>
-        <span class="status-badge ${statusClass}">${user.status}</span>
+        <span class="badge-pill ${statusClass}">${statusDot} ${user.status}</span>
       </td>
       <td>
-        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+        <div class="action-btn-group">
           ${actionButtons}
         </div>
       </td>
