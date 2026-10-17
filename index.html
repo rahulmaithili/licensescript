@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LicenseVault - Next-Gen Software Licensing & Activation Platform</title>
+  <meta name="description" content="Secure, automate, and license your software extensions with device binding, auto-expiry, and dynamic payment verification.">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Supabase & Razorpay Client Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- Floating Background Blobs for Visual Aesthetics -->
+  <div class="blob blob-indigo" id="blob-indigo-id"></div>
+  <div class="blob blob-cyan" id="blob-cyan-id"></div>
+
+  <!-- Sticky Navbar Header -->
+  <header class="navbar-header" id="navbar-header-id">
+    <div class="navbar-container">
+      <a href="#" class="nav-brand" id="nav-brand-link">
+        <div class="nav-brand-logo" id="nav-brand-logo-id">
+          <!-- Shield/Vault Vector SVG Icon -->
+          <svg class="icon-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span class="nav-brand-name" id="nav-brand-name-text">LicenseVault</span>
+      </a>
+      <nav class="nav-menu" id="nav-menu-id">
+        <a href="#hero-section" class="nav-link" id="nav-link-home">Home</a>
+        <a href="#products-section" class="nav-link" id="nav-link-products">Products</a>
+        <a href="#pricing-section" class="nav-link" id="nav-link-pricing">Pricing</a>
+        <a href="#validate-section" class="nav-link" id="nav-link-validate">Validate</a>
+        <a href="#support-section" class="nav-link" id="nav-link-support">Support</a>
+      </nav>
+      <div class="nav-actions" id="nav-actions-id">
+        <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle Dark/Light Mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button class="user-profile-btn" id="btn-user-profile" aria-label="User Account Login">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span id="nav-user-initials" style="display: none; font-weight: bold;">IM</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Portal Layout -->
+  <div class="portal-container" id="portal-container-id">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="hero-section">
+      <div class="pill-badge" id="pill-badge-id">
+        <!-- Spark SVG icon -->
+        <svg class="spark-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707-.707M12 7a5 5 0 0 0 0 10 5 5 0 0 0 0-10z"/>
+        </svg>
+        <span>⚡ Powered by Supabase &amp; Razorpay · Instant License Activation</span>
+      </div>
+      <h1 class="hero-title" id="hero-title-id">Sell, License &amp; <span class="gradient-text">Protect</span> Your Software</h1>
+      <p class="hero-subtitle" id="hero-subtitle-id">The complete SaaS platform for selling software extensions with real-time Supabase database, Razorpay instant checkout, hardware device binding, and dynamic expiry management.</p>
+      
+      <div class="hero-cta" id="hero-cta-id">
+        <a href="#products-section" class="btn btn-primary animate-pulse-glow" id="btn-hero-browse">
+          <span>Browse Software Catalog</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        <a href="#validate-section" class="btn btn-secondary" style="border: 1px solid var(--border-light);">
+          <span>Verify License Key</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Quick Trust Badges below Hero (Pure SVGs) -->
+      <div class="trust-badges" id="trust-badges-id">
+        <div class="badge-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+          </svg>
+          <span>Supabase PostgreSQL DB</span>
+        </div>
+        <div class="badge-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+          <span>Razorpay Instant Checkout</span>
+        </div>
+        <div class="badge-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+          </svg>
+          <span>Device ID Hardware Binding</span>
+        </div>
+        <div class="badge-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          <span>Instant Key Delivery</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6-GRID FEATURES SECTION -->
+    <section class="features-section" id="features-section-id">
+      <div class="features-grid" id="features-grid-id">
+        <!-- Card 1 -->
+        <div class="feature-card glass-panel">
+          <div class="feature-icon-wrapper purple-glow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3>License Key Generation</h3>
+          <p>Unique cryptographic keys with automatic generation and secure delivery.</p>
+        </div>
+        <!-- Card 2 -->
+        <div class="feature-card glass-panel">
+          <div class="feature-icon-wrapper blue-glow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>Device ID Binding</h3>
+          <p>Lock licenses to specific devices to prevent unauthorized sharing.</p>
+        </div>
+        <!-- Card 3 -->
+        <div class="feature-card glass-panel">
+          <div class="feature-icon-wrapper purple-glow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+          </div>
+          <h3>Auto-Expiry System</h3>
+          <p>Automatic license expiration with trial management and renewal.</p>
+        </div>
+        <!-- Card 4 -->
+        <div class="feature-card glass-panel">
+          <div class="feature-icon-wrapper blue-glow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+          </div>
+          <h3>REST API Validation</h3>
+          <p>Validate licenses in real-time from any application via our API.</p>
+        </div>
+        <!-- Card 5 -->
+        <div class="feature-card glass-panel">
+          <div class="feature-icon-wrapper purple-glow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </div>
+          <h3>Admin Dashboard</h3>
+          <p>Full control over products, licenses, users, and revenue analytics.</p>
+        </div>
+        <!-- Card 6 -->
+        <div class="feature-card glass-panel">
+          <div class="feature-icon-wrapper blue-glow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <h3>Instant Delivery</h3>
+          <p>Automatic license delivery after purchase with secure download links.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATISTICS RIBBON (Purple Stripe) -->
+    <section class="stats-ribbon" id="stats-ribbon-id">
+      <div class="stats-container">
+        <div class="stat-item">
+          <span class="stat-number">10K+</span>
+          <span class="stat-label">Licenses Issued</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">500+</span>
+          <span class="stat-label">Happy Clients</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Support</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS CATALOG SECTION -->
+    <section class="products-section" id="products-section">
+      <div class="section-header">
+        <h2>Available Automation Tools</h2>
+        <p>Select a script below to view its features, download its files, or purchase a licensing activation subscription.</p>
+      </div>
+      <div class="catalog-grid" id="catalog-container">
+        <div style="grid-column: span 2; text-align: center; color: var(--text-muted); padding: 40px;">
+          Loading tools catalog configuration...
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING SECTION -->
+    <section class="pricing-section" id="pricing-section">
+      <div class="section-header">
+        <span class="badge-accent">Pricing</span>
+        <h2>Simple, Transparent Pricing</h2>
+        <p>Choose the plan that fits your needs. All plans include free trials.</p>
+      </div>
+
+      <!-- Dynamic Product Tabs (For switching plans between products) -->
+      <div class="product-tabs" id="product-tabs-container">
+        <!-- Populated via JS -->
+      </div>
+
+      <div class="plans-grid" id="plans-container">
+        <div style="grid-column: span 3; text-align: center; color: var(--text-muted); padding: 40px;">
+          Select a product tab above to load pricing options.
+        </div>
+      </div>
+    </section>
+
+    <!-- VALIDATE LICENSE SECTION -->
+    <section class="validate-section" id="validate-section">
+      <div class="section-header">
+        <h2>Validate License Key</h2>
+        <p>Check the real-time activation status, expiration date, and device binding details of your script licenses.</p>
+      </div>
+      <div class="validate-card glass-panel" id="validate-card-id">
+        <form id="form-validate-license" class="validate-form">
+          <div class="form-group">
+            <label for="val-license-key">Your License Key</label>
+            <div class="validate-input-wrapper">
+              <input type="text" id="val-license-key" required placeholder="e.g. CDCMS-A1B2-C3D4-E5F6" style="font-family: monospace; text-transform: uppercase;">
+              <button type="submit" class="btn btn-primary" id="btn-submit-validation">Verify Status</button>
+            </div>
+          </div>
+        </form>
+        <div class="validation-result hidden" id="validation-result-panel">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="testimonials-section" id="testimonials-section-id">
+      <div class="section-header">
+        <h2>Loved by Developers &amp; Agencies</h2>
+        <p>Real reviews from gas agency owners and script developers who trust our platform.</p>
+      </div>
+      <div class="testimonials-grid" id="testimonials-grid-id">
+        <!-- Dynamically loaded from Google Sheet via portal.js -->
+        <div class="testimonial-card glass-panel" id="reviews-loading-placeholder" style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">
+          Loading reviews...
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION BANNER -->
+    <section class="cta-banner-section" id="cta-banner-section-id">
+      <div class="cta-banner glass-panel">
+        <h2>Ready to Protect Your Software?</h2>
+        <p>Join hundreds of developers who trust LicenseVault to sell and safeguard their products.</p>
+        <a href="#pricing-section" class="btn btn-primary" id="btn-cta-pricing">Get Started Now</a>
+      </div>
+    </section>
+
+    <!-- PORTAL FOOTER (Dynamically filled details) -->
+    <footer class="portal-footer" id="support-section">
+      <div class="footer-columns">
+        <div class="footer-col about-col">
+          <div class="footer-brand">
+            <div class="footer-logo" id="footer-logo-id">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <span class="footer-brand-name" id="footer-brand-name-text">LicenseVault</span>
+          </div>
+          <p class="company-about" id="footer-company-about">Complete platform for selling software with automatic license key generation, device binding, expiry management, and a powerful admin panel.</p>
+        </div>
+        
+        <div class="footer-col links-col">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#hero-section">Home</a></li>
+            <li><a href="#products-section">Products</a></li>
+            <li><a href="#pricing-section">Pricing</a></li>
+            <li><a href="#validate-section">Validate License</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col contact-col">
+          <h3>Contact Support</h3>
+          <ul class="contact-details-list">
+            <li id="contact-email-li">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <a href="mailto:support@licensevault.com" id="footer-email">support@licensevault.com</a>
+            </li>
+            <li id="contact-phone-li">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <a href="tel:+919876543210" id="footer-mobile">+91 98765 43210</a>
+            </li>
+            <li id="contact-whatsapp-li">
+              <!-- WhatsApp SVG Path -->
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <a href="https://wa.me/919876543210" target="_blank" id="footer-whatsapp">WhatsApp Chat</a>
+            </li>
+            <li id="contact-location-li">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span id="footer-location">New Delhi, India</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 <span id="copyright-company-name">LicenseVault</span>. Developed by MR.RAHUL SCRIPTS.</p>
+        <p class="footer-disclaimer">Secure dynamic QR generation via BHIM UPI Deep Linking. Transactions subject to administrator verification.</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- CHECKOUT MODAL OVERLAY -->
+  <div class="checkout-modal-overlay hidden" id="checkout-modal">
+    <div class="checkout-modal-card glass-panel">
+      <button class="modal-close-btn" id="btn-close-modal" aria-label="Close Checkout">&times;</button>
+      
+      <!-- Checkout Progress Tracker -->
+      <div class="progress-tracker" id="modal-progress-tracker">
+        <div class="step active" id="progress-step-1">
+          <span class="step-num">1</span>
+          <span class="step-label">Account</span>
+        </div>
+        <div class="step" id="progress-step-2">
+          <span class="step-num">2</span>
+          <span class="step-label">Payment</span>
+        </div>
+        <div class="step" id="progress-step-3">
+          <span class="step-num">3</span>
+          <span class="step-label">Success</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: REGISTRATION -->
+      <section id="step-registration" class="modal-step-section active">
+        <div class="step-header">
+          <h2>Create License Account</h2>
+          <p>Please enter your business details to generate your unique license key.</p>
+        </div>
+        <form id="form-register">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reg-name">Full Name *</label>
+              <input type="text" id="reg-name" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+              <label for="reg-company">Company / Gas Agency Name *</label>
+              <input type="text" id="reg-company" required placeholder="e.g. Shiv Kripa HP Gas Agency">
+            </div>
+            <div class="form-group">
+              <label for="reg-gst">GST Number (Optional)</label>
+              <input type="text" id="reg-gst" placeholder="15-digit GSTIN" style="text-transform: uppercase;">
+            </div>
+            <div class="form-group">
+              <label for="reg-mobile">Mobile Number *</label>
+              <input type="tel" id="reg-mobile" required pattern="[0-9]{10}" placeholder="10-digit mobile number">
+            </div>
+            <div class="form-group full-width">
+              <label for="reg-email">Gmail Address *</label>
+              <input type="email" id="reg-email" required placeholder="your.name@gmail.com">
+            </div>
+            <div class="form-group">
+              <label for="reg-password">Create Password *</label>
+              <input type="password" id="reg-password" required minlength="6" placeholder="Min. 6 characters">
+            </div>
+            <div class="form-group">
+              <label for="reg-confirm-password">Confirm Password *</label>
+              <input type="password" id="reg-confirm-password" required minlength="6" placeholder="Repeat your password">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block animate-pulse-glow" style="margin-top: 24px;">
+            <span>Register &amp; Continue</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </form>
+      </section>
+
+      <!-- STEP 2: PAYMENT (RAZORPAY & UPI) -->
+      <section id="step-payment" class="modal-step-section">
+        <div class="step-header">
+          <h2>Select Payment Method</h2>
+          <p>Pay securely with Razorpay for instant automatic activation, or use direct UPI QR.</p>
+        </div>
+        
+        <div class="payment-methods-wrapper">
+          <!-- Plan Summary Banner -->
+          <div class="plan-summary" style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-tertiary); padding: 14px 18px; border-radius: 10px; border: 1px solid var(--border-light);">
+            <div>
+              <span style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">Selected Plan</span>
+              <div style="font-size: 16px; font-weight: 700; color: var(--text-primary);" id="summary-plan-name">3 Months Plan</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 12px; color: var(--text-secondary); text-transform: uppercase;">Total Payable</span>
+              <div style="font-size: 20px; font-weight: 800; color: #10b981;" id="summary-plan-price">₹999</div>
+            </div>
+          </div>
+
+          <!-- OPTION 1: RAZORPAY (PRIMARY INSTANT ACTIVATION) -->
+          <div class="razorpay-card">
+            <div class="razorpay-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+                  <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                  <line x1="2" y1="10" x2="22" y2="10"></line>
+                </svg>
+                <strong style="font-size: 16px; color: #fff;">Online Payment (Razorpay)</strong>
+              </div>
+              <span class="razorpay-badge">⚡ Instant Auto-Activation</span>
+            </div>
+            
+            <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 8px;">
+              Pay via Google Pay, PhonePe, Paytm, BHIM UPI, Credit/Debit Cards, or NetBanking. License activates immediately upon payment.
+            </p>
+
+            <div class="razorpay-supported-icons">
+              <span class="pay-chip highlight">⚡ Instant UPI</span>
+              <span class="pay-chip">GPay / PhonePe</span>
+              <span class="pay-chip">Paytm</span>
+              <span class="pay-chip">Credit/Debit Card</span>
+              <span class="pay-chip">NetBanking</span>
+            </div>
+
+            <button type="button" class="btn btn-razorpay" id="btn-pay-razorpay">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Pay <strong id="rzp-btn-amount">₹999</strong> with Razorpay (Instant)</span>
+            </button>
+            <div style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 8px;">
+              🔒 256-Bit SSL Encrypted Razorpay Checkout · Automated Instant License Issuance
+            </div>
+          </div>
+
+          <!-- DIVIDER -->
+          <div class="payment-divider">
+            <span>OR PAY VIA DIRECT UPI QR</span>
+          </div>
+
+          <!-- OPTION 2: COLLAPSIBLE UPI QR & UTR FORM -->
+          <div class="manual-upi-accordion">
+            <button type="button" class="accordion-toggle-btn" id="btn-toggle-manual-upi">
+              <span style="display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                Scan Dynamic UPI QR & Enter 12-Digit UTR
+              </span>
+              <span id="upi-accordion-arrow" style="font-size: 16px;">▼</span>
+            </button>
+
+            <div id="manual-upi-body" class="payment-layout" style="display: none; margin-top: 15px;">
+              <!-- Left side QR code -->
+              <div class="qr-container-panel">
+                <div class="qr-wrapper">
+                  <img id="upi-qr-image" src="" alt="UPI Dynamic Payment QR Code">
+                  <div class="qr-loader" id="qr-loading-spinner">Generating QR Code...</div>
+                </div>
+                <div class="upi-instructions">
+                  <p>UPI ID: <span class="upi-id-badge" id="merchant-upi-display">your-upi-id@okaxis</span></p>
+                  <p class="warning-text">Pay exact amount. License auto-approves upon UTR submit.</p>
+                </div>
+              </div>
+              
+              <!-- Right side input verification -->
+              <div class="payment-verify-panel">
+                <h3>Enter 12-Digit UTR</h3>
+                <p class="payment-subtext">
+                  Pay via any UPI app, then find the <strong>12-digit UTR/Ref number</strong> in transaction history:
+                </p>
+                
+                <form id="form-payment-submit">
+                  <div class="form-group">
+                    <label for="pay-utr">12-Digit UPI Transaction ID / UTR *</label>
+                    <input type="text" id="pay-utr" maxlength="12" minlength="12" pattern="\d{12}" placeholder="e.g. 614298150493">
+                  </div>
+                  <div class="form-group" style="display: none;">
+                    <label>Your License Key (Generated)</label>
+                    <input type="text" id="pay-license-display" readonly style="font-family: monospace; background: var(--bg-tertiary); text-align: center; font-weight: 700; color: var(--accent-cyan);">
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary btn-block animate-pulse-glow" style="margin-top: 15px;">
+                    <span>Verify UTR & Activate License</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3: SUCCESS AND DOWNLOAD -->
+      <section id="step-success" class="modal-step-section">
+        <div class="success-banner">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2>Registration & Payment Completed!</h2>
+          <p>Your license key is ready. The activation credentials file has been downloaded.</p>
+        </div>
+
+        <div class="license-box">
+          <div class="license-field-group">
+            <span class="label">Your License Key</span>
+            <div class="copy-box">
+              <span id="final-license-key" class="key-string">CDCMS-XXXX-YYYY-ZZZZ</span>
+              <button id="btn-copy-key" class="btn btn-secondary btn-sm">Copy</button>
+            </div>
+          </div>
+          <div class="license-meta-grid">
+            <div>
+              <span class="meta-label">Registered Name</span>
+              <span class="meta-value" id="final-company-name">Shiv Kripa HP Gas</span>
+            </div>
+            <div>
+              <span class="meta-label">Plan Details</span>
+              <span class="meta-value" id="final-plan-name">3 Months Activation</span>
+            </div>
+            <div>
+              <span class="meta-label">Expiration Date</span>
+              <span class="meta-value" id="final-expiry-date">12-09-2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="instructions-panel">
+          <h3>How to Activate Your Script:</h3>
+          <ol>
+            <li>Open the options or settings page of your installed browser extension.</li>
+            <li>Paste your unique License Key in the activation box.</li>
+            <li>Click <strong>Activate License</strong> to connect and unlock the software.</li>
+          </ol>
+        </div>
+
+        <div class="success-actions">
+          <button id="btn-redownload-key" class="btn btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Download Key Again</span>
+          </button>
+          <button id="btn-download-invoice" class="btn btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Download Invoice (PDF)</span>
+          </button>
+          <button id="btn-success-close" class="btn btn-primary">
+            <span>Done</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- USER ACCOUNT / DASHBOARD MODAL OVERLAY -->
+  <div class="checkout-modal-overlay hidden" id="user-account-modal">
+    <div class="checkout-modal-card glass-panel" style="max-width: 600px;">
+      <button class="modal-close-btn" id="btn-close-user-modal" aria-label="Close User Account">&times;</button>
+      
+      <!-- LOGGED OUT VIEW -->
+      <div id="user-logged-out-view" class="user-view active">
+        <div class="step-header" style="text-align: center; margin-bottom: 30px;">
+          <h2>Client Sign In</h2>
+          <p>Access your licenses, check subscription status, and renew your plans.</p>
+        </div>
+        
+        <!-- Toggle tabs for Email Login vs Admin Panel -->
+        <div class="product-tabs" style="margin-bottom: 25px; flex-wrap: wrap;">
+          <button class="tab-btn active" id="btn-tab-login-email">Email Login</button>
+          <button class="tab-btn" id="btn-tab-login-admin">Admin Panel</button>
+        </div>
+        
+        <!-- Tab content: Login via Email + Password -->
+        <form id="form-login-email" class="login-form-panel">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label for="login-email-id">Email Address</label>
+            <input type="email" id="login-email-id" required placeholder="your.name@gmail.com" style="width: 100%;">
+          </div>
+          <div class="form-group" style="margin-bottom: 6px;">
+            <label for="login-email-password">Password</label>
+            <input type="password" id="login-email-password" required placeholder="Enter your password" style="width: 100%;">
+          </div>
+          <div style="text-align: right; margin-bottom: 20px;">
+            <button type="button" id="btn-open-forgot-password" style="background: none; border: none; color: var(--accent-violet); font-size: 12px; cursor: pointer; padding: 0;">Forgot Password?</button>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            <span>Sign In</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </form>
+
+        <!-- Forgot Password Panel (hidden, shown inline) -->
+        <div id="forgot-password-panel" class="hidden">
+          <!-- Step FP1: Enter Email -->
+          <div id="fp-step-email">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+              <button type="button" id="btn-back-to-login" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:0;">&#8592;</button>
+              <h3 style="margin:0;font-size:16px;color:var(--text-primary);">Reset Password</h3>
+            </div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:18px;">Apna registered email daalo — OTP bhej denge.</p>
+            <form id="form-fp-send-otp">
+              <div class="form-group" style="margin-bottom:16px;">
+                <label for="fp-email">Registered Email</label>
+                <input type="email" id="fp-email" required placeholder="your.name@gmail.com" style="width:100%;">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block"><span>OTP Bhejo</span></button>
+            </form>
+          </div>
+          <!-- Step FP2: OTP + New Password -->
+          <div id="fp-step-otp" class="hidden" style="margin-top:4px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+              <button type="button" id="btn-back-to-fp-email" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:18px;padding:0;">&#8592;</button>
+              <h3 style="margin:0;font-size:16px;color:var(--text-primary);">Enter OTP &amp; New Password</h3>
+            </div>
+            <form id="form-fp-reset">
+              <div class="form-group" style="margin-bottom:14px;">
+                <label for="fp-otp-input">6-Digit OTP Code</label>
+                <input type="text" id="fp-otp-input" required maxlength="6" minlength="6" pattern="\d{6}" placeholder="123456" style="text-align:center;font-size:22px;letter-spacing:6px;font-weight:700;width:100%;">
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <label for="fp-new-password">Naya Password</label>
+                <input type="password" id="fp-new-password" required minlength="6" placeholder="Min. 6 characters" style="width:100%;">
+              </div>
+              <div class="form-group" style="margin-bottom:20px;">
+                <label for="fp-confirm-password">Password Confirm Karein</label>
+                <input type="password" id="fp-confirm-password" required minlength="6" placeholder="Repeat password" style="width:100%;">
+              </div>
+              <button type="submit" class="btn btn-primary btn-block"><span>Password Reset Karein</span></button>
+            </form>
+          </div>
+        </div>
+        
+        <!-- Tab content 4: Login via Admin Token -->
+        <form id="form-login-admin" class="login-form-panel hidden">
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="login-admin-token">Enter Admin Security Token</label>
+            <input type="password" id="login-admin-token" required placeholder="Enter admin password / token" style="width: 100%;">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">
+            <span>Admin Sign In</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+          <div id="login-admin-error-msg" class="error-text" style="display: none; margin-top: 12px; text-align: center;"></div>
+        </form>
+      </div>
+      
+      <!-- LOGGED IN VIEW -->
+      <div id="user-logged-in-view" class="user-view hidden">
+        <div class="step-header" style="border-bottom: 1px solid var(--border-light); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 id="user-dashboard-title">Welcome!</h2>
+            <p id="user-dashboard-email" style="font-size: 12px; color: var(--text-secondary);"></p>
+          </div>
+          <button id="btn-user-logout" class="btn btn-secondary btn-sm" style="padding: 6px 12px;">Log Out</button>
+        </div>
+        
+        <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; color: var(--text-secondary);">Your Licenses &amp; Subscriptions</h3>
+        
+        <div id="user-licenses-dashboard-container" style="display: flex; flex-direction: column; gap: 15px; max-height: 55vh; overflow-y: auto; padding-right: 5px;">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD LAYOUT ================= -->
+  <div id="admin-dashboard" class="dashboard-layout" style="display: none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar glass-panel">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-container" id="admin-sidebar-logo-id" style="display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;">
+          <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <span class="logo-text" id="admin-sidebar-title-text">SaaS Control</span>
+      </div>
+      
+      <nav class="nav-links">
+        <button class="nav-btn active" data-tab="tab-overview">Overview Stats</button>
+        <button class="nav-btn" data-tab="tab-users">User Licenses</button>
+        <button class="nav-btn" data-tab="tab-generator">Key Generator</button>
+        <button class="nav-btn" data-tab="tab-plans">Pricing Setup</button>
+        <button class="nav-btn" data-tab="tab-products">Product Catalog</button>
+        <button class="nav-btn" data-tab="tab-reviews">&#11088; Reviews</button>
+        <button class="nav-btn" data-tab="tab-database-payments">⚡ Supabase & Razorpay</button>
+        <button class="nav-btn" data-tab="tab-invoices">Invoice Panel</button>
+        <button class="nav-btn" data-tab="tab-settings">Settings & Branding</button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <button id="btn-logout" class="btn btn-secondary btn-block">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="main-panel">
+      
+      <!-- Top navbar status -->
+      <header class="top-nav glass-panel">
+        <div>
+          <span class="sub-title">Admin Dashboard</span>
+          <h2 id="current-tab-title">Overview Statistics</h2>
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <span class="status-badge status-active">Online Backend Connection</span>
+          <button class="theme-toggle" id="admin-theme-toggle-btn" aria-label="Toggle Dark/Light Mode" style="border: 1px solid var(--border-light); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); color: var(--text-primary); cursor: pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+          <button id="btn-refresh-data" class="btn btn-secondary btn-sm">Refresh Data</button>
+        </div>
+      </header>
+
+      <!-- TAB 1: OVERVIEW SUMMARY -->
+      <div id="tab-overview" class="tab-content active">
+        <!-- Stats Cards Grid -->
+        <div class="stats-grid">
+          <div class="stat-card glass-panel info">
+            <div class="stat-value" id="stat-earnings">₹0</div>
+            <div class="stat-label">Total Revenue Collected</div>
+          </div>
+          <div class="stat-card glass-panel success">
+            <div class="stat-value" id="stat-active-users">0</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+          <div class="stat-card glass-panel warning animate-pulse-glow">
+            <div class="stat-value" id="stat-pending-users">0</div>
+            <div class="stat-label">Pending Payments</div>
+          </div>
+          <div class="stat-card glass-panel danger">
+            <div class="stat-value" id="stat-blocked-users">0</div>
+            <div class="stat-label">Blocked Accounts</div>
+          </div>
+        </div>
+
+        <!-- Recent transactions / operations summary -->
+        <div class="glass-panel" style="margin-top: 30px; padding: 24px;">
+          <h3>Quick Actions & Operations Guidance</h3>
+          <p style="color: var(--text-secondary); margin-top: 10px; font-size: 14px; line-height: 1.6;">
+            Aap is dashboard se multi-extension licenses manage kar sakte hain. Google Sheets me database save hai:
+          </p>
+          <ul style="color: var(--text-secondary); margin-top: 15px; padding-left: 20px; font-size: 13px; display: flex; flex-direction: column; gap: 8px;">
+            <li>Go to <strong>User Licenses</strong> tab to approve payment UTR submissions, block abusing accounts, or reset browser device locks.</li>
+            <li>Use <strong>Key Generator</strong> to instantly issue custom Trial Keys for beta testers or customer support.</li>
+            <li>Configure <strong>Pricing Setup</strong> to dynamically update plan names, days validity, and prices shown to buyers on the Netlify payment portal.</li>
+            <li>Generate itemized GST-ready printable receipts under <strong>Invoice Panel</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 2: USER LICENSES TABLE -->
+      <div id="tab-users" class="tab-content">
+        <div class="control-panel glass-panel">
+          <div class="search-filter-group">
+            <input type="text" id="user-search-box" class="input-field search-input" placeholder="Search by name, company, key, email, UTR...">
+            <select id="user-status-filter" class="vendor-select" style="max-width: 150px;">
+              <option value="all">All Statuses</option>
+              <option value="Active">Active</option>
+              <option value="Pending Verification">Pending</option>
+              <option value="Pending Payment">Pending Payment</option>
+              <option value="Blocked">Blocked</option>
+              <option value="Expired">Expired</option>
+            </select>
+            <select id="user-tool-filter" class="vendor-select" style="max-width: 150px;">
+              <option value="all">All Extensions</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-container glass-panel">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Company & Contact</th>
+                <th>Tool / Key Details</th>
+                <th>Plan Details</th>
+                <th>Payment / UTR</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-tbody">
+              <tr>
+                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                  Loading users database...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 3: KEY GENERATOR (TRIAL GENERATOR) -->
+      <div id="tab-generator" class="tab-content">
+        <div class="glass-panel" style="padding: 30px; max-width: 700px; margin: 0 auto;">
+          <h3>Manual Trial / License Key Generator</h3>
+          <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px; margin-bottom: 25px;">
+            Aap bina payment ke seedhe active trial license keys generate karke users ko chat ya email par de sakte hain.
+          </p>
+          
+          <form id="form-generate-key">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="gen-tool-id">Target Extension/Tool *</label>
+                <select id="gen-tool-id" class="vendor-select" style="width: 100%; padding: 12px;">
+                  <!-- Dynamically Injected -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="gen-duration">Trial Validity (Days) *</label>
+                <input type="number" id="gen-duration" required min="1" max="365" value="3">
+              </div>
+              <div class="form-group">
+                <label for="gen-name">Client Name *</label>
+                <input type="text" id="gen-name" required placeholder="User full name">
+              </div>
+              <div class="form-group">
+                <label for="gen-company">Company Name *</label>
+                <input type="text" id="gen-company" required placeholder="Agency / Agency code">
+              </div>
+              <div class="form-group">
+                <label for="gen-mobile">Mobile Number (Optional)</label>
+                <input type="tel" id="gen-mobile" placeholder="e.g. 9876543210">
+              </div>
+              <div class="form-group">
+                <label for="gen-email">Gmail ID (Optional)</label>
+                <input type="email" id="gen-email" placeholder="e.g. client@gmail.com">
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block animate-pulse-glow" style="margin-top: 30px;">
+              Generate & Save Active Key
+            </button>
+          </form>
+
+          <!-- Result output -->
+          <div id="generation-result-panel" class="success-box" style="display: none; margin-top: 30px; padding: 20px; border: 1px solid var(--accent-success); border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.05);">
+            <p style="font-weight: 700; color: var(--accent-success); font-size: 14px; margin-bottom: 10px;">License Key Generated Successfully!</p>
+            <div style="display: flex; gap: 10px; align-items: center; background: var(--bg-primary); padding: 10px; border-radius: 4px; border: 1px solid var(--border-light);">
+              <span id="generated-key-display" style="font-family: monospace; font-size: 16px; font-weight: 700; color: var(--accent-cyan); letter-spacing: 1px; flex: 1; text-align: center;">CDCMS-XXXX-YYYY-ZZZZ</span>
+              <button id="btn-copy-gen-key" class="btn btn-secondary btn-sm">Copy</button>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 10px;" id="generated-expiry-display">
+              Expiry Date: 2026-06-15
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: PRICING CONFIGURATION SETUP -->
+      <div id="tab-plans" class="tab-content">
+        <div class="glass-panel" style="padding: 30px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h3>Manage Subscription Pricing Plans</h3>
+              <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">
+                Yahan se aap plan rates, days duration aur titles modify kar sakte hain. Changes direct spreadsheet me save honge.
+              </p>
+            </div>
+            <button id="btn-add-plan-row" class="btn btn-secondary btn-sm">+ Add Custom Plan</button>
+          </div>
+          
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Tool ID (Extension ID)</th>
+                  <th>Plan ID</th>
+                  <th>Plan Name</th>
+                  <th>Validity (Days)</th>
+                  <th>Price (INR)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="plans-table-tbody">
+                <!-- Dynamically injected plans configuration -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="display: flex; justify-content: flex-end; margin-top: 25px;">
+            <button id="btn-save-plans" class="btn btn-primary animate-pulse-glow">Save Plans Pricing</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: PRODUCTS CATALOG MANAGEMENT -->
+      <div id="tab-products" class="tab-content">
+        <div class="glass-panel" style="padding: 30px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+              <h3>Manage Products Catalog</h3>
+              <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">
+                Add new products, change descriptions, configure features, and update download links.
+              </p>
+            </div>
+            <button id="btn-add-product-row" class="btn btn-secondary btn-sm">+ Add New Product</button>
+          </div>
+          
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Tool ID (Extension ID)</th>
+                  <th>Product Name</th>
+                  <th>Description</th>
+                  <th>Features (comma-separated)</th>
+                  <th>Download URL</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-tbody">
+                <!-- Dynamically injected products configuration -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="display: flex; justify-content: flex-end; margin-top: 25px;">
+            <button id="btn-save-products" class="btn btn-primary animate-pulse-glow">Save Product Catalog</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 5: INVOICE GENERATION SYSTEM -->
+      <div id="tab-invoices" class="tab-content">
+        <div class="invoice-container-split" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; align-items: start;">
+          
+          <!-- Generator form left -->
+          <div class="glass-panel" style="padding: 24px;">
+            <h3>Create Customer Receipt</h3>
+            <p style="color: var(--text-secondary); font-size: 12px; margin-top: 4px; margin-bottom: 20px;">Fill user details or load from User tab to generate PDF invoice.</p>
+            
+            <form id="form-invoice-gen">
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-company">Agency / Company Name</label>
+                <input type="text" id="inv-company" required placeholder="Agency Name">
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-name">Client Name</label>
+                <input type="text" id="inv-name" required placeholder="User Name">
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-gst">GSTIN Number (If applicable)</label>
+                <input type="text" id="inv-gst" placeholder="GSTIN (Optional)" style="text-transform: uppercase;">
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-email">Email Address</label>
+                <input type="email" id="inv-email" placeholder="Email">
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-plan-name">Subscription Plan Name</label>
+                <input type="text" id="inv-plan-name" required placeholder="e.g. 3 Months Plan">
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-price">Price Paid (INR)</label>
+                <input type="number" id="inv-price" required placeholder="Amount paid">
+              </div>
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label for="inv-utr">Transaction / UTR Code</label>
+                <input type="text" id="inv-utr" placeholder="UTR Number">
+              </div>
+              <button type="submit" class="btn btn-secondary btn-block" style="margin-top: 15px;">
+                Generate Preview
+              </button>
+            </form>
+          </div>
+
+          <!-- Printable preview right -->
+          <div class="glass-panel" style="padding: 30px; position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; margin-bottom: 20px;">
+              <h4 style="margin: 0;">Invoice Preview</h4>
+              <button id="btn-print-invoice" class="btn btn-primary btn-sm">Print Invoice Receipt</button>
+            </div>
+            
+            <!-- Invoice sheet -->
+            <div id="invoice-sheet" class="printable-invoice">
+              <div class="invoice-header">
+                <div class="invoice-logo">
+                  <strong id="invoice-logo-title-id">MR.RAHUL SCRIPTS</strong>
+                  <span style="font-size: 11px; display: block; color: #64748b; font-weight: normal; margin-top: 4px;">Premium Automation Solutions</span>
+                </div>
+                <div class="invoice-meta" style="text-align: right;">
+                  <h2 style="font-size: 20px; font-weight: 800; color: #4F46E5;">INVOICE</h2>
+                  <span style="font-size: 12px; display: block; color: #64748b;" id="invoice-date-display">Date: 12-06-2026</span>
+                  <span style="font-size: 12px; display: block; color: #64748b;" id="invoice-number-display">Invoice: INV-2026-100</span>
+                </div>
+              </div>
+
+              <div class="invoice-billing-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; font-size: 13px;">
+                <div>
+                  <span style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Billed To:</span>
+                  <strong id="invoice-bill-company" style="display: block; margin-top: 5px; color: #1e293b; font-size: 14px;">Shiv Kripa HP Gas Agency</strong>
+                  <span id="invoice-bill-name" style="display: block; color: #475569; margin-top: 2px;">Dinesh Kumar</span>
+                  <span id="invoice-bill-email" style="display: block; color: #64748b;">dinesh@gmail.com</span>
+                  <span id="invoice-bill-gst" style="display: block; color: #64748b;">GSTIN: N/A</span>
+                </div>
+                <div style="text-align: right;">
+                  <span style="color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Payment Details:</span>
+                  <span style="display: block; margin-top: 5px; color: #475569;">Method: BHIM UPI</span>
+                  <span id="invoice-bill-utr" style="display: block; color: #64748b;">UTR: 614298150493</span>
+                  <span style="display: block; color: #10b981; font-weight: 700; margin-top: 4px;">Status: PAID</span>
+                </div>
+              </div>
+
+              <!-- Item table -->
+              <table class="invoice-table" style="width: 100%; border-collapse: collapse; margin-top: 40px; font-size: 13px;">
+                <thead>
+                  <tr style="border-bottom: 2px solid #e2e8f0; text-align: left;">
+                    <th style="padding: 10px 0; color: #64748b;">Product/Description</th>
+                    <th style="padding: 10px 0; text-align: right; color: #64748b;">Total Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px 0;" id="invoice-item-desc">
+                       <strong>CDCMS Allocation Helper</strong><br>
+                       <span style="color: #64748b; font-size: 11px;">Subscription plan activation (3 Months Validity)</span>
+                    </td>
+                    <td style="padding: 15px 0; text-align: right; font-weight: 700; color: #1e293b;" id="invoice-item-price">
+                      ₹999.00
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Totals -->
+              <div style="margin-top: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; font-size: 13px;">
+                <div style="display: flex; width: 220px; justify-content: space-between;">
+                  <span style="color: #64748b;">Subtotal:</span>
+                  <strong style="color: #1e293b;" id="invoice-subtotal">₹999.00</strong>
+                </div>
+                <div style="display: flex; width: 220px; justify-content: space-between; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+                  <span style="color: #64748b; font-weight: 700;">Grand Total:</span>
+                  <strong style="color: #4F46E5; font-size: 16px;" id="invoice-grandtotal">₹999.00</strong>
+                </div>
+              </div>
+
+              <div class="invoice-footer" style="margin-top: 50px; border-top: 1px dashed #cbd5e1; padding-top: 15px; text-align: center; font-size: 11px; color: #94a3b8;">
+                This is a computer-generated digital receipt. No signature required.<br>
+                For license support or issues, please reach out to MR.RAHUL SCRIPTS.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: REVIEWS MANAGEMENT -->
+      <div id="tab-reviews" class="tab-content">
+        <div style="display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start;">
+
+          <!-- Add / Edit Review Form -->
+          <div class="glass-panel" style="padding: 26px;">
+            <h3 style="margin: 0 0 6px; font-size: 16px;">Add / Edit Review</h3>
+            <p style="color: var(--text-secondary); font-size: 12px; margin: 0 0 22px;">Customer testimonials jo website pe dikhenge.</p>
+            <input type="hidden" id="review-edit-id" value="">
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="review-name">Customer Name *</label>
+              <input type="text" id="review-name" required placeholder="e.g. Rajesh Kumar" style="width: 100%;">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="review-company">Company / Agency</label>
+              <input type="text" id="review-company" placeholder="e.g. Shiv Kripa HP Gas Agency" style="width: 100%;">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="review-photo">Photo URL (optional)</label>
+              <input type="url" id="review-photo" placeholder="https://... (leave blank for initials)" style="width: 100%;">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="review-stars">Star Rating</label>
+              <select id="review-stars" style="width: 100%; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 14px;">
+                <option value="5">&#11088;&#11088;&#11088;&#11088;&#11088; 5 Stars</option>
+                <option value="4">&#11088;&#11088;&#11088;&#11088; 4 Stars</option>
+                <option value="3">&#11088;&#11088;&#11088; 3 Stars</option>
+                <option value="2">&#11088;&#11088; 2 Stars</option>
+                <option value="1">&#11088; 1 Star</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="review-text">Review Text *</label>
+              <textarea id="review-text" required rows="4" placeholder="Customer ka feedback yahaan likho..." style="width: 100%; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; resize: vertical; font-family: inherit;"></textarea>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label for="review-status">Status</label>
+              <select id="review-status" style="width: 100%; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 14px;">
+                <option value="Active">Active (Website pe dikhe)</option>
+                <option value="Inactive">Inactive (Hide)</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button id="btn-save-review" class="btn btn-primary" style="flex: 1;">
+                <span id="btn-save-review-text">&#10003; Save Review</span>
+              </button>
+              <button id="btn-cancel-review-edit" class="btn btn-secondary" style="display: none;">Cancel</button>
+            </div>
+          </div>
+
+          <!-- Reviews Table -->
+          <div class="glass-panel" style="padding: 26px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+              <h3 style="margin: 0; font-size: 16px;">All Reviews <span id="reviews-count-badge" style="font-size: 12px; color: var(--text-muted); font-weight: 400;"></span></h3>
+              <button id="btn-reload-reviews" class="btn btn-secondary btn-sm" style="font-size: 12px;">&#8635; Reload</button>
+            </div>
+            <div id="admin-reviews-table-container" style="display: flex; flex-direction: column; gap: 12px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
+              <div style="text-align: center; color: var(--text-muted); padding: 30px;">Loading reviews...</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 6: SETTINGS & BRANDING SYSTEM -->
+      <div id="tab-settings" class="tab-content">
+        <div class="glass-panel" style="padding: 30px; max-width: 800px; margin: 0 auto;">
+          <h3>Branding & Payment Settings</h3>
+          <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px; margin-bottom: 25px;">
+            Configure your company profile details, logo images, and payee UPI credentials. Files will be uploaded to Google Drive.
+          </p>
+          
+          <form id="form-admin-settings">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="set-company-name">Company / Brand Name</label>
+                <input type="text" id="set-company-name" required placeholder="e.g. Mr.Rahul Scripts">
+              </div>
+              <div class="form-group">
+                <label for="set-company-logo">Company Logo Image</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <input type="text" id="set-company-logo" placeholder="Drive URL or raw link" style="flex-grow: 1;">
+                  <input type="file" id="upload-logo-file" accept="image/*" style="display: none;">
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-logo-upload" style="white-space: nowrap;">Upload Logo</button>
+                </div>
+                <div id="logo-preview-container" style="margin-top: 10px; display: none; align-items: center; gap: 10px;">
+                  <span style="font-size: 12px; color: var(--text-secondary);">Logo Preview:</span>
+                  <img id="logo-preview-img" src="" alt="Logo Preview" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 1px solid var(--border-light);">
+                </div>
+              </div>
+              
+              <div class="form-group full-width">
+                <label for="set-company-about">About Description (Footer & Hero)</label>
+                <textarea id="set-company-about" style="min-height: 80px; width: 100%; font-family: var(--font-family); background: var(--bg-tertiary); border: 1px solid var(--border-light); padding: 10px; border-radius: 4px; color: var(--text-primary);"></textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="set-upi-id">Merchant UPI ID (Payments Receive)</label>
+                <input type="text" id="set-upi-id" required placeholder="e.g. merchant@okaxis">
+              </div>
+              <div class="form-group">
+                <label for="set-merchant-name">Payee Merchant Name</label>
+                <input type="text" id="set-merchant-name" required placeholder="e.g. Mr.Rahul Scripts Payments">
+              </div>
+              
+              <div class="form-group">
+                <label for="set-email">Support Email Address</label>
+                <input type="email" id="set-email" required placeholder="support@brand.com">
+              </div>
+              <div class="form-group">
+                <label for="set-mobile">Support Phone Number</label>
+                <input type="text" id="set-mobile" required placeholder="e.g. +91 98765 43210">
+              </div>
+              
+              <div class="form-group">
+                <label for="set-whatsapp">WhatsApp Phone Number</label>
+                <input type="text" id="set-whatsapp" required placeholder="e.g. +919876543210">
+              </div>
+              <div class="form-group">
+                <label for="set-location">Location / Office Address</label>
+                <input type="text" id="set-location" required placeholder="e.g. New Delhi, India">
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block animate-pulse-glow" style="margin-top: 30px;" id="btn-save-settings">
+              Save Branding & UPI Settings
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 9: SUPABASE & RAZORPAY CONFIGURATION -->
+      <div id="tab-database-payments" class="tab-content">
+        <div class="glass-panel" style="padding: 30px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+            <div>
+              <h3>Supabase Database & Razorpay Gateway Setup</h3>
+              <p style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">
+                Connect your PostgreSQL Supabase cloud database and Razorpay payment gateway credentials for live transactions.
+              </p>
+            </div>
+            <span class="status-badge status-active" id="db-global-badge">Supabase Ready</span>
+          </div>
+
+          <!-- Status Chips Row -->
+          <div class="db-status-bar">
+            <div class="db-status-chip">
+              <div class="db-status-indicator connected" id="supabase-status-dot"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Supabase Database</div>
+                <div style="font-size: 11px; color: var(--text-secondary);" id="supabase-status-text">Connected / Active</div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-test-supabase" style="margin-left: auto;">Test Connection</button>
+            </div>
+
+            <div class="db-status-chip">
+              <div class="db-status-indicator connected" id="razorpay-status-dot"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Razorpay Payment Gateway</div>
+                <div style="font-size: 11px; color: var(--text-secondary);" id="razorpay-status-text">Active (Checkout Enabled)</div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-test-razorpay" style="margin-left: auto;">Verify Key</button>
+            </div>
+          </div>
+
+          <!-- Configuration Form -->
+          <form id="form-database-payments-config">
+            <h4 style="margin: 20px 0 10px; color: #818cf8; font-size: 15px;">1. Supabase Project Credentials</h4>
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="cfg-supabase-url">Supabase Project URL *</label>
+                <input type="url" id="cfg-supabase-url" placeholder="https://yourprojectid.supabase.co" style="font-family: monospace;">
+                <span style="font-size: 11px; color: var(--text-muted);">Find this in your Supabase Dashboard &gt; Project Settings &gt; API &gt; Project URL</span>
+              </div>
+              <div class="form-group full-width">
+                <label for="cfg-supabase-anon-key">Supabase Public Anon Key (anon public) *</label>
+                <input type="password" id="cfg-supabase-anon-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="font-family: monospace;">
+                <span style="font-size: 11px; color: var(--text-muted);">Find this in your Supabase Dashboard &gt; Project Settings &gt; API &gt; Project API keys (anon public)</span>
+              </div>
+            </div>
+
+            <h4 style="margin: 25px 0 10px; color: #38bdf8; font-size: 15px;">2. Razorpay Gateway API Keys</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="cfg-razorpay-key-id">Razorpay Key ID (Live or Test) *</label>
+                <input type="text" id="cfg-razorpay-key-id" placeholder="rzp_live_... or rzp_test_..." style="font-family: monospace;">
+                <span style="font-size: 11px; color: var(--text-muted);">Find this in Razorpay Dashboard &gt; Settings &gt; API Keys</span>
+              </div>
+              <div class="form-group">
+                <label for="cfg-razorpay-key-secret">Razorpay Key Secret (Optional / For Netlify Functions)</label>
+                <input type="password" id="cfg-razorpay-key-secret" placeholder="Enter key secret (e.g. 5xX...)" style="font-family: monospace;">
+                <span style="font-size: 11px; color: var(--text-muted);">Used for server-side HMAC SHA256 signature verification in Netlify functions</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block animate-pulse-glow" style="margin-top: 30px;" id="btn-save-db-payments">
+              Save Database &amp; Razorpay Credentials
+            </button>
+          </form>
+
+          <!-- Instructions Card -->
+          <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px; padding: 20px; margin-top: 30px;">
+            <h4 style="color: #818cf8; font-size: 14px; margin-bottom: 8px;">🚀 Quick Supabase &amp; Netlify Setup Instructions:</h4>
+            <ol style="color: var(--text-secondary); font-size: 13px; line-height: 1.8; padding-left: 20px; margin: 0;">
+              <li><strong>Supabase SQL Database:</strong> Open your Supabase Dashboard &rarr; <em>SQL Editor</em> &rarr; Click <em>New query</em> &rarr; Paste and run the code from <code>supabase_schema.sql</code> (provided in the root directory).</li>
+              <li><strong>Enter Credentials:</strong> Copy your <em>Project URL</em> and <em>anon public key</em> from Supabase and paste them into the fields above, then click <em>Save</em>.</li>
+              <li><strong>Netlify Deployment:</strong> Push this folder to GitHub or drag &amp; drop to Netlify. Netlify will automatically detect <code>netlify.toml</code>, the static frontend, and the serverless functions in <code>netlify/functions/</code>.</li>
+              <li><strong>Netlify Environment Variables (Optional for Webhooks):</strong> In Netlify Site Settings &rarr; <em>Environment variables</em>, add <code>SUPABASE_URL</code>, <code>SUPABASE_ANON_KEY</code>, <code>RAZORPAY_KEY_ID</code>, and <code>RAZORPAY_KEY_SECRET</code>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Toast notifications wrapper -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Supabase & Razorpay Client Data Layer -->
+  <script src="supabase-client.js"></script>
+  <!-- JS Portal Script -->
+  <script src="portal.js"></script>
+</body>
+</html>

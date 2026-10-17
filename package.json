@@ -1,0 +1,23 @@
+{
+  "name": "license-saas-portal",
+  "version": "2.0.0",
+  "description": "Software Licensing, Billing, Supabase Database and Razorpay Portal",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "echo 'Frontend built successfully'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.8",
+    "razorpay": "^2.9.2"
+  },
+  "keywords": [
+    "licensing",
+    "saas",
+    "supabase",
+    "razorpay",
+    "netlify"
+  ],
+  "author": "Mr.Rahul Scripts",
+  "license": "ISC"
+}

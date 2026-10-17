@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+.npm
+
+# Environment variables & local secrets
+.env
+.env.local
+.env.*.local
+
+# Operating System Files
+Thumbs.db
+[Dd]esktop.ini
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Netlify local directory
+.netlify/
