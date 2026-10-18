@@ -47,9 +47,15 @@ export const LandingPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [selectedPricingProductId, setSelectedPricingProductId] = useState<string>('11111111-1111-1111-1111-111111111111');
 
   useEffect(() => {
-    getProducts().then((p) => setProducts(p));
+    getProducts().then((p) => {
+      setProducts(p);
+      if (p.length > 0) {
+        setSelectedPricingProductId(p[0].id);
+      }
+    });
     getPlans().then((pl) => setPlans(pl));
   }, []);
 
@@ -517,68 +523,105 @@ export const LandingPage: React.FC = () => {
 
       {/* PRICING PLANS */}
       <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-1.5 text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400 mb-2">
             <IndianRupee className="w-4 h-4" />
-            <span>Transparent Agency Rates</span>
+            <span>Standardized Distributorship Rates</span>
           </div>
           <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-            Distributorship License Plans
+            Choose Your Agency Plan
           </h3>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-            No hidden costs. 18% GST tax invoice and Input Tax Credit (ITC) generated automatically.
+            Every product features the exact same 4 flexible subscription options: 1 Month, 3 Months, 6 Months, or 1 Year. Instant key delivery with GST invoice.
           </p>
+
+          {/* Product Switcher Tabs */}
+          <div className="pt-6 flex items-center justify-center gap-2 flex-wrap">
+            {products.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPricingProductId(p.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  selectedPricingProductId === p.id
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-orange-500/30'
+                }`}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.slice(0, 3).map((plan, index) => {
-            const isPopular = index === 1;
+        {/* 4 Standard Plans Grid: 1 Month, 3 Months, 6 Months, 1 Year */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {(plans.filter((p) => p.product_id === selectedPricingProductId).length === 4
+            ? plans.filter((p) => p.product_id === selectedPricingProductId)
+            : plans.slice(0, 4)
+          ).map((plan) => {
+            const isYearly = plan.billing_period === 'yearly' || plan.duration_days >= 365;
+            const isPopular = plan.billing_period === 'semi_annual' || plan.duration_days === 180;
+            const periodLabel =
+              plan.billing_period === 'yearly'
+                ? '1 Year'
+                : plan.billing_period === 'semi_annual'
+                ? '6 Months'
+                : plan.billing_period === 'quarterly'
+                ? '3 Months'
+                : '1 Month';
 
             return (
               <div
                 key={plan.id}
-                className={`rounded-3xl p-8 flex flex-col justify-between transition-all relative ${
+                className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all relative ${
                   isPopular
                     ? 'bg-gradient-to-b from-orange-950/40 via-slate-900 to-slate-900 border-2 border-orange-500 shadow-2xl shadow-orange-500/20'
+                    : isYearly
+                    ? 'bg-gradient-to-b from-blue-950/40 via-slate-900 to-slate-900 border-2 border-blue-500/80 shadow-blue-500/10'
                     : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl'
                 }`}
               >
                 {isPopular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold uppercase tracking-wider shadow-md">
-                    Most Popular • Best Value
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
+                    Most Popular (6 Months)
+                  </span>
+                )}
+                {isYearly && !isPopular && (
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
+                    Best Value (1 Year)
                   </span>
                 )}
 
                 <div>
                   <div className="mb-4">
-                    <span className="text-xs font-extrabold uppercase text-orange-600 dark:text-orange-400">
-                      {(plan.billing_period || (plan.is_lifetime ? 'lifetime' : 'monthly')).replace('_', ' ')}
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                      {periodLabel} Plan
                     </span>
-                    <h4 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+                    <h4 className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">
                       {plan.name}
                     </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
                       {plan.description}
                     </p>
                   </div>
 
-                  <div className="flex items-baseline gap-1 my-6">
-                    <span className="text-4xl font-black text-slate-900 dark:text-white">
+                  <div className="flex items-baseline gap-1 my-5">
+                    <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
                       {formatCurrency(plan.price)}
                     </span>
                     <span className="text-xs text-slate-400 font-medium">
-                      / {plan.duration_days >= 3650 ? 'Lifetime' : `${plan.duration_days} days`}
+                      / {periodLabel.toLowerCase()}
                     </span>
                   </div>
 
-                  <div className="space-y-3 py-6 border-t border-slate-200 dark:border-slate-800 text-sm text-slate-600 dark:text-slate-300">
+                  <div className="space-y-2.5 py-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
                     <div className="flex items-center gap-2 font-semibold text-orange-600 dark:text-orange-400">
-                      <Lock className="w-4 h-4" />
-                      <span>{plan.max_devices} Counter PC Hardware Lock</span>
+                      <Lock className="w-4 h-4 shrink-0" />
+                      <span>{plan.max_devices} Counter PC Lock</span>
                     </div>
                     {plan.features?.map((f, i) => (
-                      <div key={i} className="flex items-center gap-2">
-                        <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <div key={i} className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                         <span>{f}</span>
                       </div>
                     ))}
@@ -587,9 +630,11 @@ export const LandingPage: React.FC = () => {
 
                 <Link
                   to={`/checkout/${plan.id}`}
-                  className={`w-full py-3.5 rounded-2xl font-extrabold text-sm text-center shadow-lg transition-all ${
+                  className={`w-full mt-6 py-3 rounded-2xl font-extrabold text-xs text-center shadow-lg transition-all ${
                     isPopular
                       ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/25'
+                      : isYearly
+                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/25'
                       : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700'
                   }`}
                 >
