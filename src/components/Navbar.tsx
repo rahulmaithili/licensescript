@@ -14,6 +14,7 @@ import {
   ShoppingBag,
   Sparkles,
 } from 'lucide-react';
+import { GasAgencyMasterLogo } from '@/components/GasLogos';
 
 export const Navbar: React.FC = () => {
   const { user, profile, isAdmin, isSuperAdmin, signOut } = useAuth();
@@ -31,45 +32,41 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-colors">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 via-amber-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
-              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
-            </svg>
-          </div>
+          <GasAgencyMasterLogo size={38} className="group-hover:scale-105 transition-transform" />
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-orange-500 via-amber-500 to-blue-600 bg-clip-text text-transparent">
                 License<span className="text-slate-900 dark:text-white">Wala</span>
               </span>
               <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                LPG Tools
+                LPG Suite
               </span>
             </div>
             <span className="hidden sm:block text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide">
-              Indane • HP Gas • Bharat Gas Suite
+              IndianOil • HP Gas • Bharat Petroleum
             </span>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
-          <Link to="/" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+        <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-600 dark:text-slate-300">
+          <Link to="/" className="hover:text-orange-500 transition-colors">
             Home
           </Link>
-          <Link to="/products" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+          <Link to="/products" className="hover:text-orange-500 transition-colors">
             Products & Extensions
           </Link>
-          <Link to="/pricing" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+          <Link to="/pricing" className="hover:text-orange-500 transition-colors">
             Pricing Plans
           </Link>
-          <a href="#how-it-works" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+          <a href="/#how-it-works" className="hover:text-orange-500 transition-colors">
             How It Works
           </a>
-          <a href="#faq" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+          <a href="/#faq" className="hover:text-orange-500 transition-colors">
             FAQ
           </a>
         </nav>
@@ -99,7 +96,7 @@ export const Navbar: React.FC = () => {
                 to="/account"
                 className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
-                <User className="w-4 h-4 text-indigo-500" />
+                <User className="w-4 h-4 text-orange-500" />
                 <span>{profile?.full_name?.split(' ')[0] || 'My Account'}</span>
               </Link>
               <button
@@ -114,16 +111,16 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center gap-2.5">
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                className="px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-orange-500 transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 to="/register"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-md shadow-indigo-600/25 transition-all hover:scale-[1.02]"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-sm font-semibold shadow-md shadow-orange-500/25 transition-all hover:scale-[1.02]"
               >
                 <Sparkles className="w-4 h-4" />
-                Get Started
+                <span>Get Started</span>
               </Link>
             </div>
           )}
@@ -153,21 +150,21 @@ export const Navbar: React.FC = () => {
           <Link
             to="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 dark:text-slate-200 font-medium"
+            className="block py-2 text-slate-700 dark:text-slate-200 font-semibold"
           >
             Home
           </Link>
           <Link
             to="/products"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 dark:text-slate-200 font-medium"
+            className="block py-2 text-slate-700 dark:text-slate-200 font-semibold"
           >
             Products & Extensions
           </Link>
           <Link
             to="/pricing"
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-slate-700 dark:text-slate-200 font-medium"
+            className="block py-2 text-slate-700 dark:text-slate-200 font-semibold"
           >
             Pricing Plans
           </Link>
@@ -190,7 +187,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold"
                 >
-                  <User className="w-4 h-4 text-indigo-500" />
+                  <User className="w-4 h-4 text-orange-500" />
                   My Licenses & Account
                 </Link>
                 <button
@@ -215,7 +212,7 @@ export const Navbar: React.FC = () => {
                 <Link
                   to="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-2.5 text-center rounded-xl bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-600/25"
+                  className="w-full py-2.5 text-center rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-semibold shadow-md shadow-orange-500/25"
                 >
                   Create Account
                 </Link>

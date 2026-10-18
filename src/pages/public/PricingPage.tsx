@@ -12,6 +12,7 @@ import {
 import { getPlans, getProducts } from '@/services/productService';
 import { formatCurrency } from '@/lib/utils';
 import type { Plan, Product } from '@/types';
+import { GasBrandsShowcase } from '@/components/GasLogos';
 
 export const PricingPage: React.FC = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -32,16 +33,16 @@ export const PricingPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-4">
+      <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold border border-orange-500/20">
           <Sparkles className="w-3.5 h-3.5 text-orange-500" />
-          <span>Indane • HP Gas • Bharat Gas Distributorship Packages</span>
+          <span>Indane • HP Gas • Bharat Petroleum Agency Pricing</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white">
-          गैस एजेंसी लाइसेंस रेट लिस्ट
+          Transparent Gas Agency License Plans
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-          1 काउंटर ट्रायल से लेकर 5 काउंटर मास्टर पैकेज तक — अपनी LPG एजेंसी की जरूरत अनुसार सबसे उपयुक्त प्लान चुनें।
+          From single counter trials to 5-counter enterprise master bundles — choose the plan that best fits your LPG distributorship. Instant automated license key delivery upon checkout.
         </p>
 
         {/* Product Filter Tabs */}
@@ -50,8 +51,8 @@ export const PricingPage: React.FC = () => {
             onClick={() => setSelectedProductId('all')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               selectedProductId === 'all'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-orange-500/30'
             }`}
           >
             All Products
@@ -62,14 +63,19 @@ export const PricingPage: React.FC = () => {
               onClick={() => setSelectedProductId(p.id)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 selectedProductId === p.id
-                  ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-orange-500/30'
               }`}
             >
               {p.name}
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Brand Logos Compact Showcase */}
+      <div className="py-2">
+        <GasBrandsShowcase compact={true} />
       </div>
 
       {/* Pricing Cards */}
@@ -83,18 +89,18 @@ export const PricingPage: React.FC = () => {
               key={plan.id}
               className={`rounded-3xl p-8 flex flex-col justify-between shadow-xl transition-all relative ${
                 isLifetime
-                  ? 'bg-gradient-to-b from-indigo-950/80 to-slate-900 border-2 border-indigo-500 shadow-indigo-500/20'
-                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800'
+                  ? 'bg-gradient-to-b from-orange-950/40 via-slate-900 to-slate-900 border-2 border-orange-500 shadow-orange-500/20'
+                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-orange-500/40'
               }`}
             >
               {isLifetime && (
-                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider shadow-md">
-                  Lifetime Value
+                <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-bold uppercase tracking-wider shadow-md">
+                  Most Popular • Lifetime Value
                 </span>
               )}
 
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
                   {prod?.name || 'Software Tool'}
                 </span>
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mt-1">
@@ -114,9 +120,9 @@ export const PricingPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-3 py-6 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
-                  <div className="flex items-center gap-2 font-semibold text-indigo-600 dark:text-indigo-400">
+                  <div className="flex items-center gap-2 font-semibold text-orange-600 dark:text-orange-400">
                     <Lock className="w-4 h-4" />
-                    <span>{plan.max_devices} PC Hardware Lock</span>
+                    <span>{plan.max_devices} PC Hardware Lock (Anti-Clone)</span>
                   </div>
                   {plan.features?.map((f, i) => (
                     <div key={i} className="flex items-center gap-2">
@@ -131,11 +137,11 @@ export const PricingPage: React.FC = () => {
                 to={`/checkout/${plan.id}`}
                 className={`w-full py-3.5 rounded-2xl font-bold text-sm text-center shadow-lg transition-all flex items-center justify-center gap-2 ${
                   isLifetime
-                    ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/30'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/30'
                     : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700'
                 }`}
               >
-                <span>Buy License</span>
+                <span>Buy License (Instant Key)</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
