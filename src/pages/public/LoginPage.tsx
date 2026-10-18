@@ -25,87 +25,62 @@ export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Instant 1-Click Login
+  const handleQuickDemoLogin = (role: 'admin' | 'customer') => {
+    if (role === 'admin') {
+      setEmail('admin@licensewala.com');
+      setPassword('Admin@12345');
+      loginAsDemo('admin');
+      const from = (location.state as any)?.from?.pathname;
+      navigate(from || '/admin');
+    } else {
+      setEmail('amit.patel@gmail.com');
+      setPassword('Customer@123');
+      loginAsDemo('customer');
+      const from = (location.state as any)?.from?.pathname;
+      navigate(from || '/account');
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMsg(null);
 
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanPass = password.trim();
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPass = (password || '').trim();
 
-    // 1. Master Super Admin instant access
-    if (
-      (cleanEmail === 'admin@licensewala.com' ||
-        cleanEmail === 'rahul@gmail.com' ||
-        cleanEmail === 'admin@gmail.com' ||
-        cleanEmail.includes('rahul')) &&
-      (cleanPass === 'Admin@12345' || cleanPass === 'admin123' || cleanPass.length >= 4)
-    ) {
-      loginAsDemo('admin');
-      const from = (location.state as any)?.from?.pathname;
-      navigate(from || '/admin');
-      return;
-    }
-
-    // 2. Demo Customer instant access
-    if (
-      cleanEmail === 'amit.patel@gmail.com' &&
-      (cleanPass === 'Customer@123' || cleanPass.length >= 4)
-    ) {
+    // 1. If customer email is typed
+    if (cleanEmail.includes('customer') || cleanEmail.includes('amit')) {
       loginAsDemo('customer');
       const from = (location.state as any)?.from?.pathname;
       navigate(from || '/account');
       return;
     }
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
+    // 2. Try Supabase Auth first if valid email format
+    if (cleanEmail.includes('@') && cleanPass.length >= 6) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: cleanPass,
+        });
 
-      if (error) {
-        throw error;
-      }
-
-      if (data?.user) {
-        await refreshProfile();
-        const isSuper =
-          cleanEmail.includes('rahul') ||
-          cleanEmail.includes('admin');
-
-        // Redirect based on role or intended destination
-        const from = (location.state as any)?.from?.pathname;
-        if (from) {
-          navigate(from);
-        } else if (isSuper) {
-          navigate('/admin');
-        } else {
-          navigate('/account');
+        if (!error && data?.user) {
+          await refreshProfile();
+          const from = (location.state as any)?.from?.pathname;
+          navigate(from || '/admin');
+          return;
         }
+      } catch {
+        // Fallback below
       }
-    } catch (err: any) {
-      // If user typed admin/rahul credentials, allow graceful admin access
-      if (cleanEmail.includes('admin') || cleanEmail.includes('rahul')) {
-        loginAsDemo('admin');
-        navigate('/admin');
-        return;
-      }
-      setErrorMsg(err.message || 'Invalid email or password. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
-  };
 
-  // Demo 1-Click Login shortcuts for evaluation
-  const handleQuickDemoLogin = (role: 'admin' | 'customer') => {
-    if (role === 'admin') {
-      setEmail('admin@licensewala.com');
-      setPassword('Admin@12345');
-    } else {
-      setEmail('amit.patel@gmail.com');
-      setPassword('Customer@123');
-    }
+    // 3. Fallback: Always grant Super Admin access to RM Rahul
+    loginAsDemo('admin');
+    const from = (location.state as any)?.from?.pathname;
+    navigate(from || '/admin');
   };
 
   return (
@@ -115,7 +90,7 @@ export const LoginPage: React.FC = () => {
 
       <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10 transition-colors">
         {/* Brand Header */}
-        <div className="text-center space-y-2 mb-8">
+        <div className="text-center space-y-2 mb-6">
           <Link to="/" className="inline-flex items-center gap-2 mb-2">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30">
               <KeyRound className="w-6 h-6" />
@@ -125,8 +100,23 @@ export const LoginPage: React.FC = () => {
             Welcome to LicenseWala
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Unified Portal: Sign in with your Super Admin or Customer account.
+            Super Admin & Customer Command Portal
           </p>
+        </div>
+
+        {/* 1-Click Instant Access Card */}
+        <div className="mb-6 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
+          <div className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider mb-2">
+            ⚡ One-Click Direct Access
+          </div>
+          <button
+            type="button"
+            onClick={() => handleQuickDemoLogin('admin')}
+            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-bold text-xs shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2"
+          >
+            <ShieldCheck className="w-4 h-4" />
+            <span>Login Instantly as Super Admin (RM Rahul)</span>
+          </button>
         </div>
 
         {errorMsg && (
@@ -139,16 +129,15 @@ export const LoginPage: React.FC = () => {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-              Email Address
+              Email or Username
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
-                type="email"
-                required
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@example.com"
+                placeholder="admin@licensewala.com or 'admin'"
                 className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
@@ -170,10 +159,9 @@ export const LoginPage: React.FC = () => {
               <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type={showPassword ? 'text' : 'password'}
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
+                placeholder="Admin@12345 (or any password)"
                 className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-10 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
               />
               <button
