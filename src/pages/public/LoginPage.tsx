@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { GoogleIcon } from '@/components/GoogleIcon';
 import {
   KeyRound,
   Mail,
@@ -20,8 +21,9 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
-  const { refreshProfile, loginAsDemo } = useAuth();
+  const { refreshProfile, loginAsDemo, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -40,6 +42,17 @@ export const LoginPage: React.FC = () => {
       const from = (location.state as any)?.from?.pathname;
       navigate(from || '/account');
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    setErrorMsg(null);
+    const err = await signInWithGoogle();
+    if (err) {
+      setErrorMsg(err);
+      setGoogleLoading(false);
+    }
+    // On success the browser redirects to Google; Supabase restores the session on return.
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -102,6 +115,27 @@ export const LoginPage: React.FC = () => {
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
             Super Admin & Customer Command Portal
           </p>
+        </div>
+
+        {/* Google Sign-In */}
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={googleLoading}
+          className="w-full py-3 px-4 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-[#1E40FF]/60 hover:shadow-[0_10px_30px_-10px_rgba(30,64,255,0.4)] text-slate-700 dark:text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60 mb-5"
+        >
+          {googleLoading ? (
+            <span className="w-5 h-5 border-2 border-slate-300 border-t-[#1E40FF] rounded-full animate-spin" />
+          ) : (
+            <GoogleIcon className="w-5 h-5" />
+          )}
+          <span>{googleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
+        </button>
+
+        <div className="flex items-center gap-3 mb-5">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">or</span>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
         </div>
 
         {/* 1-Click Instant Access Card */}

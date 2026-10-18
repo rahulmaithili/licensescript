@@ -12,6 +12,7 @@ interface AuthContextType {
   isLoading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  signInWithGoogle: () => Promise<string | null>;
   loginAsDemo: (role: 'admin' | 'customer') => void;
 }
 
@@ -126,6 +127,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   };
 
+  const signInWithGoogle = async (): Promise<string | null> => {
+    try {
+      // Clear any demo session so the real OAuth session is picked up on return
+      localStorage.removeItem('lw_demo_role');
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin },
+      });
+      if (error) {
+        if (/provider/i.test(error.message)) {
+          return 'Google login is not enabled yet. Enable it in Supabase Dashboard → Authentication → Providers → Google.';
+        }
+        return error.message;
+      }
+      return null;
+    } catch (err: any) {
+      return err?.message || 'Google sign-in failed. Please try again.';
+    }
+  };
+
   useEffect(() => {
     // Check saved demo role first
     const savedRole = localStorage.getItem('lw_demo_role');
@@ -211,6 +232,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         signOut,
         refreshProfile,
+        signInWithGoogle,
         loginAsDemo,
       }}
     >
