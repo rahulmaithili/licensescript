@@ -193,8 +193,14 @@ export const DEFAULT_LICENSES: License[] = [
   }
 ];
 
+const isUUID = (str: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
 export async function getLicenses(userId?: string): Promise<License[]> {
   try {
+    if (userId && !isUUID(userId)) {
+      return DEFAULT_LICENSES.filter((l) => l.user_id === userId);
+    }
     let query = supabase.from('licenses').select(`
       *,
       product:products(*),

@@ -55,7 +55,7 @@ export const DEFAULT_SYSTEM_SETTINGS: SystemSettings = {
 
 export async function getCompanyProfile(): Promise<CompanyProfile> {
   try {
-    const { data, error } = await supabase.from('company_profile').select('*').limit(1).single();
+    const { data, error } = await supabase.from('company_profile').select('*').limit(1).maybeSingle();
     if (error || !data) {
       return DEFAULT_COMPANY_PROFILE;
     }
@@ -67,7 +67,7 @@ export async function getCompanyProfile(): Promise<CompanyProfile> {
 
 export async function saveCompanyProfile(profile: Partial<CompanyProfile>): Promise<boolean> {
   try {
-    const { data } = await supabase.from('company_profile').select('id').limit(1).single();
+    const { data } = await supabase.from('company_profile').select('id').limit(1).maybeSingle();
     if (data?.id) {
       const { error } = await supabase
         .from('company_profile')
@@ -87,7 +87,7 @@ export async function saveCompanyProfile(profile: Partial<CompanyProfile>): Prom
 
 export async function getIntegrationSettings(): Promise<IntegrationSettings> {
   try {
-    const { data, error } = await supabase.from('integration_settings').select('*').limit(1).single();
+    const { data, error } = await supabase.from('integration_settings').select('*').limit(1).maybeSingle();
     if (error || !data) {
       return DEFAULT_INTEGRATION_SETTINGS;
     }
@@ -99,7 +99,7 @@ export async function getIntegrationSettings(): Promise<IntegrationSettings> {
 
 export async function saveIntegrationSettings(settings: Partial<IntegrationSettings>): Promise<boolean> {
   try {
-    const { data } = await supabase.from('integration_settings').select('id').limit(1).single();
+    const { data } = await supabase.from('integration_settings').select('id').limit(1).maybeSingle();
     if (data?.id) {
       const { error } = await supabase
         .from('integration_settings')
@@ -119,7 +119,7 @@ export async function saveIntegrationSettings(settings: Partial<IntegrationSetti
 
 export async function getSystemSettings(): Promise<SystemSettings> {
   try {
-    const { data, error } = await supabase.from('settings').select('*').limit(1).single();
+    const { data, error } = await supabase.from('settings').select('*').limit(1).maybeSingle();
     if (error || !data) {
       return DEFAULT_SYSTEM_SETTINGS;
     }
@@ -131,7 +131,7 @@ export async function getSystemSettings(): Promise<SystemSettings> {
 
 export async function saveSystemSettings(settings: Partial<SystemSettings>): Promise<boolean> {
   try {
-    const { data } = await supabase.from('settings').select('id').limit(1).single();
+    const { data } = await supabase.from('settings').select('id').limit(1).maybeSingle();
     if (data?.id) {
       const { error } = await supabase
         .from('settings')

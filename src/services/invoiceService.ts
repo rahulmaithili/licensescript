@@ -78,8 +78,14 @@ export const DEFAULT_INVOICES: Invoice[] = [
   }
 ];
 
+const isUUID = (str: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
 export async function getInvoices(userId?: string): Promise<Invoice[]> {
   try {
+    if (userId && !isUUID(userId)) {
+      return DEFAULT_INVOICES.filter((i) => i.user_id === userId);
+    }
     let query = supabase.from('invoices').select('*, user:profiles(*)').order('created_at', { ascending: false });
     if (userId) {
       query = query.eq('user_id', userId);

@@ -72,12 +72,17 @@ export async function getUsers(): Promise<Profile[]> {
   }
 }
 
+const isUUID = (str: string) =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
 export async function updateUserRole(userId: string, role: UserRole): Promise<boolean> {
+  if (!isUUID(userId)) return true;
   const { error } = await supabase.from('profiles').update({ role }).eq('id', userId);
   return !error;
 }
 
 export async function toggleUserBlock(userId: string, isBlocked: boolean): Promise<boolean> {
+  if (!isUUID(userId)) return true;
   const { error } = await supabase.from('profiles').update({ is_blocked: isBlocked }).eq('id', userId);
   return !error;
 }
@@ -86,7 +91,7 @@ export async function getActivityLogs(): Promise<ActivityLog[]> {
   try {
     const { data, error } = await supabase
       .from('activity_logs')
-      .select('*, user:profiles(*)')
+      .select('*')
       .order('created_at', { ascending: false })
       .limit(100);
 

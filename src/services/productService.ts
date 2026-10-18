@@ -178,12 +178,15 @@ export async function getProducts(): Promise<Product[]> {
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .order('sort_order', { ascending: true });
+      .order('created_at', { ascending: true });
 
     if (error || !data || data.length === 0) {
       return DEFAULT_PRODUCTS;
     }
-    return data as Product[];
+    return data.map((p: any) => ({
+      ...p,
+      sort_order: p.display_order ?? p.sort_order ?? 1,
+    })) as Product[];
   } catch {
     return DEFAULT_PRODUCTS;
   }
@@ -195,12 +198,15 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       .from('products')
       .select('*')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       return DEFAULT_PRODUCTS.find((p) => p.slug === slug) || null;
     }
-    return data as Product;
+    return {
+      ...(data as any),
+      sort_order: (data as any).display_order ?? (data as any).sort_order ?? 1,
+    } as Product;
   } catch {
     return DEFAULT_PRODUCTS.find((p) => p.slug === slug) || null;
   }
@@ -208,7 +214,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 
 export async function getPlans(productId?: string): Promise<Plan[]> {
   try {
-    let query = supabase.from('plans').select('*, product:products(*)').order('sort_order', { ascending: true });
+    let query = supabase.from('plans').select('*, product:products(*)').order('created_at', { ascending: true });
     if (productId) {
       query = query.eq('product_id', productId);
     }
@@ -219,7 +225,10 @@ export async function getPlans(productId?: string): Promise<Plan[]> {
       }
       return DEFAULT_PLANS;
     }
-    return data as Plan[];
+    return data.map((p: any) => ({
+      ...p,
+      sort_order: p.display_order ?? p.sort_order ?? 1,
+    })) as Plan[];
   } catch {
     if (productId) {
       return DEFAULT_PLANS.filter((p) => p.product_id === productId);
@@ -234,7 +243,7 @@ export async function getPlanById(planId: string): Promise<Plan | null> {
       .from('plans')
       .select('*, product:products(*)')
       .eq('id', planId)
-      .single();
+      .maybeSingle();
 
     if (error || !data) {
       const fallback = DEFAULT_PLANS.find((p) => p.id === planId);
@@ -244,7 +253,10 @@ export async function getPlanById(planId: string): Promise<Plan | null> {
       }
       return null;
     }
-    return data as Plan;
+    return {
+      ...(data as any),
+      sort_order: (data as any).display_order ?? (data as any).sort_order ?? 1,
+    } as Plan;
   } catch {
     const fallback = DEFAULT_PLANS.find((p) => p.id === planId);
     if (fallback) {
@@ -257,21 +269,27 @@ export async function getPlanById(planId: string): Promise<Plan | null> {
 
 export async function saveProduct(product: Partial<Product>): Promise<{ success: boolean; data?: Product; error?: string }> {
   try {
-    if (product.id) {
+    const payload: any = { ...product };
+    if ('sort_order' in payload) {
+      payload.display_order = payload.sort_order;
+      delete payload.sort_order;
+    }
+
+    if (payload.id) {
       const { data, error } = await supabase
         .from('products')
-        .update(product)
-        .eq('id', product.id)
+        .update(payload)
+        .eq('id', payload.id)
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return { success: true, data: data as Product };
     } else {
       const { data, error } = await supabase
         .from('products')
-        .insert([{ ...product, created_at: new Date().toISOString() }])
+        .insert([{ ...payload, created_at: new Date().toISOString() }])
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return { success: true, data: data as Product };
     }
@@ -287,21 +305,24 @@ export async function deleteProduct(productId: string): Promise<boolean> {
 
 export async function savePlan(plan: Partial<Plan>): Promise<{ success: boolean; data?: Plan; error?: string }> {
   try {
-    if (plan.id) {
+    const payload: any = { ...plan };
+    delete payload.sort_order;
+
+    if (payload.id) {
       const { data, error } = await supabase
         .from('plans')
-        .update(plan)
-        .eq('id', plan.id)
+        .update(payload)
+        .eq('id', payload.id)
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return { success: true, data: data as Plan };
     } else {
       const { data, error } = await supabase
         .from('plans')
-        .insert([{ ...plan, created_at: new Date().toISOString() }])
+        .insert([{ ...payload, created_at: new Date().toISOString() }])
         .select()
-        .single();
+        .maybeSingle();
       if (error) throw error;
       return { success: true, data: data as Plan };
     }
