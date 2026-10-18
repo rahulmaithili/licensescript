@@ -33,15 +33,15 @@ export const PricingPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>Straightforward Licensing</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold border border-orange-500/20">
+          <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+          <span>Indane • HP Gas • Bharat Gas Distributorship Packages</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white">
-          Simple, Transparent Plans
+          गैस एजेंसी लाइसेंस रेट लिस्ट
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-          Choose between affordable monthly licenses or lifetime agency licenses with unlimited updates.
+          1 काउंटर ट्रायल से लेकर 5 काउंटर मास्टर पैकेज तक — अपनी LPG एजेंसी की जरूरत अनुसार सबसे उपयुक्त प्लान चुनें।
         </p>
 
         {/* Product Filter Tabs */}

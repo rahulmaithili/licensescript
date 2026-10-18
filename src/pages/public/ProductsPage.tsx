@@ -38,15 +38,15 @@ export const ProductsPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Official Software Releases</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-xs font-bold border border-orange-500/20">
+          <Sparkles className="w-3.5 h-3.5 text-orange-500" />
+          <span>Indane • HP Gas • Bharat Gas Verified Tools</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white">
-          Software Catalog & Extensions
+          गैस एजेंसी सॉफ्टवेयर और टूल्स कैटलॉग
         </h1>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400">
-          Professional grade marketing automation scripts and browser extensions with cryptographic hardware binding.
+          LPG डिस्ट्रीब्यूटरों के लिए विशेष रूप से डिज़ाइन किए गए CDCMS Pro Multi-Tool, फास्ट कैश मेमो प्रिंटर और बल्क रीफिल एक्सटेंशन।
         </p>
       </div>
 
