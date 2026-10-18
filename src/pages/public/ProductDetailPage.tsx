@@ -165,7 +165,7 @@ export const ProductDetailPage: React.FC = () => {
             >
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                  {plan.billing_period.replace('_', ' ')}
+                  {(plan.billing_period || (plan.is_lifetime ? 'lifetime' : 'monthly')).replace('_', ' ')}
                 </span>
                 <h4 className="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
                   {plan.name}

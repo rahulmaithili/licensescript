@@ -239,10 +239,21 @@ export async function getPlans(productId?: string): Promise<Plan[]> {
       }
       return DEFAULT_PLANS;
     }
-    return data.map((p: any) => ({
-      ...p,
-      sort_order: p.display_order ?? p.sort_order ?? 1,
-    })) as Plan[];
+    return data.map((p: any) => {
+      let bp = p.billing_period;
+      if (!bp) {
+        if (p.is_lifetime || p.duration_days >= 3650) bp = 'lifetime';
+        else if (p.duration_days >= 365) bp = 'yearly';
+        else if (p.duration_days >= 180) bp = 'semi_annual';
+        else if (p.duration_days >= 90) bp = 'quarterly';
+        else bp = 'monthly';
+      }
+      return {
+        ...p,
+        billing_period: bp,
+        sort_order: p.display_order ?? p.sort_order ?? 1,
+      };
+    }) as Plan[];
   } catch {
     if (productId) {
       return DEFAULT_PLANS.filter((p) => p.product_id === productId);
@@ -267,9 +278,19 @@ export async function getPlanById(planId: string): Promise<Plan | null> {
       }
       return null;
     }
+    const raw: any = data;
+    let bp = raw.billing_period;
+    if (!bp) {
+      if (raw.is_lifetime || raw.duration_days >= 3650) bp = 'lifetime';
+      else if (raw.duration_days >= 365) bp = 'yearly';
+      else if (raw.duration_days >= 180) bp = 'semi_annual';
+      else if (raw.duration_days >= 90) bp = 'quarterly';
+      else bp = 'monthly';
+    }
     return {
-      ...(data as any),
-      sort_order: (data as any).display_order ?? (data as any).sort_order ?? 1,
+      ...raw,
+      billing_period: bp,
+      sort_order: raw.display_order ?? raw.sort_order ?? 1,
     } as Plan;
   } catch {
     const fallback = DEFAULT_PLANS.find((p) => p.id === planId);
