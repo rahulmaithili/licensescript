@@ -136,4 +136,56 @@ To apply:
 4. Deploy! Your site will be live with full SPA routing and serverless verification endpoints.
 
 ---
+
+## ⚡ Premium Backend APIs
+
+Three new admin endpoints plus hardened license verification. All new functions live in `netlify/functions/*.cjs` (CommonJS) and are auto-mapped by `netlify.toml`'s `/api/*` → `/.netlify/functions/:splat` redirect — no redirect changes needed.
+
+### Auth
+`license-analytics`, `webhooks`, and `trial-license` require the admin key header:
+`x-api-key: <LICENSE_API_KEY env var>` — missing/mismatch → `401 {"success":false,"message":"Unauthorized"}`.
+`/verify` (public) needs no auth.
+
+### POST /api/trial-license — issue a trial key
+Body: `{"email":"user@example.com","product_id":"<uuid, optional>","days":7}` (days default 7, clamped 1–30).
+```json
+{ "success": true, "license_key": "LW-TRIAL-AB3F-9K2Q", "expires_at": "2026-10-25", "days": 7, "trial": true }
+```
+Keys use the unambiguous alphabet `ABCDEFGHJKMNPQRSTUVWXYZ23456789`. If `is_trial` isn't migrated yet, insert retries without it.
+
+### GET /api/license-analytics (or POST `{"action":"summary"}`)
+```json
+{
+  "success": true,
+  "data": {
+    "license_counts": { "active": 120, "expired": 34 },
+    "expiring_7_days": 12,
+    "activations_today": 45,
+    "revenue_by_month": [ { "month": "2026-10", "total": 45230.50 } ],
+    "top_products": [ { "product_id": "<uuid>", "product_name": "Pro Ext", "count": 88 } ]
+  },
+  "meta": { "server_time": "2026-10-18T13:00:00.000Z" }
+}
+```
+
+### /api/webhooks — register / dispatch / list
+- `POST {"action":"register","event":"payment.succeeded","url":"https://..."}`
+  → `{"success":true,"webhook":{"id":"<uuid>","event":"payment.succeeded","url":"https://..."}}`
+  (URL must start with `https://`; `http://localhost` allowed for dev. Allowed events: `license.activated`, `license.expired`, `license.revoked`, `payment.succeeded`.)
+- `POST {"action":"dispatch","event":"license.expired","payload":{"license_key":"LW-..."}}`
+  → `{"success":true,"dispatched":2,"results":[{"url":"https://...","ok":true,"status":200}]}`
+  (5s per-target timeout, best-effort; dispatches are logged to `api_logs`.)
+- `GET ?action=list` (or POST `{"action":"list"}`) → `{"success":true,"webhooks":[...]}`
+
+### verify-license additions (`/verify` — existing fields unchanged)
+- **Rate limit:** 60 req/min per IP (in-memory). On exceed → `429 {"valid":false,"status":"rate_limited","message":"Too many requests. Please retry shortly."}`.
+- **Every** JSON response now carries `meta: { server_time, rate_limit: { limit: 60, remaining } }`.
+- **Grace period:** expired ≤ `grace_days` (per-license, default 3) → `valid:true, status:"grace"`, negative `days_left`, `expires_at`, `product_name`, `plan_name`, `max_devices`, `customer_name`, `renewal_url`, message `"License expired — you are in a X-day grace period. Please renew soon."` Overdue beyond grace → existing `expired` response.
+- **Trial licenses:** when `is_trial` is true, both `active` and `grace` responses include `trial:true` and `trial_ends_at` (the expiry date).
+- **Logging:** each decision is fire-and-forget inserted into `api_logs` (`verify-license`, key truncated to 64 chars, ip, status, `{device_name, days_left}`) — logging failures never break the response.
+
+### Migration
+Run `supabase/migrations/20261018000000_premium_features.sql` in the Supabase SQL editor: creates `webhooks` + `api_logs`, adds `licenses.is_trial`, `licenses.grace_days`, `licenses.current_devices`, `license_activations.last_seen_at` (existing `last_seen` untouched), indexes, and RLS (admin-only `api_logs`, read-active `webhooks`).
+
+---
 © 2026 LicenseWala Technologies. Designed & Managed by **RM Rahul**.

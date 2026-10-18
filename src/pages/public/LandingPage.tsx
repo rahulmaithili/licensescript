@@ -5,32 +5,25 @@ import {
   ShieldCheck,
   Zap,
   Lock,
-  Cpu,
-  RefreshCw,
   CheckCircle2,
   ArrowRight,
+  ArrowUpRight,
   Sparkles,
   ChevronDown,
   Check,
-  Star,
-  Download,
-  Upload,
-  IndianRupee,
   Flame,
   Printer,
-  FileCheck2,
-  Headphones,
   MapPin,
   XCircle,
-  FileSpreadsheet,
-  FileText,
-  Clock,
-  Layers,
-  CheckCheck,
-  Truck,
-  Database,
   ArrowDownToLine,
-  ArrowUpFromLine,
+  FileSpreadsheet,
+  Clock,
+  IndianRupee,
+  CheckCheck,
+  Building2,
+  CreditCard,
+  Wallet,
+  Plus,
 } from 'lucide-react';
 import { getProducts, getPlans } from '@/services/productService';
 import { formatCurrency } from '@/lib/utils';
@@ -215,154 +208,261 @@ export const LandingPage: React.FC = () => {
     { value: '< 60s', label: 'Instant License Delivery' },
   ];
 
+  const partners = [
+    { name: 'IndianOil', icon: Building2 },
+    { name: 'HP Gas', icon: Flame },
+    { name: 'Bharat Petroleum', icon: Zap },
+    { name: 'Razorpay', icon: CreditCard },
+    { name: 'Cashfree', icon: Wallet },
+  ];
+
+  const pastelChips = [
+    'bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400',
+    'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400',
+    'bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400',
+    'bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400',
+    'bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-400',
+    'bg-sky-100 text-sky-600 dark:bg-sky-500/15 dark:text-sky-400',
+  ];
+
+  const avatarPeople = [
+    { initials: 'RS', bg: 'bg-blue-500' },
+    { initials: 'PK', bg: 'bg-emerald-500' },
+    { initials: 'AM', bg: 'bg-amber-500' },
+    { initials: 'DV', bg: 'bg-rose-500' },
+  ];
+
   return (
-    <div className="space-y-24 pb-20">
-      {/* HERO SECTION */}
-      <section className="relative pt-8 sm:pt-16 lg:pt-20 pb-16 overflow-hidden">
-        {/* Ambient Gradient Glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[360px] bg-gradient-to-tr from-orange-500/20 via-amber-500/20 to-blue-600/15 blur-[140px] pointer-events-none rounded-full" />
-        <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-orange-500/10 blur-[100px] pointer-events-none rounded-full" />
-        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-blue-600/10 blur-[100px] pointer-events-none rounded-full" />
+    <div className="space-y-20 sm:space-y-24 pb-20">
+      {/* ============ HERO ============ */}
+      <section className="relative overflow-hidden">
+        {/* grid pattern + ambient glows */}
+        <div className="absolute inset-0 grid-pattern [mask-image:radial-gradient(ellipse_75%_65%_at_50%_0%,black,transparent)] pointer-events-none" />
+        <div className="absolute -top-24 left-1/4 w-[420px] h-[420px] bg-[#1E40FF]/15 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-48 right-[10%] w-[300px] h-[300px] bg-[#1E40FF]/10 blur-[110px] rounded-full pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
-          {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-blue-500/10 border border-orange-500/30 text-slate-800 dark:text-slate-200 text-xs sm:text-sm font-bold mb-6 shadow-sm backdrop-blur-md">
-            <Flame className="w-4 h-4 text-orange-500" />
-            <span>India's #1 LPG Gas Agency Automation & Licensing Portal</span>
-            <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-500 dark:text-emerald-400 text-[10px] font-extrabold uppercase">
-              2026 Verified
-            </span>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative pt-10 sm:pt-16 lg:pt-20 pb-14">
+          <div className="grid lg:grid-cols-2 gap-14 lg:gap-8 items-center">
+            {/* Left: copy */}
+            <div className="text-center lg:text-left">
+              <div className="pill-badge mb-6">
+                <Flame className="w-3.5 h-3.5" />
+                <span>India&apos;s #1 LPG Gas Agency Automation</span>
+              </div>
 
-          {/* Main Headline */}
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-5xl mx-auto leading-[1.12]">
-            1-Click Area Booking, Bulk Cash Memo &{' '}
-            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-blue-600 bg-clip-text text-transparent">
-              A4 Delivery Sheet Automation
-            </span>{' '}
-            Suite
-          </h1>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
+                1-Click Area Booking, Bulk Cash Memo &{' '}
+                <span className="text-gradient-brand">A4 Delivery Sheet Automation</span>{' '}
+                Suite
+              </h1>
 
-          {/* Subtitle */}
-          <p className="mt-6 text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            The all-in-one daily operational powerhouse for <strong>IndianOil (Indane)</strong>, <strong>HP Gas</strong> & <strong>Bharat Petroleum</strong> distributors. Fast-track <strong>1-Click Area-Wise Booking</strong>, <strong>Batch Cash Memo Auto-Print</strong>, <strong>1-Click Booking Canceller</strong>, <strong>Instant Download & Upload</strong>, and <strong>A4 Multi-Cashmemo Delivery Run-Sheets</strong>.
-          </p>
+              <p className="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                The all-in-one daily operational powerhouse for <strong>IndianOil (Indane)</strong>, <strong>HP Gas</strong> &amp; <strong>Bharat Petroleum</strong> distributors. Fast-track <strong>1-Click Area-Wise Booking</strong>, <strong>Batch Cash Memo Auto-Print</strong>, <strong>1-Click Booking Canceller</strong>, <strong>Instant Download &amp; Upload</strong>, and <strong>A4 Multi-Cashmemo Delivery Run-Sheets</strong>.
+              </p>
 
-          {/* Real Logos Showcase Cards */}
-          <div className="mt-12">
-            <GasBrandsShowcase compact={false} />
-          </div>
+              <div className="mt-8 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4">
+                <Link to="/products" className="btn-brand w-full sm:w-auto">
+                  <span>Get Started Free</span>
+                  <span className="w-8 h-8 rounded-full bg-white/25 flex items-center justify-center">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </span>
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-sm hover:border-[#1E40FF]/50 hover:text-[#1E40FF] dark:hover:text-[#8fa0ff] transition-all shadow-sm"
+                >
+                  View Pricing
+                </Link>
+              </div>
 
-          {/* CTA Buttons */}
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/products"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-blue-600 hover:opacity-95 text-white font-extrabold text-base shadow-xl shadow-orange-500/25 transition-all hover:scale-105 flex items-center justify-center gap-2.5"
-            >
-              <GasAgencyMasterLogo size={24} />
-              <span>Explore Agency Tools & Packages</span>
-              <ArrowRight className="w-5 h-5 ml-0.5" />
-            </Link>
-
-            <Link
-              to="/pricing"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-extrabold text-base hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center gap-2 shadow-sm"
-            >
-              <span>View Transparent Pricing</span>
-            </Link>
-          </div>
-
-          {/* Trust Highlights Strip */}
-          <div className="mt-14 pt-8 border-t border-slate-200 dark:border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto text-xs text-slate-600 dark:text-slate-400">
-            <div className="flex items-center justify-center gap-2 font-semibold">
-              <Zap className="w-4 h-4 text-amber-500" />
-              <span>1-Click Area Booking</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 font-semibold">
-              <Printer className="w-4 h-4 text-blue-500" />
-              <span>A4 Cash Memo & Run-Sheet</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 font-semibold">
-              <XCircle className="w-4 h-4 text-rose-500" />
-              <span>1-Click Auto-Canceller</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 font-semibold">
-              <Lock className="w-4 h-4 text-emerald-500" />
-              <span>Anti-Clone PC Machine Lock</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS RIBBON */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-8 sm:p-10 shadow-2xl backdrop-blur-xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-slate-800">
-            {stats.map((stat, idx) => (
-              <div key={idx} className={idx > 0 ? 'pt-4 md:pt-0' : ''}>
-                <div className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">
-                  {stat.value}
+              {/* Avatar cluster + social proof */}
+              <div className="mt-8 flex items-center justify-center lg:justify-start gap-3">
+                <div className="flex -space-x-2.5">
+                  {avatarPeople.map((a) => (
+                    <span
+                      key={a.initials}
+                      className={`w-9 h-9 rounded-full ${a.bg} text-white text-[11px] font-extrabold flex items-center justify-center border-2 border-white dark:border-slate-950`}
+                    >
+                      {a.initials}
+                    </span>
+                  ))}
+                  <span className="w-9 h-9 rounded-full bg-[#1E40FF] text-white text-[10px] font-extrabold flex items-center justify-center border-2 border-white dark:border-slate-950">
+                    1.2k
+                  </span>
                 </div>
-                <div className="text-xs sm:text-sm text-slate-400 font-semibold mt-1">
-                  {stat.label}
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 text-left">
+                  Trusted by <strong className="text-slate-900 dark:text-white">1,200+</strong> gas agencies
+                </p>
+              </div>
+            </div>
+
+            {/* Right: floating license-key mockup */}
+            <div className="relative flex justify-center lg:justify-end px-4">
+              <span className="plus-decor absolute top-0 left-6 sm:left-14" aria-hidden="true" />
+              <span className="plus-decor absolute bottom-6 left-0 sm:left-8" aria-hidden="true" />
+              <Plus className="absolute top-10 right-2 sm:right-10 w-6 h-6 text-[#1E40FF]/30 dark:text-[#8fa0ff]/30" aria-hidden="true" />
+
+              <div className="relative">
+                <div className="float-y card-premium shadow-brand p-6 sm:p-7 w-[320px] sm:w-[360px] relative z-10">
+                  <div className="flex items-start justify-between">
+                    <div className="w-12 h-12 rounded-2xl bg-[#1E40FF]/10 dark:bg-[#1E40FF]/20 flex items-center justify-center">
+                      <KeyRound className="w-6 h-6 text-[#1E40FF] dark:text-[#8fa0ff]" />
+                    </div>
+                    <span className="pill-badge">28 days left</span>
+                  </div>
+                  <div className="mt-5">
+                    <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">
+                      License Key
+                    </div>
+                    <div className="mt-1.5 font-mono text-2xl font-bold tracking-wider text-slate-900 dark:text-white">
+                      LW-7X2K-9QPD
+                    </div>
+                  </div>
+                  <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="w-4 h-4" />
+                      Verified
+                    </span>
+                    <span className="text-xs font-semibold text-slate-400">HWID locked</span>
+                  </div>
+                  <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-[#1E40FF] to-[#1740D6]" />
+                  </div>
+                </div>
+
+                {/* Floating stat chips */}
+                <div className="float-y-slow hidden sm:flex absolute -left-24 top-6 card-premium shadow-brand px-4 py-3 items-center gap-2.5 z-20">
+                  <span className="w-9 h-9 rounded-full bg-emerald-500/15 flex items-center justify-center">
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-black text-slate-900 dark:text-white leading-none">70% saved</span>
+                    <span className="block text-[11px] text-slate-500 mt-0.5">stationery cost</span>
+                  </span>
+                </div>
+                <div className="float-y hidden sm:flex absolute -right-16 bottom-8 card-premium shadow-brand px-4 py-3 items-center gap-2.5 z-20">
+                  <span className="w-9 h-9 rounded-full bg-[#1E40FF]/10 flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-[#1E40FF] dark:text-[#8fa0ff]" />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-black text-slate-900 dark:text-white leading-none">{'<60s'}</span>
+                    <span className="block text-[11px] text-slate-500 mt-0.5">key delivery</span>
+                  </span>
                 </div>
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Brand logos showcase */}
+          <div className="mt-14">
+            <GasBrandsShowcase compact={false} />
           </div>
         </div>
       </section>
 
-      {/* CORE AUTOMATION CAPABILITIES (USER'S EXACT SUITE FEATURES) */}
+      {/* ============ PARTNER BAND ============ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400 mb-2">
-            <Sparkles className="w-4 h-4 text-orange-500" />
-            <span>Built For Real Gas Agency Counter Workflows</span>
+        <div className="relative rounded-[28px] bg-gradient-to-br from-[#1E40FF] to-[#1740D6] overflow-hidden py-14 sm:py-16 shadow-brand">
+          {/* giant outlined background text */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden" aria-hidden="true">
+            <span className="outline-text text-[24vw] lg:text-[10.5rem] font-black tracking-tight whitespace-nowrap leading-none">
+              AUTOMATION
+            </span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-            Supercharge Your Agency Operations
+          <div className="relative z-10 text-center px-6">
+            <p className="text-white/95 text-lg sm:text-2xl font-bold max-w-2xl mx-auto leading-snug">
+              Partnering with top tiers to revolutionize agency services
+            </p>
+            <div className="mt-9 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+              <div className="marquee-track">
+                {[0, 1].map((copy) => (
+                  <div key={copy} className="flex items-center gap-12 pr-12" aria-hidden={copy === 1}>
+                    {partners.map((partner) => {
+                      const Icon = partner.icon;
+                      return (
+                        <span
+                          key={partner.name}
+                          className="flex items-center gap-2.5 text-white/90 font-bold text-lg whitespace-nowrap"
+                        >
+                          <Icon className="w-5 h-5" />
+                          {partner.name}
+                        </span>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============ STATS ============ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {stats.map((stat, idx) => (
+            <div
+              key={idx}
+              className="card-premium shadow-brand p-6 sm:p-8 text-center hover:-translate-y-1 transition-transform duration-300"
+            >
+              <div className="text-3xl sm:text-4xl font-black text-gradient-brand">
+                {stat.value}
+              </div>
+              <div className="mt-1.5 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ============ FEATURES ============ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <span className="pill-badge mb-4">
+            <Sparkles className="w-3.5 h-3.5" />
+            Capabilities
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
+            Experience the Future of <span className="text-gradient-brand">Agency Automation</span>
           </h2>
-          <p className="mt-3 text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="mt-4 text-base text-slate-600 dark:text-slate-400 leading-relaxed">
             Everything your counter staff and delivery fleet need — from 1-click area segregation and bulk memo printing to automated cancellations and A4 delivery sheets.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {coreFeatures.map((feat) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {coreFeatures.map((feat, fi) => {
             const Icon = feat.icon;
             return (
               <div
                 key={feat.id}
-                className="group relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 shadow-xl hover:shadow-2xl hover:border-orange-500/50 transition-all duration-300 flex flex-col justify-between"
+                className="card-premium group p-7 sm:p-8 shadow-brand hover:-translate-y-1.5 hover:border-[#1E40FF]/40 transition-all duration-300 flex flex-col"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div
-                      className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${feat.gradient} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}
-                    >
-                      <Icon className="w-7 h-7" />
+                <div className="flex items-start justify-between gap-3 mb-6">
+                  <div
+                    className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${pastelChips[fi % pastelChips.length]} group-hover:scale-110 transition-transform`}
+                  >
+                    <Icon className="w-7 h-7" />
+                  </div>
+                  <span className="pill-badge">{feat.badge}</span>
+                </div>
+
+                <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-3 group-hover:text-[#1E40FF] dark:group-hover:text-[#8fa0ff] transition-colors">
+                  {feat.title}
+                </h3>
+
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                  {feat.description}
+                </p>
+
+                <div className="mt-auto space-y-2.5 pt-5 border-t border-slate-100 dark:border-slate-800">
+                  {feat.bullets.map((bullet, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5 text-xs font-medium text-slate-700 dark:text-slate-300">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{bullet}</span>
                     </div>
-                    <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                      {feat.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-3 group-hover:text-orange-500 transition-colors">
-                    {feat.title}
-                  </h3>
-
-                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                    {feat.description}
-                  </p>
-
-                  <div className="space-y-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
-                    {feat.bullets.map((bullet, idx) => (
-                      <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{bullet}</span>
-                      </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
             );
@@ -370,17 +470,18 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* DAILY AGENCY WORKFLOW TIMELINE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+      {/* ============ DAILY WORKFLOW ============ */}
+      <section id="how-it-works" className="bg-[#EEF1FF] dark:bg-[#0A1330] py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="inline-block px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-wider border border-orange-500/20 mb-3">
+            <span className="pill-badge mb-4">
+              <Clock className="w-3.5 h-3.5" />
               Automated Daily Routine
             </span>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-white">
+            <h3 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
               How Your Agency Runs in 4 Automated Steps
             </h3>
-            <p className="text-slate-400 text-sm mt-2">
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-3">
               Save 4+ hours daily for your billing counter and delivery staff.
             </p>
           </div>
@@ -391,30 +492,28 @@ export const LandingPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-6 relative flex flex-col justify-between hover:border-orange-500/50 transition-all group"
+                  className="card-premium p-6 shadow-brand hover:-translate-y-1 hover:border-[#1E40FF]/40 transition-all group"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-2xl font-black font-mono text-slate-500 group-hover:text-orange-400 transition-colors">
-                        {item.step}
-                      </span>
-                      <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-slate-700 text-slate-300">
-                        {item.time}
-                      </span>
-                    </div>
-
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 border ${item.color}`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-
-                    <h4 className="font-extrabold text-base text-white mb-2">
-                      {item.title}
-                    </h4>
-
-                    <p className="text-xs text-slate-400 leading-relaxed">
-                      {item.desc}
-                    </p>
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-3xl font-black font-mono text-slate-300 dark:text-slate-600 group-hover:text-[#1E40FF] transition-colors">
+                      {item.step}
+                    </span>
+                    <span className="px-2.5 py-1 rounded-full bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] text-[11px] font-extrabold font-mono border border-[#1E40FF]/20">
+                      {item.time}
+                    </span>
                   </div>
+
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 border ${item.color}`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+
+                  <h4 className="font-extrabold text-base text-slate-900 dark:text-white mb-2">
+                    {item.title}
+                  </h4>
+
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               );
             })}
@@ -422,28 +521,28 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS & EXTENSIONS */}
+      {/* ============ PRODUCTS ============ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400 mb-1">
-              <Flame className="w-4 h-4 text-orange-500" />
-              <span>Tested & Verified Software Packages</span>
-            </div>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
-              LPG Gas Agency Tools & Extensions
+            <span className="pill-badge mb-3">
+              <Flame className="w-3.5 h-3.5" />
+              Tested &amp; Verified Software Packages
+            </span>
+            <h3 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+              LPG Gas Agency Tools &amp; Extensions
             </h3>
           </div>
           <Link
             to="/products"
-            className="text-sm font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1.5"
+            className="text-sm font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline flex items-center gap-1.5 shrink-0"
           >
             <span>View All Packages</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {products.map((p, idx) => {
             const productPlans = plans.filter((pl) => pl.product_id === p.id);
             const lowestPrice = productPlans.length > 0 ? Math.min(...productPlans.map((pl) => pl.price)) : 499;
@@ -451,7 +550,7 @@ export const LandingPage: React.FC = () => {
             return (
               <div
                 key={p.id}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between hover:shadow-2xl hover:border-orange-500/40 transition-all group"
+                className="card-premium p-6 sm:p-7 shadow-brand flex flex-col hover:-translate-y-1.5 hover:border-[#1E40FF]/50 hover:shadow-[0_24px_50px_-18px_rgba(30,64,255,0.4)] transition-all duration-300 group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
@@ -476,12 +575,10 @@ export const LandingPage: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-                      {p.category || 'Gas Agency'}
-                    </span>
+                    <span className="pill-badge">{p.category || 'Gas Agency'}</span>
                   </div>
 
-                  <h4 className="font-extrabold text-xl text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-orange-500 transition-colors">
+                  <h4 className="font-extrabold text-xl text-slate-900 dark:text-white leading-snug mb-2 group-hover:text-[#1E40FF] dark:group-hover:text-[#8fa0ff] transition-colors">
                     {p.name}
                   </h4>
 
@@ -499,7 +596,7 @@ export const LandingPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div>
                     <span className="text-[10px] text-slate-400 uppercase font-semibold">Starts from</span>
                     <div className="font-black text-2xl text-slate-900 dark:text-white">
@@ -509,7 +606,7 @@ export const LandingPage: React.FC = () => {
 
                   <Link
                     to={`/products/${p.slug}`}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-xs shadow-md shadow-orange-500/20 transition-all flex items-center gap-1.5"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white font-extrabold text-xs shadow-[0_10px_25px_-8px_rgba(30,64,255,0.5)] transition-all hover:-translate-y-0.5"
                   >
                     <span>Get License</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -521,30 +618,30 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* PRICING PLANS */}
+      {/* ============ PRICING ============ */}
       <section id="pricing" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-1.5 text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400 mb-2">
-            <IndianRupee className="w-4 h-4" />
-            <span>Standardized Distributorship Rates</span>
-          </div>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+          <span className="pill-badge mb-3">
+            <IndianRupee className="w-3.5 h-3.5" />
+            Standardized Distributorship Rates
+          </span>
+          <h3 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Choose Your Agency Plan
           </h3>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
             Every product features the exact same 4 flexible subscription options: 1 Month, 3 Months, 6 Months, or 1 Year. Instant key delivery with GST invoice.
           </p>
 
-          {/* Product Switcher Tabs */}
-          <div className="pt-6 flex items-center justify-center gap-2 flex-wrap">
+          {/* Product switcher pill tabs */}
+          <div className="pt-7 flex items-center justify-center gap-2 flex-wrap">
             {products.map((p) => (
               <button
                 key={p.id}
                 onClick={() => setSelectedPricingProductId(p.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                className={`px-5 py-2 rounded-full text-xs font-bold transition-all ${
                   selectedPricingProductId === p.id
-                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30'
-                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-orange-500/30'
+                    ? 'bg-[#1E40FF] text-white shadow-[0_10px_25px_-8px_rgba(30,64,255,0.55)]'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[#1E40FF]/40 hover:text-[#1E40FF] dark:hover:text-[#8fa0ff]'
                 }`}
               >
                 {p.name}
@@ -573,28 +670,28 @@ export const LandingPage: React.FC = () => {
             return (
               <div
                 key={plan.id}
-                className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all relative ${
+                className={`rounded-[28px] p-6 sm:p-7 flex flex-col transition-all hover:-translate-y-1 relative ${
                   isPopular
-                    ? 'bg-gradient-to-b from-orange-950/40 via-slate-900 to-slate-900 border-2 border-orange-500 shadow-2xl shadow-orange-500/20'
+                    ? 'bg-white dark:bg-slate-900 border-2 border-[#1E40FF] shadow-[0_24px_50px_-16px_rgba(30,64,255,0.45)]'
                     : isYearly
-                    ? 'bg-gradient-to-b from-blue-950/40 via-slate-900 to-slate-900 border-2 border-blue-500/80 shadow-blue-500/10'
-                    : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl'
+                    ? 'bg-white dark:bg-slate-900 border-2 border-sky-400/60 shadow-brand'
+                    : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-brand'
                 }`}
               >
                 {isPopular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
-                    Most Popular (6 Months)
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#1E40FF] text-white text-[11px] font-extrabold uppercase tracking-wider shadow-[0_10px_20px_-8px_rgba(30,64,255,0.6)] whitespace-nowrap">
+                    Most Popular
                   </span>
                 )}
                 {isYearly && !isPopular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
-                    Best Value (1 Year)
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-sky-500 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
+                    Best Value
                   </span>
                 )}
 
                 <div>
                   <div className="mb-4">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1E40FF] dark:text-[#8fa0ff]">
                       {periodLabel} Plan
                     </span>
                     <h4 className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">
@@ -615,7 +712,7 @@ export const LandingPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2.5 py-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
-                    <div className="flex items-center gap-2 font-semibold text-orange-600 dark:text-orange-400">
+                    <div className="flex items-center gap-2 font-semibold text-[#1E40FF] dark:text-[#8fa0ff]">
                       <Lock className="w-4 h-4 shrink-0" />
                       <span>{plan.max_devices} Counter PC Lock</span>
                     </div>
@@ -630,11 +727,9 @@ export const LandingPage: React.FC = () => {
 
                 <Link
                   to={`/checkout/${plan.id}`}
-                  className={`w-full mt-6 py-3 rounded-2xl font-extrabold text-xs text-center shadow-lg transition-all ${
+                  className={`w-full mt-6 py-3 rounded-full font-extrabold text-xs text-center transition-all ${
                     isPopular
-                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/25'
-                      : isYearly
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/25'
+                      ? 'bg-[#1E40FF] hover:bg-[#1740D6] text-white shadow-[0_14px_30px_-10px_rgba(30,64,255,0.6)]'
                       : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700'
                   }`}
                 >
@@ -646,62 +741,65 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* WHY CHOOSE BANNER */}
+      {/* ============ WHY CHOOSE BANNER ============ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div className="relative rounded-[28px] bg-gradient-to-br from-[#1E40FF] via-[#2447f5] to-[#1740D6] p-8 sm:p-12 shadow-brand overflow-hidden">
+          <div className="absolute -top-24 -right-24 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-28 -left-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-bold mb-4 border border-orange-500/20">
-                <Flame className="w-4 h-4 text-orange-400" />
-                <span>Trusted LPG Distributorship Partner</span>
-              </div>
-              <h3 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                Turn Hours of Cash Memo & Booking Drudgery into Seconds
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-white text-xs font-bold border border-white/25 mb-5">
+                <Flame className="w-4 h-4" />
+                Trusted LPG Distributorship Partner
+              </span>
+              <h3 className="text-3xl sm:text-4xl font-black text-white leading-tight tracking-tight">
+                Turn Hours of Cash Memo &amp; Booking Drudgery into Seconds
               </h3>
-              <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
+              <p className="mt-4 text-sm sm:text-base text-blue-100 leading-relaxed">
                 No more sluggish server delays, session timeouts, or printing cash memos one-by-one. Our specialized browser extension runs directly on official IndianOil, HPCL, and Bharat Gas distributor portals with zero lag.
               </p>
 
-              <div className="mt-6 grid grid-cols-2 gap-4 text-xs font-semibold text-slate-200">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="mt-7 grid grid-cols-2 gap-3.5 text-sm font-semibold text-white">
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300 shrink-0" />
                   <span>1-Click Bulk Cash Memo</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300 shrink-0" />
                   <span>A4 Delivery Run-Sheet Generator</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300 shrink-0" />
                   <span>1-Click Area-Wise Sorter</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300 shrink-0" />
                   <span>Batch Booking Auto-Canceller</span>
                 </div>
               </div>
             </div>
 
-            {/* Official Logos Display Card */}
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 sm:p-8 flex flex-col justify-center items-center text-center space-y-6">
-              <div className="text-sm font-bold text-slate-300">
+            {/* Official logos display card */}
+            <div className="rounded-[24px] bg-white/10 border border-white/20 backdrop-blur-sm p-6 sm:p-8 flex flex-col justify-center items-center text-center space-y-6">
+              <div className="text-sm font-bold text-white">
                 All-in-One Multi-Network LPG Compatibility
               </div>
               <div className="flex items-center justify-center gap-6 sm:gap-8 py-2">
                 <div className="flex flex-col items-center gap-2">
                   <IndianOilLogo size={64} className="shadow-lg rounded-2xl" />
-                  <span className="text-xs font-extrabold text-orange-400">IndianOil (Indane)</span>
+                  <span className="text-xs font-extrabold text-white">IndianOil (Indane)</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
                   <HpGasLogo size={64} className="shadow-lg rounded-2xl" />
-                  <span className="text-xs font-extrabold text-blue-400">HP Gas (HPCL)</span>
+                  <span className="text-xs font-extrabold text-white">HP Gas (HPCL)</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
                   <BharatGasLogo size={64} className="shadow-lg rounded-2xl" />
-                  <span className="text-xs font-extrabold text-amber-400">Bharat Gas (BPCL)</span>
+                  <span className="text-xs font-extrabold text-white">Bharat Gas (BPCL)</span>
                 </div>
               </div>
-              <div className="text-xs text-slate-400 max-w-sm">
+              <div className="text-xs text-blue-100 max-w-sm">
                 As soon as your license activates, the extension automatically hooks into each distributor portal without complex configurations.
               </div>
             </div>
@@ -709,15 +807,13 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* FAQ SECTION */}
+      {/* ============ FAQ ============ */}
       <section id="faq" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400">
-            Frequently Asked Questions
-          </h2>
-          <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+        <div className="text-center mb-10">
+          <span className="pill-badge mb-3">FAQ</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight mt-3">
             Everything You Need to Know
-          </h3>
+          </h2>
         </div>
 
         <div className="space-y-4">
@@ -727,21 +823,27 @@ export const LandingPage: React.FC = () => {
             return (
               <div
                 key={index}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm transition-all"
+                className={`card-premium overflow-hidden transition-all ${
+                  isOpen ? 'border-[#1E40FF]/40 shadow-brand' : 'hover:border-[#1E40FF]/30'
+                }`}
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : index)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-slate-900 dark:text-white text-base hover:text-orange-600 dark:hover:text-orange-400"
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-slate-900 dark:text-white text-base hover:text-[#1E40FF] dark:hover:text-[#8fa0ff] transition-colors"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-slate-400 transition-transform ${
-                      isOpen ? 'rotate-180 text-orange-500' : ''
+                  <span
+                    className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 border transition-all duration-300 ${
+                      isOpen
+                        ? 'bg-[#1E40FF] border-[#1E40FF] text-white rotate-180'
+                        : 'border-slate-200 dark:border-slate-700 text-slate-400'
                     }`}
-                  />
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </span>
                 </button>
                 {isOpen && (
-                  <div className="px-5 pb-5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800/80 pt-3">
+                  <div className="px-5 sm:px-6 pb-6 text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-4">
                     {faq.a}
                   </div>
                 )}
@@ -751,28 +853,34 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* FINAL CALL TO ACTION */}
+      {/* ============ FINAL CTA ============ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-orange-600 via-amber-600 to-blue-700 p-8 sm:p-12 text-center text-white relative overflow-hidden shadow-2xl">
-          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <h3 className="text-3xl sm:text-4xl font-extrabold">
+        <div className="relative rounded-[28px] bg-gradient-to-br from-[#1E40FF] to-[#1740D6] p-8 sm:p-14 text-center text-white overflow-hidden shadow-brand">
+          <div className="absolute -top-20 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 right-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+          <span className="plus-decor absolute top-8 left-10" style={{ color: 'rgba(255,255,255,0.4)' }} aria-hidden="true" />
+          <span className="plus-decor absolute bottom-10 right-12" style={{ color: 'rgba(255,255,255,0.4)' }} aria-hidden="true" />
+
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <h3 className="text-3xl sm:text-5xl font-black tracking-tight">
               Digitize Your Gas Agency Counter Today!
             </h3>
-            <p className="text-sm sm:text-base text-orange-100">
+            <p className="mt-4 text-sm sm:text-base text-blue-100">
               Complete your checkout in under 60 seconds and receive your active license key instantly.
             </p>
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="pt-7 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/products"
-                className="px-8 py-3.5 rounded-2xl bg-white text-slate-900 font-extrabold text-sm shadow-xl hover:bg-orange-50 transition-all hover:scale-105"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white text-[#1E40FF] font-extrabold text-sm shadow-xl hover:bg-blue-50 transition-all hover:-translate-y-0.5"
               >
-                Explore Gas Agency Tools
+                <span>Explore Gas Agency Tools</span>
+                <ArrowUpRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/pricing"
-                className="px-8 py-3.5 rounded-2xl bg-slate-900/60 hover:bg-slate-900 text-white font-bold text-sm border border-white/20 transition-all"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-full border-2 border-white/40 text-white font-bold text-sm hover:bg-white/10 transition-all"
               >
-                View Plans & Pricing
+                View Plans &amp; Pricing
               </Link>
             </div>
           </div>

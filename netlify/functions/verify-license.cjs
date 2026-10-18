@@ -1,10 +1,44 @@
 // Netlify Serverless Function: Extension & Application License Verification
 // Public Endpoint: GET/POST /verify OR /.netlify/functions/verify-license
+// Hardened: per-IP rate limiting (60 req/min), grace period, trial flags,
+// best-effort api_logs logging. All legacy response fields preserved.
 
 if (typeof globalThis.WebSocket === "undefined") {
   globalThis.WebSocket = class {};
 }
 const { createClient } = require("@supabase/supabase-js");
+
+// ---------- In-memory per-IP rate limiting (module scope, persists across warm invocations) ----------
+const RATE_LIMIT = 60; // requests
+const RATE_WINDOW_MS = 60 * 1000; // per 60 seconds
+const ipHits = new Map(); // ip -> array of epoch-ms timestamps
+
+function getClientIp(event) {
+  const headers = event.headers || {};
+  const forwarded = headers["x-forwarded-for"] || headers["X-Forwarded-For"] || "";
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return headers["client-ip"] || headers["Client-Ip"] || headers["x-real-ip"] || "unknown";
+}
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  let hits = ipHits.get(ip) || [];
+  // Prune timestamps older than the window
+  hits = hits.filter((t) => now - t < RATE_WINDOW_MS);
+  if (hits.length >= RATE_LIMIT) {
+    ipHits.set(ip, hits);
+    return { allowed: false, remaining: 0 };
+  }
+  hits.push(now);
+  ipHits.set(ip, hits);
+  // Occasional cleanup of stale entries so the Map doesn't grow forever
+  if (ipHits.size > 2000) {
+    for (const [k, v] of ipHits) {
+      if (v.length === 0 || now - v[v.length - 1] >= RATE_WINDOW_MS) ipHits.delete(k);
+    }
+  }
+  return { allowed: true, remaining: RATE_LIMIT - hits.length };
+}
 
 exports.handler = async (event, context) => {
   const corsHeaders = {
@@ -16,6 +50,49 @@ exports.handler = async (event, context) => {
 
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 200, headers: corsHeaders, body: "" };
+  }
+
+  // Rate limit state, computed early so every response carries it
+  const ip = getClientIp(event);
+  const rl = checkRateLimit(ip);
+  const meta = {
+    server_time: new Date().toISOString(),
+    rate_limit: { limit: RATE_LIMIT, remaining: rl.remaining }
+  };
+  const respond = (statusCode, body) => ({
+    statusCode,
+    headers: corsHeaders,
+    body: JSON.stringify({ ...body, meta })
+  });
+
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://wyeejbncddpxhwtijkjt.supabase.co";
+  const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u";
+
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+
+  // Best-effort, fire-and-forget logging. Never breaks the response.
+  const fireLog = (payload) => {
+    try {
+      const q = supabase.from("api_logs").insert([payload]);
+      if (q && typeof q.then === "function") q.then(() => {}).catch(() => {});
+    } catch (e) { /* table may not exist yet — silently ignore */ }
+  };
+
+  if (!rl.allowed) {
+    fireLog({
+      function_name: "verify-license",
+      license_key: "",
+      ip,
+      status: "rate_limited",
+      meta: { days_left: null }
+    });
+    return respond(429, {
+      valid: false,
+      status: "rate_limited",
+      message: "Too many requests. Please retry shortly."
+    });
   }
 
   try {
@@ -35,24 +112,15 @@ exports.handler = async (event, context) => {
     }
 
     if (!licenseKey) {
-      return {
-        statusCode: 400,
-        headers: corsHeaders,
-        body: JSON.stringify({
-          valid: false,
-          status: "invalid",
-          message: "License key is required."
-        })
-      };
+      fireLog({ function_name: "verify-license", license_key: "", ip, status: "invalid", meta: { device_name: deviceName, days_left: null } });
+      return respond(400, {
+        valid: false,
+        status: "invalid",
+        message: "License key is required."
+      });
     }
 
     const cleanKey = licenseKey.trim();
-    const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "https://wyeejbncddpxhwtijkjt.supabase.co";
-    const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u";
-
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      auth: { persistSession: false, autoRefreshToken: false }
-    });
 
     // 1. Query modern licenses table
     const { data: license, error: licErr } = await supabase
@@ -61,43 +129,48 @@ exports.handler = async (event, context) => {
       .eq("license_key", cleanKey)
       .single();
 
+    const logDecision = (status, daysLeft) =>
+      fireLog({
+        function_name: "verify-license",
+        license_key: cleanKey.slice(0, 64),
+        ip,
+        status,
+        meta: { device_name: deviceName, days_left: daysLeft ?? null }
+      });
+
     if (license && !licErr) {
       // Check if locked
       if (license.is_locked || license.status === "locked") {
-        return {
-          statusCode: 200,
-          headers: corsHeaders,
-          body: JSON.stringify({
-            valid: false,
-            status: "locked",
-            message: "This license has been locked by the administrator. Contact support@licensewala.com"
-          })
-        };
+        logDecision("locked", null);
+        return respond(200, {
+          valid: false,
+          status: "locked",
+          message: "This license has been locked by the administrator. Contact support@licensewala.com"
+        });
       }
 
       // Check if paused or revoked
       if (license.status === "paused") {
-        return {
-          statusCode: 200,
-          headers: corsHeaders,
-          body: JSON.stringify({
-            valid: false,
-            status: "paused",
-            message: "Subscription is paused."
-          })
-        };
+        logDecision("paused", null);
+        return respond(200, {
+          valid: false,
+          status: "paused",
+          message: "Subscription is paused."
+        });
       }
       if (license.status === "revoked") {
-        return {
-          statusCode: 200,
-          headers: corsHeaders,
-          body: JSON.stringify({
-            valid: false,
-            status: "revoked",
-            message: "License has been revoked."
-          })
-        };
+        logDecision("revoked", null);
+        return respond(200, {
+          valid: false,
+          status: "revoked",
+          message: "License has been revoked."
+        });
       }
+
+      // Trial marker shared by the active and grace responses
+      const trialFields = license.is_trial === true
+        ? { trial: true, trial_ends_at: license.expiry_date }
+        : {};
 
       // Expiry Check
       const now = new Date();
@@ -115,18 +188,38 @@ exports.handler = async (event, context) => {
       }
 
       if (isExpired) {
-        return {
-          statusCode: 200,
-          headers: corsHeaders,
-          body: JSON.stringify({
-            valid: false,
-            status: "expired",
+        const overdue = Math.abs(daysLeft);
+        const graceDays = (license.grace_days === undefined || license.grace_days === null)
+          ? 3
+          : Number(license.grace_days);
+
+        if (overdue <= graceDays) {
+          // Within grace period: treat as valid
+          logDecision("grace", daysLeft);
+          return respond(200, {
+            valid: true,
+            status: "grace",
             days_left: daysLeft,
-            expiry_date: license.expiry_date,
-            message: `License expired ${Math.abs(daysLeft)} days ago. Please renew your subscription to continue using this extension.`,
+            expires_at: license.expiry_date,
+            product_name: license.product?.name,
+            plan_name: license.plan?.name,
+            max_devices: license.max_devices,
+            customer_name: license.user?.full_name,
+            ...trialFields,
+            message: `License expired — you are in a ${graceDays}-day grace period. Please renew soon.`,
             renewal_url: `https://licensewala.netlify.app/checkout/${license.plan_id || ""}`
-          })
-        };
+          });
+        }
+
+        logDecision("expired", daysLeft);
+        return respond(200, {
+          valid: false,
+          status: "expired",
+          days_left: daysLeft,
+          expiry_date: license.expiry_date,
+          message: `License expired ${overdue} days ago. Please renew your subscription to continue using this extension.`,
+          renewal_url: `https://licensewala.netlify.app/checkout/${license.plan_id || ""}`
+        });
       }
 
       // Device Binding Verification
@@ -142,16 +235,13 @@ exports.handler = async (event, context) => {
 
         if (!existingDevice) {
           if (activeList.length >= license.max_devices) {
-            return {
-              statusCode: 200,
-              headers: corsHeaders,
-              body: JSON.stringify({
-                valid: false,
-                status: "device_limit_reached",
-                message: `Device limit exceeded (${activeList.length}/${license.max_devices} PC). Reset device activations in your account portal.`,
-                portal_url: "https://licensewala.netlify.app/account"
-              })
-            };
+            logDecision("device_limit_reached", daysLeft);
+            return respond(200, {
+              valid: false,
+              status: "device_limit_reached",
+              message: `Device limit exceeded (${activeList.length}/${license.max_devices} PC). Reset device activations in your account portal.`,
+              portal_url: "https://licensewala.netlify.app/account"
+            });
           }
 
           // Register new device
@@ -179,54 +269,43 @@ exports.handler = async (event, context) => {
         }
       }
 
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({
-          valid: true,
-          status: "active",
-          product_name: license.product?.name,
-          plan_name: license.plan?.name,
-          days_left: daysLeft,
-          expires_at: license.expiry_date,
-          max_devices: license.max_devices,
-          customer_name: license.user?.full_name,
-          message: "License verified successfully. Extension features unlocked."
-        })
-      };
+      logDecision("active", daysLeft);
+      return respond(200, {
+        valid: true,
+        status: "active",
+        product_name: license.product?.name,
+        plan_name: license.plan?.name,
+        days_left: daysLeft,
+        expires_at: license.expiry_date,
+        max_devices: license.max_devices,
+        customer_name: license.user?.full_name,
+        ...trialFields,
+        message: "License verified successfully. Extension features unlocked."
+      });
     }
 
     // 2. Fallback check for demo keys or legacy table
     if (cleanKey.startsWith("LW-")) {
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify({
-          valid: true,
-          status: "active",
-          product_name: "Software Extension",
-          days_left: 180,
-          expires_at: new Date(Date.now() + 180 * 86400000).toISOString(),
-          max_devices: 2,
-          message: "Demo license verified successfully."
-        })
-      };
+      logDecision("active", 180);
+      return respond(200, {
+        valid: true,
+        status: "active",
+        product_name: "Software Extension",
+        days_left: 180,
+        expires_at: new Date(Date.now() + 180 * 86400000).toISOString(),
+        max_devices: 2,
+        message: "Demo license verified successfully."
+      });
     }
 
-    return {
-      statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({
-        valid: false,
-        status: "invalid",
-        message: "Invalid license key. Please check your key or buy a license at https://licensewala.netlify.app"
-      })
-    };
+    logDecision("invalid", null);
+    return respond(200, {
+      valid: false,
+      status: "invalid",
+      message: "Invalid license key. Please check your key or buy a license at https://licensewala.netlify.app"
+    });
   } catch (err) {
-    return {
-      statusCode: 500,
-      headers: corsHeaders,
-      body: JSON.stringify({ valid: false, status: "error", message: err.message })
-    };
+    fireLog({ function_name: "verify-license", license_key: "", ip, status: "error", meta: { days_left: null } });
+    return respond(500, { valid: false, status: "error", message: err.message });
   }
 };
