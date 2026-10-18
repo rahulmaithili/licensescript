@@ -14,14 +14,23 @@ import {
   Check,
   Star,
   Download,
+  Upload,
   IndianRupee,
   Flame,
   Printer,
   FileCheck2,
   Headphones,
-  ShieldAlert,
+  MapPin,
+  XCircle,
+  FileSpreadsheet,
+  FileText,
   Clock,
-  Award,
+  Layers,
+  CheckCheck,
+  Truck,
+  Database,
+  ArrowDownToLine,
+  ArrowUpFromLine,
 } from 'lucide-react';
 import { getProducts, getPlans } from '@/services/productService';
 import { formatCurrency } from '@/lib/utils';
@@ -44,34 +53,160 @@ export const LandingPage: React.FC = () => {
     getPlans().then((pl) => setPlans(pl));
   }, []);
 
+  const coreFeatures = [
+    {
+      id: 'area-booking',
+      title: '1-Click Area-Wise Booking Generator',
+      badge: 'Beat & Route Automation',
+      icon: MapPin,
+      gradient: 'from-orange-500 to-amber-500',
+      description:
+        'Instantly sort and generate refill bookings grouped by delivery beat, village, or urban ward. Eliminates hours of manual address sorting and gives delivery boys perfectly structured routes in one click.',
+      bullets: [
+        'Automatic grouping by delivery area & ward',
+        'Assigns designated delivery-boy routes instantly',
+        'Eliminates manual portal address searching',
+      ],
+    },
+    {
+      id: 'cashmemo-print',
+      title: 'High-Speed Cash Memo Batch Printing',
+      badge: 'Instant 1-Click Print',
+      icon: Printer,
+      gradient: 'from-blue-600 to-cyan-500',
+      description:
+        'Print hundreds of cash memos in continuous high-speed batches without opening individual records. Fully compatible with thermal receipt rolls, dot-matrix, and standard desktop laser printers.',
+      bullets: [
+        '1-Click continuous bulk printing',
+        'Thermal, dot-matrix & laser printer ready',
+        'Zero portal lag or page reload delays',
+      ],
+    },
+    {
+      id: 'booking-canceller',
+      title: 'Smart Booking Cancellation Automation Tool',
+      badge: 'Batch Auto-Canceller',
+      icon: XCircle,
+      gradient: 'from-rose-500 to-red-600',
+      description:
+        'Bulk-cancel duplicate, non-serviceable, or customer-cancelled bookings with a single click. Bypasses tedious multi-step confirmation dialogues on official gas portals and saves 20+ clicks per record.',
+      bullets: [
+        'Bulk cancellation without repetitive confirmation clicks',
+        'Prevents backlog buildup in agency queues',
+        'Instant reconciliation of unserviced refills',
+      ],
+    },
+    {
+      id: 'download-upload',
+      title: '1-Click All Booking Download & Portal Upload',
+      badge: 'Instant Portal Sync',
+      icon: ArrowDownToLine,
+      gradient: 'from-emerald-500 to-teal-600',
+      description:
+        'One-click download of the complete active refill queue from SDMS, HPCL CMS, or EBharat. Modify statuses offline or batch upload completed delivery confirmation files back into the portal in seconds.',
+      bullets: [
+        'Instant Excel & CSV data download',
+        '1-Click bulk upload for delivery confirmation',
+        'Anti-session timeout keep-alive technology',
+      ],
+    },
+    {
+      id: 'a4-delivery-sheet',
+      title: 'Quick Print Sheet: A4 Cash Memo & Delivery Sheet System',
+      badge: '70% Paper Cost Savings',
+      icon: FileSpreadsheet,
+      gradient: 'from-purple-600 to-indigo-600',
+      description:
+        'Generate compact multi-up cash memos neatly arranged on standard A4 paper, slashing paper and ribbon expenses. Automatically prints delivery-boy run-sheets complete with customer details and cash collection totals.',
+      bullets: [
+        'Multi-cashmemo layout on single A4 pages',
+        'Organized delivery run-sheets for route drivers',
+        'Cash collection summary & cylinder return log',
+      ],
+    },
+    {
+      id: 'hardware-lock',
+      title: 'Anti-Clone Hardware Machine Lock (HWID)',
+      badge: 'Tamper-Proof Security',
+      icon: Lock,
+      gradient: 'from-amber-600 to-orange-600',
+      description:
+        'Each agency license is cryptographically bound to your counter computer motherboard and CPU ID. Prevents unauthorized software copying while offering 1-click self-service hardware migration.',
+      bullets: [
+        'Hardware-level PC binding protection',
+        '256-bit encrypted tamper-proof license keys',
+        'Self-service counter PC transfer & reset',
+      ],
+    },
+  ];
+
+  const dailyWorkflow = [
+    {
+      step: '01',
+      time: '8:00 AM',
+      title: '1-Click Portal Download',
+      desc: 'Connect to IndianOil, HP Gas, or Bharat Gas portal and download all pending bookings in 1 click.',
+      icon: ArrowDownToLine,
+      color: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    },
+    {
+      step: '02',
+      time: '8:15 AM',
+      title: 'Area-Wise Refill Generation',
+      desc: 'The tool automatically categorizes bookings by delivery areas, beats, and assigned drivers.',
+      icon: MapPin,
+      color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+    },
+    {
+      step: '03',
+      time: '8:30 AM',
+      title: 'A4 Cash Memo & Run-Sheet Print',
+      desc: 'Batch print multi-up A4 cash memos and route delivery sheets for delivery boys to load vehicles.',
+      icon: Printer,
+      color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+    },
+    {
+      step: '04',
+      time: '6:00 PM',
+      title: 'Evening Sync & Auto-Cancellation',
+      desc: '1-Click upload completed deliveries and bulk cancel unserviced refills with zero manual entry.',
+      icon: CheckCheck,
+      color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
+    },
+  ];
+
   const faqs = [
     {
-      q: 'Which LPG distributor portals are supported by the software suite?',
-      a: 'The suite is fully compatible with official distributor portals of IndianOil (Indane SDMS Portal), HP Gas (HPCL CMS / WebPortal), and Bharat Gas (EBharat / BPCL Portal). It works seamlessly in Google Chrome and Microsoft Edge without any portal lag.',
+      q: 'How does the 1-Click Area-Wise Booking Generator work?',
+      a: 'The tool automatically analyzes consumer addresses in your daily booking queue and groups them by pre-configured delivery areas, beats, or wards. With a single click, it prepares organized delivery batches for your drivers without requiring manual Excel filtering.',
+    },
+    {
+      q: 'What is the Quick Print Sheet (A4 Cash Memo & Delivery Sheet System)?',
+      a: 'Instead of printing one receipt per slip, the A4 Quick Print engine packs multiple cash memos onto standard A4 sheets, saving up to 70% on thermal paper and stationery costs. It simultaneously generates driver route run-sheets with customer names, mobile numbers, cylinder counts, and exact cash-to-collect totals.',
+    },
+    {
+      q: 'How does the Smart Booking Cancellation Automation Tool save time?',
+      a: 'In gas company portals (like SDMS or CMS), cancelling unserviced or duplicate refills usually requires clicking through multiple dialogs and reason dropdowns for each consumer. Our auto-cancellation tool lets you select multiple bookings and cancels them in bulk with one click, saving 30+ clicks per record.',
+    },
+    {
+      q: 'Can I download all bookings to Excel and upload delivery statuses back?',
+      a: 'Yes! The 1-Click Download & Upload feature allows you to export all pending or processed bookings into clean Excel/CSV formats. Once delivery is complete, you can upload reconciliation data back to the portal in seconds, maintaining perfect stock and cash synchronization.',
+    },
+    {
+      q: 'Which LPG distributor portals are supported by this suite?',
+      a: 'The suite is fully compatible with official distributor portals of IndianOil (Indane SDMS), HP Gas (HPCL CMS / WebPortal), and Bharat Gas (EBharat / BPCL). It runs inside Google Chrome or Microsoft Edge with zero lag.',
     },
     {
       q: 'How fast do I receive my license key after payment?',
       a: 'Instant Key Delivery in under 60 seconds! The moment your payment succeeds via UPI, QR code, debit/credit card, or net banking, your 256-bit cryptographically verified license key is revealed on screen and sent to your email with a GST tax invoice.',
-    },
-    {
-      q: 'How does Hardware Device Binding (Anti-Clone Machine Lock) work?',
-      a: 'When you activate your license inside your gas agency counter PC browser extension, it securely hashes and binds to that specific motherboard and CPU hardware ID. This prevents unauthorized copying and ensures your agency license remains 100% exclusive to your authorized counter PCs.',
-    },
-    {
-      q: 'What features are included for cash memo printing and refill bookings?',
-      a: 'You get 1-Click Fast Bulk Cash Memo Printing, Automated Refill Booking, Ujjwala PMUY 2.0 KYC batch verification, delivery reconciliation, and automated WhatsApp delivery invoice dispatch to customers.',
-    },
-    {
-      q: 'What happens if a gas company portal updates or I change my agency computer?',
-      a: 'Our team pushes instant cloud auto-updates at zero additional cost whenever IndianOil, HPCL, or BPCL updates their web portals. If you ever upgrade or replace your agency computer, you can easily perform a device reset from your customer dashboard or get instant 1-on-1 assistance via WhatsApp and AnyDesk.',
     },
   ];
 
   const stats = [
     { value: '1,200+', label: 'Active Gas Agencies' },
     { value: '500K+', label: 'Monthly Cash Memos Printed' },
-    { value: '< 60s', label: 'Instant Key Delivery' },
-    { value: '99.98%', label: 'Cloud Uptime Guarantee' },
+    { value: '70%', label: 'Stationery Cost Saved with A4' },
+    { value: '< 60s', label: 'Instant License Delivery' },
   ];
 
   return (
@@ -95,16 +230,16 @@ export const LandingPage: React.FC = () => {
 
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white max-w-5xl mx-auto leading-[1.12]">
-            Complete Automation Suite for{' '}
+            1-Click Area Booking, Bulk Cash Memo &{' '}
             <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-blue-600 bg-clip-text text-transparent">
-              IndianOil, HP Gas & Bharat Gas
+              A4 Delivery Sheet Automation
             </span>{' '}
-            Distributors
+            Suite
           </h1>
 
           {/* Subtitle */}
           <p className="mt-6 text-base sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Eliminate hours of manual portal work. Experience <strong>1-Click Cash Memo Auto-Printing</strong>, <strong>Bulk Refill Booking</strong>, <strong>Ujjwala PMUY 2.0 KYC</strong>, and automated <strong>Customer WhatsApp Invoices</strong> with hardware-locked security.
+            The all-in-one daily operational powerhouse for <strong>IndianOil (Indane)</strong>, <strong>HP Gas</strong> & <strong>Bharat Petroleum</strong> distributors. Fast-track <strong>1-Click Area-Wise Booking</strong>, <strong>Batch Cash Memo Auto-Print</strong>, <strong>1-Click Booking Canceller</strong>, <strong>Instant Download & Upload</strong>, and <strong>A4 Multi-Cashmemo Delivery Run-Sheets</strong>.
           </p>
 
           {/* Real Logos Showcase Cards */}
@@ -135,19 +270,19 @@ export const LandingPage: React.FC = () => {
           <div className="mt-14 pt-8 border-t border-slate-200 dark:border-slate-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto text-xs text-slate-600 dark:text-slate-400">
             <div className="flex items-center justify-center gap-2 font-semibold">
               <Zap className="w-4 h-4 text-amber-500" />
-              <span>Instant Key Delivery</span>
-            </div>
-            <div className="flex items-center justify-center gap-2 font-semibold">
-              <Lock className="w-4 h-4 text-emerald-500" />
-              <span>Hardware PC Binding (Anti-Clone)</span>
+              <span>1-Click Area Booking</span>
             </div>
             <div className="flex items-center justify-center gap-2 font-semibold">
               <Printer className="w-4 h-4 text-blue-500" />
-              <span>1-Click Fast Cash Memo</span>
+              <span>A4 Cash Memo & Run-Sheet</span>
             </div>
             <div className="flex items-center justify-center gap-2 font-semibold">
-              <Headphones className="w-4 h-4 text-purple-500" />
-              <span>AnyDesk 1-on-1 Remote Setup</span>
+              <XCircle className="w-4 h-4 text-rose-500" />
+              <span>1-Click Auto-Canceller</span>
+            </div>
+            <div className="flex items-center justify-center gap-2 font-semibold">
+              <Lock className="w-4 h-4 text-emerald-500" />
+              <span>Anti-Clone PC Machine Lock</span>
             </div>
           </div>
         </div>
@@ -171,57 +306,117 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400">
-            Seamless 3-Step Setup
+      {/* CORE AUTOMATION CAPABILITIES (USER'S EXACT SUITE FEATURES) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 text-xs uppercase font-extrabold tracking-widest text-orange-600 dark:text-orange-400 mb-2">
+            <Sparkles className="w-4 h-4 text-orange-500" />
+            <span>Built For Real Gas Agency Counter Workflows</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
+            Supercharge Your Agency Operations
           </h2>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mt-2">
-            Get Your Agency Counter Running in Under 2 Minutes
-          </h3>
+          <p className="mt-3 text-base text-slate-600 dark:text-slate-400 leading-relaxed">
+            Everything your counter staff and delivery fleet need — from 1-click area segregation and bulk memo printing to automated cancellations and A4 delivery sheets.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Step 1 */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 relative shadow-lg hover:border-orange-500/50 transition-all">
-            <span className="text-5xl font-black text-orange-500/20 absolute top-6 right-6 font-mono">01</span>
-            <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold mb-6">
-              <Flame className="w-6 h-6" />
-            </div>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Select Your Agency Tool</h4>
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Choose between <strong>CDCMS Pro Multi-Tool</strong>, IndianOil SDMS extension, HP Gas assistant, or the All-in-One Master Bundle.
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {coreFeatures.map((feat) => {
+            const Icon = feat.icon;
+            return (
+              <div
+                key={feat.id}
+                className="group relative rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 shadow-xl hover:shadow-2xl hover:border-orange-500/50 transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div
+                      className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${feat.gradient} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform`}
+                    >
+                      <Icon className="w-7 h-7" />
+                    </div>
+                    <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      {feat.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-3 group-hover:text-orange-500 transition-colors">
+                    {feat.title}
+                  </h3>
+
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                    {feat.description}
+                  </p>
+
+                  <div className="space-y-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
+                    {feat.bullets.map((bullet, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <span>{bullet}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* DAILY AGENCY WORKFLOW TIMELINE */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="inline-block px-3 py-1 rounded-full bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-wider border border-orange-500/20 mb-3">
+              Automated Daily Routine
+            </span>
+            <h3 className="text-3xl sm:text-4xl font-extrabold text-white">
+              How Your Agency Runs in 4 Automated Steps
+            </h3>
+            <p className="text-slate-400 text-sm mt-2">
+              Save 4+ hours daily for your billing counter and delivery staff.
             </p>
           </div>
 
-          {/* Step 2 */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 relative shadow-lg hover:border-blue-500/50 transition-all">
-            <span className="text-5xl font-black text-blue-500/20 absolute top-6 right-6 font-mono">02</span>
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold mb-6">
-              <IndianRupee className="w-6 h-6" />
-            </div>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Secure UPI / Card Checkout</h4>
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Pay securely via Google Pay, PhonePe, Paytm QR, net banking, or debit/credit cards with 256-bit encryption and instant GST invoice.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {dailyWorkflow.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={idx}
+                  className="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-6 relative flex flex-col justify-between hover:border-orange-500/50 transition-all group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-2xl font-black font-mono text-slate-500 group-hover:text-orange-400 transition-colors">
+                        {item.step}
+                      </span>
+                      <span className="text-xs font-bold font-mono px-2 py-0.5 rounded bg-slate-700 text-slate-300">
+                        {item.time}
+                      </span>
+                    </div>
 
-          {/* Step 3 */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 relative shadow-lg hover:border-emerald-500/50 transition-all">
-            <span className="text-5xl font-black text-emerald-500/20 absolute top-6 right-6 font-mono">03</span>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold mb-6">
-              <KeyRound className="w-6 h-6" />
-            </div>
-            <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Instant Key & Counter Lock</h4>
-            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              Your license key is instantly displayed. Enter it into your counter PC extension to bind to hardware and start lightning-fast operations!
-            </p>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 border ${item.color}`}>
+                      <Icon className="w-6 h-6" />
+                    </div>
+
+                    <h4 className="font-extrabold text-base text-white mb-2">
+                      {item.title}
+                    </h4>
+
+                    <p className="text-xs text-slate-400 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* FEATURED PRODUCTS */}
+      {/* FEATURED PRODUCTS & EXTENSIONS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
           <div>
@@ -429,15 +624,15 @@ export const LandingPage: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>No Portal Ban / Safe Extension</span>
+                  <span>A4 Delivery Run-Sheet Generator</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>PMUY Ujjwala 2.0 Assistant</span>
+                  <span>1-Click Area-Wise Sorter</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>WhatsApp Delivery Receipts</span>
+                  <span>Batch Booking Auto-Canceller</span>
                 </div>
               </div>
             </div>
