@@ -71,6 +71,18 @@ export function calculateDaysLeft(expiryDateStr: string | null | undefined): { d
   return { days: diffDays, text: `${diffDays} days left`, isExpired: false, isLifetime: false };
 }
 
+export function getEffectiveLicenseStatus(license: { status?: string | null; expiry_date?: string | null; is_lifetime?: boolean | null }): string {
+  const raw = license?.status?.trim() ? license.status : 'inactive';
+  if (!license || raw === 'inactive') return 'inactive';
+  if (raw.toLowerCase() !== 'active') return raw;
+  if (license.is_lifetime) return raw;
+  const expiry = license.expiry_date;
+  if (!expiry || expiry.startsWith('9999')) return raw;
+  const expiryTime = new Date(expiry).getTime();
+  if (isNaN(expiryTime)) return raw;
+  return expiryTime < Date.now() ? 'expired' : raw;
+}
+
 export function maskLicenseKey(key: string): string {
   if (!key || key.length < 10) return key;
   const parts = key.split('-');

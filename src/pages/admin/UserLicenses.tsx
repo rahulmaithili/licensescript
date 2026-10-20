@@ -44,6 +44,7 @@ import {
   calculateDaysLeft,
   copyToClipboard,
   getPlanDisplay,
+  getEffectiveLicenseStatus,
 } from '@/lib/utils';
 import type {
   License,
@@ -185,6 +186,15 @@ export const UserLicenses: React.FC = () => {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
+  // Effective status — an ACTIVE license past its expiry reads as expired
+  // everywhere (badge, filter, kanban, details), without mutating raw status.
+  const effectiveStatusOf = (lic: License): string =>
+    getEffectiveLicenseStatus({
+      status: lic.status,
+      expiry_date: lic.expiry_date,
+      is_lifetime: lic.plan ? getPlanDisplay(lic.plan).isLifetime : undefined,
+    });
+
   // Filtered list
   const filteredLicenses = licenses.filter((lic) => {
     const q = searchQuery.toLowerCase();
@@ -202,7 +212,7 @@ export const UserLicenses: React.FC = () => {
         ? calculateDaysLeft(lic.expiry_date).days <= 30 && !calculateDaysLeft(lic.expiry_date).isExpired
         : statusFilter === 'locked'
         ? lic.status === 'locked' || lic.is_locked
-        : lic.status === statusFilter;
+        : effectiveStatusOf(lic) === statusFilter;
 
     const matchesProduct = productFilter === 'all' ? true : lic.product_id === productFilter;
 
@@ -408,8 +418,11 @@ export const UserLicenses: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  const detailsEffectiveStatus = detailsLicense ? effectiveStatusOf(detailsLicense) : null;
+  const detailsDaysInfo = detailsLicense ? calculateDaysLeft(detailsLicense.expiry_date) : null;
+
   const inputCls =
-    'w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+    'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
@@ -578,10 +591,10 @@ export const UserLicenses: React.FC = () => {
           </div>
         </div>
       ) : viewMode === 'table' ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-300">
-              <thead className="bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-700">
+            <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-100 dark:bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
                 <tr>
                   <th className="p-4 w-10">
                     <input
@@ -605,14 +618,14 @@ export const UserLicenses: React.FC = () => {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {paginatedLicenses.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="p-10 text-center">
                       <ShieldCheck className="w-10 h-10 mx-auto mb-3 text-slate-600" />
                       {licenses.length === 0 ? (
                         <>
-                          <p className="font-semibold text-slate-300">No licenses yet</p>
+                          <p className="font-semibold text-slate-700 dark:text-slate-300">No licenses yet</p>
                           <p className="text-xs text-slate-500 mt-1 mb-4">Issue the first license for a registered customer.</p>
                           <button
                             onClick={() => { setAddModalOpen(true); setFormError(null); }}
@@ -623,7 +636,7 @@ export const UserLicenses: React.FC = () => {
                         </>
                       ) : (
                         <>
-                          <p className="font-semibold text-slate-300">No licenses match your filters</p>
+                          <p className="font-semibold text-slate-700 dark:text-slate-300">No licenses match your filters</p>
                           <p className="text-xs text-slate-500 mt-1 mb-4">Try a different search term or clear the filters.</p>
                           <button
                             onClick={() => { setSearchQuery(''); setStatusFilter('all'); setProductFilter('all'); }}
@@ -638,12 +651,15 @@ export const UserLicenses: React.FC = () => {
                 ) : (
                   paginatedLicenses.map((lic) => {
                     const daysInfo = calculateDaysLeft(lic.expiry_date);
+                    const effectiveStatus = effectiveStatusOf(lic);
+                    const displayStatus =
+                      lic.is_locked && effectiveStatus === 'active' ? 'locked' : effectiveStatus;
                     const isSelected = selectedIds.includes(lic.id);
 
                     return (
                       <tr
                         key={lic.id}
-                        className={`hover:bg-slate-800/50 transition-colors ${
+                        className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${
                           isSelected ? 'bg-[#1E40FF]/5' : ''
                         }`}
                       >
@@ -662,8 +678,8 @@ export const UserLicenses: React.FC = () => {
                           />
                         </td>
                         <td className="p-4">
-                          <div className="font-semibold text-white">{lic.user?.full_name || 'Customer'}</div>
-                          <div className="text-xs text-slate-400">{lic.user?.email || 'N/A'}</div>
+                          <div className="font-semibold text-slate-900 dark:text-white">{lic.user?.full_name || 'Customer'}</div>
+                          <div className="text-xs text-slate-500 dark:text-slate-400">{lic.user?.email || 'N/A'}</div>
                           {lic.user?.phone && (
                             <div className="text-xs text-slate-500 font-mono mt-0.5">{lic.user?.phone}</div>
                           )}
@@ -672,9 +688,9 @@ export const UserLicenses: React.FC = () => {
                           )}
                         </td>
                         <td className="p-4">
-                          <div className="font-medium text-slate-200 text-xs">{lic.product?.name || '—'}</div>
+                          <div className="font-medium text-slate-700 dark:text-slate-200 text-xs">{lic.product?.name || '—'}</div>
                           {lic.plan && (
-                            <div className="text-[11px] text-slate-400 mb-1">
+                            <div className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">
                               {lic.plan.name} · {getPlanDisplay(lic.plan).periodLabel}
                               {getPlanDisplay(lic.plan).isLifetime ? '' : ` (${getPlanDisplay(lic.plan).durationLabel})`}
                             </div>
@@ -697,20 +713,20 @@ export const UserLicenses: React.FC = () => {
                           </div>
                         </td>
                         <td className="p-4">
-                          <div className="text-xs text-slate-300">
-                            Expires: <span className="font-medium text-white">{formatDate(lic.expiry_date)}</span>
+                          <div className="text-xs text-slate-600 dark:text-slate-300">
+                            Expires: <span className="font-medium text-slate-900 dark:text-white">{formatDate(lic.expiry_date)}</span>
                           </div>
                           <span
                             className={`inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                               daysInfo.isExpired
-                                ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'
                                 : daysInfo.isLifetime
-                                ? 'bg-[#1E40FF]/15 text-[#8fa0ff] border-[#1E40FF]/30'
+                                ? 'bg-[#1E40FF]/15 text-[#1E40FF] dark:text-[#8fa0ff] border-[#1E40FF]/30'
                                 : daysInfo.days <= 7
-                                ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'
                                 : daysInfo.days <= 30
-                                ? 'bg-amber-500/20 text-amber-400 border-amber-500/30'
-                                : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                                : 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
                             }`}
                           >
                             {daysInfo.text}
@@ -719,7 +735,7 @@ export const UserLicenses: React.FC = () => {
                         <td className="p-4">
                           <div className="flex items-center gap-1.5 text-xs">
                             <Monitor className="w-3.5 h-3.5 text-slate-400" />
-                            <span className="font-semibold text-white">
+                            <span className="font-semibold text-slate-900 dark:text-white">
                               {lic.current_devices} / {lic.max_devices}
                             </span>
                           </div>
@@ -733,16 +749,18 @@ export const UserLicenses: React.FC = () => {
                         <td className="p-4">
                           <span
                             className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
-                              lic.status === 'active'
-                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                                : lic.is_locked || lic.status === 'locked'
-                                ? 'bg-[#1E40FF]/10 text-[#8fa0ff] border-[#1E40FF]/30'
-                                : lic.status === 'paused'
-                                ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-                                : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                              displayStatus === 'active'
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+                                : displayStatus === 'locked'
+                                ? 'bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border-[#1E40FF]/30'
+                                : displayStatus === 'paused'
+                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                                : displayStatus === 'expired' || displayStatus === 'revoked'
+                                ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                                : 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30'
                             }`}
                           >
-                            {lic.is_locked && lic.status !== 'locked' ? 'locked' : lic.status}
+                            {displayStatus}
                           </span>
                         </td>
                         <td className="p-4 text-right">
@@ -824,7 +842,7 @@ export const UserLicenses: React.FC = () => {
           </div>
 
           {/* Pagination Bar */}
-          <div className="p-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <div className="p-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
             <div className="flex items-center gap-3">
               <span>
                 {filteredLicenses.length === 0
@@ -872,19 +890,19 @@ export const UserLicenses: React.FC = () => {
             const colLicenses = filteredLicenses.filter((l) => {
               if (col === 'expiring_soon') {
                 const { days, isExpired } = calculateDaysLeft(l.expiry_date);
-                return !isExpired && days <= 30 && days > 0;
+                return !isExpired && days <= 30 && days > 0 && effectiveStatusOf(l) === 'active';
               }
               if (col === 'locked') return l.status === 'locked' || l.is_locked;
-              return l.status === col;
+              return effectiveStatusOf(l) === col;
             });
 
             return (
-              <div key={col} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col shadow-sm">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
-                  <span className="font-bold text-xs uppercase tracking-wider text-slate-300">
+              <div key={col} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col shadow-sm">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-3">
+                  <span className="font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300">
                     {col.replace('_', ' ')}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-slate-800 text-xs font-bold text-white">
+                  <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-900 dark:text-white">
                     {colLicenses.length}
                   </span>
                 </div>
@@ -893,25 +911,61 @@ export const UserLicenses: React.FC = () => {
                   {colLicenses.length === 0 ? (
                     <p className="text-[11px] text-slate-500 text-center py-6">No licenses in this column.</p>
                   ) : (
-                    colLicenses.map((lic) => (
+                    colLicenses.map((lic) => {
+                      const cardDays = calculateDaysLeft(lic.expiry_date);
+                      const cardEffective = effectiveStatusOf(lic);
+                      const cardDisplay =
+                        lic.is_locked && cardEffective === 'active' ? 'locked' : cardEffective;
+                      return (
                       <div
                         key={lic.id}
-                        className="bg-slate-800/80 hover:bg-slate-800 p-3.5 rounded-xl border border-slate-700/80 shadow-md space-y-2 cursor-pointer transition-all"
+                        className="bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-md space-y-2 cursor-pointer transition-all"
                         onClick={() => setDetailsLicense(lic)}
                       >
-                        <div className="font-semibold text-xs text-white truncate">
-                          {lic.user?.full_name || 'Customer'}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="font-semibold text-xs text-slate-900 dark:text-white truncate">
+                            {lic.user?.full_name || 'Customer'}
+                          </div>
+                          <span
+                            className={`shrink-0 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border ${
+                              cardDisplay === 'active'
+                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
+                                : cardDisplay === 'locked'
+                                ? 'bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border-[#1E40FF]/30'
+                                : cardDisplay === 'paused'
+                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                                : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                            }`}
+                          >
+                            {cardDisplay}
+                          </span>
                         </div>
-                        <div className="text-[11px] text-slate-400 truncate">{lic.product?.name || '—'}</div>
-                        <div className="font-mono text-[11px] text-[#8fa0ff] font-bold bg-slate-950/50 p-1.5 rounded-lg break-all">
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{lic.product?.name || '—'}</div>
+                        <div className="font-mono text-[11px] text-[#1E40FF] dark:text-[#8fa0ff] font-bold bg-slate-100 dark:bg-slate-950/50 p-1.5 rounded-lg break-all">
                           {lic.license_key}
                         </div>
-                        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
+                        <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-1">
                           <span>{formatDate(lic.expiry_date)}</span>
                           <span>{lic.current_devices}/{lic.max_devices} Dev</span>
                         </div>
+                        <div
+                          className={`text-[10px] font-bold ${
+                            cardDays.isExpired
+                              ? 'text-rose-600 dark:text-rose-400'
+                              : cardDays.isLifetime
+                              ? 'text-[#1E40FF] dark:text-[#8fa0ff]'
+                              : cardDays.days <= 7
+                              ? 'text-amber-600 dark:text-amber-400'
+                              : cardDays.days <= 30
+                              ? 'text-amber-600 dark:text-amber-400'
+                              : 'text-emerald-600 dark:text-emerald-400'
+                          }`}
+                        >
+                          {cardDays.text}
+                        </div>
                       </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>
@@ -1274,85 +1328,121 @@ export const UserLicenses: React.FC = () => {
       {/* MODAL: View License Details */}
       {detailsLicense && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative max-h-[85vh] overflow-y-auto">
             <button
               onClick={() => setDetailsLicense(null)}
-              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-xl font-bold text-white mb-1">License Record Details</h3>
-            <p className="text-xs text-slate-400 mb-6">Full audit details, hardware device limits and customer profile.</p>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">License Record Details</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">Full audit details, hardware device limits and customer profile.</p>
 
             <div className="space-y-4 text-xs">
-              <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                <span className="text-slate-400 block mb-1">License Key</span>
-                <span className="font-mono text-sm font-bold text-[#8fa0ff] block break-all">
+              <div className="bg-[#EEF1FF] dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <span className="text-slate-500 dark:text-slate-400 block mb-1">License Key</span>
+                <span className="font-mono text-sm font-bold text-[#1E40FF] dark:text-[#8fa0ff] block break-all">
                   {detailsLicense.license_key}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Product</span>
-                  <span className="font-semibold text-white">{detailsLicense.product?.name || '—'}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{detailsLicense.product?.name || '—'}</span>
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Plan</span>
-                  <span className="font-semibold text-white">
+                  <span className="font-semibold text-slate-900 dark:text-white">
                     {detailsLicense.plan
                       ? `${detailsLicense.plan.name} · ${getPlanDisplay(detailsLicense.plan).periodLabel}`
                       : 'Custom / No plan'}
                   </span>
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Licensee</span>
-                  <span className="font-semibold text-white">{detailsLicense.user?.full_name || '—'}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{detailsLicense.user?.full_name || '—'}</span>
                   {detailsLicense.user?.email && <span className="block text-slate-400 mt-0.5">{detailsLicense.user.email}</span>}
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Company / GST</span>
-                  <span className="font-semibold text-white">{detailsLicense.user?.company_name || '—'}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{detailsLicense.user?.company_name || '—'}</span>
                   {detailsLicense.user?.gst_number && <span className="block text-slate-400 mt-0.5">GST: {detailsLicense.user.gst_number}</span>}
                   {detailsLicense.user?.is_blocked && <span className="block text-rose-400 mt-0.5 font-bold">Account blocked</span>}
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Issue Date</span>
-                  <span className="font-semibold text-white">{formatDate(detailsLicense.issue_date)}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{formatDate(detailsLicense.issue_date)}</span>
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Expiry Date</span>
-                  <span className="font-semibold text-white">{formatDate(detailsLicense.expiry_date)}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{formatDate(detailsLicense.expiry_date)}</span>
+                  {detailsDaysInfo && (
+                    <span
+                      className={`block mt-1 font-bold ${
+                        detailsDaysInfo.isExpired
+                          ? 'text-rose-600 dark:text-rose-400'
+                          : detailsDaysInfo.isLifetime
+                          ? 'text-[#1E40FF] dark:text-[#8fa0ff]'
+                          : detailsDaysInfo.days <= 7
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : detailsDaysInfo.days <= 30
+                          ? 'text-amber-600 dark:text-amber-400'
+                          : 'text-emerald-600 dark:text-emerald-400'
+                      }`}
+                    >
+                      {detailsDaysInfo.text}
+                    </span>
+                  )}
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Current Devices</span>
-                  <span className="font-semibold text-white">{detailsLicense.current_devices} / {detailsLicense.max_devices} PC</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{detailsLicense.current_devices} / {detailsLicense.max_devices} PC</span>
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block">Status</span>
-                  <span className="font-semibold uppercase text-emerald-400">{detailsLicense.status}</span>
+                  <span
+                    className={`font-semibold uppercase ${
+                      detailsEffectiveStatus === 'expired' || detailsEffectiveStatus === 'revoked'
+                        ? 'text-rose-600 dark:text-rose-400'
+                        : detailsEffectiveStatus === 'active'
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : detailsEffectiveStatus === 'paused'
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : detailsEffectiveStatus === 'locked'
+                        ? 'text-[#1E40FF] dark:text-[#8fa0ff]'
+                        : 'text-slate-600 dark:text-slate-400'
+                    }`}
+                  >
+                    {detailsEffectiveStatus || detailsLicense.status}
+                  </span>
+                  {detailsEffectiveStatus === 'expired' && detailsLicense.status === 'active' && (
+                    <span className="block text-rose-600 dark:text-rose-400 mt-0.5 normal-case font-medium">
+                      Raw status is ACTIVE but expiry has passed
+                    </span>
+                  )}
                   {detailsLicense.invoice?.total_amount != null && (
-                    <span className="block text-slate-400 mt-0.5 normal-case">
+                    <span className="block text-slate-500 dark:text-slate-400 mt-0.5 normal-case">
                       Invoice: {formatCurrency(detailsLicense.invoice.total_amount)}
                     </span>
                   )}
                 </div>
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800 col-span-2">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800 col-span-2">
                   <span className="text-slate-500 block">Created</span>
-                  <span className="font-semibold text-white">{formatDateTime(detailsLicense.created_at)}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">{formatDateTime(detailsLicense.created_at)}</span>
                 </div>
               </div>
 
               {detailsLicense.notes && (
-                <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+                <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span className="text-slate-500 block mb-1">Admin Notes</span>
-                  <p className="text-slate-300">{detailsLicense.notes}</p>
+                  <p className="text-slate-600 dark:text-slate-300">{detailsLicense.notes}</p>
                 </div>
               )}
 
               {/* Device activations — real rows from getLicenseActivations */}
-              <div className="bg-slate-800/40 p-3 rounded-xl border border-slate-800">
+              <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                 <span className="text-slate-500 block mb-2 font-semibold">Device Activations</span>
                 {isLoadingActivations ? (
                   <div className="flex items-center gap-2 text-slate-400 py-2">
@@ -1360,7 +1450,7 @@ export const UserLicenses: React.FC = () => {
                     Loading activations…
                   </div>
                 ) : activations.length === 0 ? (
-                  <p className="text-slate-400">No device activations recorded for this license yet.</p>
+                  <p className="text-slate-500 dark:text-slate-400">No device activations recorded for this license yet.</p>
                 ) : (
                   <div className="space-y-2">
                     {activations.map((a) => (

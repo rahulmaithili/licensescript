@@ -46,7 +46,7 @@ function featuresToText(features?: string[] | string): string {
 }
 
 const inputCls =
-  'w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
 const primaryBtn =
   'px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2';
 
@@ -195,11 +195,11 @@ export const PricingPlans: React.FC = () => {
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <Layers className="w-8 h-8 text-[#8fa0ff]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
+            <Layers className="w-8 h-8 text-[#1E40FF] dark:text-[#8fa0ff]" />
             Pricing & License Plans
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Configure subscription intervals, lifetime access pricing, device hardware slots, and customer perks.
           </p>
         </div>
@@ -214,8 +214,8 @@ export const PricingPlans: React.FC = () => {
         <div
           className={`flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-sm ${
             banner.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-              : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+              : 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
           }`}
           role={banner.type === 'error' ? 'alert' : 'status'}
         >
@@ -232,11 +232,11 @@ export const PricingPlans: React.FC = () => {
       )}
 
       {noProducts && (
-        <div className="flex items-start gap-2.5 rounded-2xl border border-[#1E40FF]/30 bg-[#1E40FF]/10 px-4 py-3 text-sm text-slate-200">
-          <Package className="w-4 h-4 shrink-0 mt-0.5 text-[#8fa0ff]" />
+        <div className="flex items-start gap-2.5 rounded-2xl border border-[#1E40FF]/30 bg-[#1E40FF]/10 px-4 py-3 text-sm text-slate-600 dark:text-slate-200">
+          <Package className="w-4 h-4 shrink-0 mt-0.5 text-[#1E40FF] dark:text-[#8fa0ff]" />
           <span>
             No products exist yet, so there is nothing to attach a plan to. Add a product in the{' '}
-            <strong className="text-white">Product Catalog</strong> first, then come back to create its pricing plans.
+            <strong className="text-[#0A1330] dark:text-white">Product Catalog</strong> first, then come back to create its pricing plans.
           </span>
         </div>
       )}
@@ -244,23 +244,23 @@ export const PricingPlans: React.FC = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="Loading plans">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl animate-pulse">
-              <div className="h-4 w-28 bg-slate-800 rounded mb-3" />
-              <div className="h-6 w-2/3 bg-slate-800 rounded mb-3" />
-              <div className="h-8 w-1/2 bg-slate-800 rounded mb-4" />
-              <div className="h-10 w-full bg-slate-800 rounded-2xl mb-4" />
-              <div className="h-3 w-full bg-slate-800 rounded mb-2" />
-              <div className="h-3 w-2/3 bg-slate-800 rounded" />
+            <div key={n} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl animate-pulse">
+              <div className="h-4 w-28 bg-slate-200 dark:bg-slate-800 rounded mb-3" />
+              <div className="h-6 w-2/3 bg-slate-200 dark:bg-slate-800 rounded mb-3" />
+              <div className="h-8 w-1/2 bg-slate-200 dark:bg-slate-800 rounded mb-4" />
+              <div className="h-10 w-full bg-slate-200 dark:bg-slate-800 rounded-2xl mb-4" />
+              <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded mb-2" />
+              <div className="h-3 w-2/3 bg-slate-200 dark:bg-slate-800 rounded" />
             </div>
           ))}
         </div>
       ) : plans.length === 0 ? (
-        <div className="bg-slate-900 border border-dashed border-slate-700 rounded-3xl p-10 sm:p-14 text-center shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-10 sm:p-14 text-center shadow-sm dark:shadow-xl">
           <div className="w-16 h-16 mx-auto rounded-full bg-[#EEF1FF] flex items-center justify-center mb-4">
             <Layers className="w-8 h-8 text-[#1E40FF]" />
           </div>
-          <h2 className="text-lg font-bold text-white">No pricing plans yet</h2>
-          <p className="text-sm text-slate-400 mt-1.5 max-w-md mx-auto">
+          <h2 className="text-lg font-bold text-[#0A1330] dark:text-white">No pricing plans yet</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-md mx-auto">
             {noProducts
               ? 'Plans belong to a product, and your catalog is empty. Add a product first, then create its plans.'
               : 'Create your first plan — monthly, yearly, or lifetime — so customers can buy a license.'}
@@ -281,16 +281,16 @@ export const PricingPlans: React.FC = () => {
             return (
               <div
                 key={plan.id}
-                className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between hover:border-slate-700 transition-all"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3 gap-2">
-                    <span className="text-xs text-[#8fa0ff] font-bold uppercase tracking-wider truncate">
+                    <span className="text-xs text-[#1E40FF] dark:text-[#8fa0ff] font-bold uppercase tracking-wider truncate">
                       {prod?.name || plan.product?.name || 'Unassigned Product'}
                     </span>
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase shrink-0 ${
-                        plan.is_active ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                        plan.is_active ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                       }`}
                     >
                       {plan.is_active ? 'Active' : 'Inactive'}
@@ -298,43 +298,48 @@ export const PricingPlans: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-extrabold text-white text-xl">{plan.name}</h3>
+                    <h3 className="font-extrabold text-[#0A1330] dark:text-white text-xl">{plan.name}</h3>
                     {display.badge && (
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#1E40FF]/10 text-[#8fa0ff] border border-[#1E40FF]/25">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
                         {display.badge}
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-baseline gap-1 mt-2 mb-4">
-                    <span className="text-3xl font-black text-white">{formatCurrency(plan.price)}</span>
-                    <span className="text-xs text-slate-400">/ {display.priceSuffix}</span>
+                  <div className="flex items-baseline gap-1 mt-2 mb-4 flex-wrap">
+                    <span className="text-3xl font-black text-[#0A1330] dark:text-white">{formatCurrency(Number(plan.price) || 0)}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">/ {display.priceSuffix}</span>
+                    {Number((plan as unknown as { discount_percent?: number }).discount_percent) > 0 && (
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                        Save {Number((plan as unknown as { discount_percent?: number }).discount_percent)}%
+                      </span>
+                    )}
                   </div>
 
-                  <div className="bg-slate-800/60 p-3 rounded-2xl mb-4 text-xs text-slate-300 space-y-1.5">
+                  <div className="bg-[#EEF1FF] dark:bg-slate-800/60 p-3 rounded-2xl mb-4 text-xs text-slate-600 dark:text-slate-300 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span>Billing Period</span>
-                      <strong className="text-white">{display.periodLabel}</strong>
+                      <strong className="text-[#0A1330] dark:text-white">{display.periodLabel}</strong>
                     </div>
                     <div className="flex items-center justify-between">
                       <span>Duration</span>
-                      <strong className="text-white font-mono">{display.durationLabel}</strong>
+                      <strong className="text-[#0A1330] dark:text-white font-mono">{display.durationLabel}</strong>
                     </div>
                     <div className="flex items-center justify-between">
                       <span>Hardware Slots</span>
-                      <strong className="text-white font-mono">{plan.max_devices} PC / Extension</strong>
+                      <strong className="text-[#0A1330] dark:text-white font-mono">{plan.max_devices} PC / Extension</strong>
                     </div>
                   </div>
 
                   {plan.description && (
-                    <p className="text-xs text-slate-400 leading-relaxed mb-3">{plan.description}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-3">{plan.description}</p>
                   )}
 
                   {plan.features && plan.features.length > 0 && (
-                    <div className="space-y-2 py-2 border-t border-slate-800 text-xs text-slate-400">
+                    <div className="space-y-2 py-2 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
                       {plan.features.map((f, i) => (
                         <div key={i} className="flex items-center gap-2">
-                          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                          <Check className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0" />
                           <span>{f}</span>
                         </div>
                       ))}
@@ -342,17 +347,17 @@ export const PricingPlans: React.FC = () => {
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-slate-800 flex items-center justify-end gap-2">
+                <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
                   <button
                     onClick={() => openEditModal(plan)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#0A1330] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                     title="Edit Plan"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(plan.id, plan.name)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800"
+                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                     title="Delete Plan"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -367,21 +372,21 @@ export const PricingPlans: React.FC = () => {
       {/* Modal: Add/Edit Plan */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              className="absolute top-5 right-5 p-1.5 text-slate-500 dark:text-slate-400 hover:text-[#0A1330] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-1">
+            <h2 className="text-xl font-bold text-[#0A1330] dark:text-white mb-1">
               {editingPlan ? 'Edit Plan' : 'Create Pricing Plan'}
             </h2>
-            <p className="text-xs text-slate-400 mb-6">Set duration, hardware activations and INR price.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">Set duration, hardware activations and INR price.</p>
 
             {modalError && (
-              <div className="flex items-start gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300 mb-4" role="alert">
+              <div className="flex items-start gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300 mb-4" role="alert">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{modalError}</span>
               </div>
@@ -389,7 +394,7 @@ export const PricingPlans: React.FC = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Assigned Product</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Assigned Product</label>
                 <select value={productId} onChange={(e) => setProductId(e.target.value)} className={inputCls} disabled={products.length === 0}>
                   {products.length === 0 ? (
                     <option value="">No products available — create one first</option>
@@ -405,7 +410,7 @@ export const PricingPlans: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Plan Title</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Plan Title</label>
                   <input
                     type="text"
                     required
@@ -416,7 +421,7 @@ export const PricingPlans: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Price (₹ INR)</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Price (₹ INR)</label>
                   <input
                     type="number"
                     required
@@ -429,7 +434,7 @@ export const PricingPlans: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Description</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Description</label>
                 <textarea
                   rows={2}
                   value={description}
@@ -441,7 +446,7 @@ export const PricingPlans: React.FC = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Billing Interval</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Billing Interval</label>
                   <select
                     value={billingPeriod}
                     onChange={(e) => handlePeriodChange(e.target.value as BillingPeriod)}
@@ -455,7 +460,7 @@ export const PricingPlans: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Days Valid</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Days Valid</label>
                   <input
                     type="number"
                     value={durationDays}
@@ -465,7 +470,7 @@ export const PricingPlans: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Max Devices</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Max Devices</label>
                   <input
                     type="number"
                     value={maxDevices}
@@ -477,7 +482,7 @@ export const PricingPlans: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Features (One per line, or comma-separated)</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Features (One per line, or comma-separated)</label>
                 <textarea
                   rows={3}
                   value={features}
@@ -493,9 +498,9 @@ export const PricingPlans: React.FC = () => {
                   id="planIsActive"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded bg-slate-800 border-slate-700 accent-[#1E40FF]"
+                  className="rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 accent-[#1E40FF]"
                 />
-                <label htmlFor="planIsActive" className="text-slate-300 font-semibold cursor-pointer">
+                <label htmlFor="planIsActive" className="text-slate-700 dark:text-slate-300 font-semibold cursor-pointer">
                   Plan is Active & available for purchase
                 </label>
               </div>
@@ -505,7 +510,7 @@ export const PricingPlans: React.FC = () => {
                   type="button"
                   onClick={() => setModalOpen(false)}
                   disabled={isSaving}
-                  className="px-4 py-2 rounded-full bg-slate-800 text-slate-300 font-semibold disabled:opacity-50"
+                  className="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold disabled:opacity-50"
                 >
                   Cancel
                 </button>

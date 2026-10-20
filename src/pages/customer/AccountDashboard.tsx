@@ -23,6 +23,7 @@ import {
   formatCurrency,
   formatDate,
   calculateDaysLeft,
+  getEffectiveLicenseStatus,
   maskLicenseKey,
   copyToClipboard,
 } from '@/lib/utils';
@@ -153,7 +154,15 @@ export const AccountDashboard: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-6">
-            {licenses.length === 0 ? (
+            {isLoading ? (
+              <div
+                className="p-12 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-4"
+                aria-busy="true"
+              >
+                <span className="inline-block w-8 h-8 border-2 border-slate-200 dark:border-slate-700 border-t-indigo-600 rounded-full animate-spin" />
+                <p className="text-slate-400 text-sm">Loading your licenses…</p>
+              </div>
+            ) : licenses.length === 0 ? (
               <div className="p-12 text-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-4">
                 <p className="text-slate-400 text-sm">You do not own any active licenses yet.</p>
                 <a
@@ -166,6 +175,11 @@ export const AccountDashboard: React.FC = () => {
             ) : (
               licenses.map((lic) => {
                 const daysInfo = calculateDaysLeft(lic.expiry_date);
+                const effectiveStatus = getEffectiveLicenseStatus({
+                  status: lic.status,
+                  expiry_date: lic.expiry_date,
+                  is_lifetime: daysInfo.isLifetime,
+                });
                 const isRevealed = revealedKeys[lic.id] || false;
 
                 return (
@@ -187,12 +201,18 @@ export const AccountDashboard: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                            daysInfo.isExpired
+                            effectiveStatus === 'expired' || effectiveStatus === 'revoked'
                               ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
-                              : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                              : effectiveStatus === 'active'
+                              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                              : effectiveStatus === 'paused'
+                              ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                              : effectiveStatus === 'locked'
+                              ? 'bg-slate-500/10 text-slate-500 dark:text-slate-400 border border-slate-500/20'
+                              : 'bg-slate-500/10 text-slate-500 dark:text-slate-400 border border-slate-500/20'
                           }`}
                         >
-                          {lic.status}
+                          {effectiveStatus}
                         </span>
                       </div>
                     </div>
@@ -251,7 +271,17 @@ export const AccountDashboard: React.FC = () => {
 
                       <div className="bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
                         <span className="text-slate-400 block mb-0.5">Validity</span>
-                        <span className="font-bold text-emerald-500">{daysInfo.text}</span>
+                        <span
+                          className={`font-bold ${
+                            daysInfo.isExpired
+                              ? 'text-rose-500'
+                              : !daysInfo.isLifetime && daysInfo.days <= 7
+                              ? 'text-amber-500'
+                              : 'text-emerald-500'
+                          }`}
+                        >
+                          {daysInfo.text}
+                        </span>
                       </div>
 
                       <div className="flex items-center gap-2">

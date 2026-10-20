@@ -56,8 +56,8 @@ export const CompanyProfile: React.FC = () => {
   }, []);
 
   const handleChange = (field: keyof ICompanyProfile, value: string) => {
-    // Functional update: consecutive changes (e.g. city + state) must
-    // compose instead of overwriting each other from a stale snapshot.
+    // Functional update: consecutive changes must compose instead of
+    // overwriting each other from a stale snapshot.
     setProfile((prev) => (prev ? { ...prev, [field]: value } : prev));
     setBanner(null);
   };
@@ -197,7 +197,7 @@ export const CompanyProfile: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Company Display Name</label>
+              <label className="block font-semibold text-slate-300 mb-1">Company Name</label>
               <input
                 type="text"
                 value={profile.company_name || ''}
@@ -206,16 +206,25 @@ export const CompanyProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Legal Entity Name</label>
+              <label className="block font-semibold text-slate-300 mb-1">Brand Name</label>
               <input
                 type="text"
-                value={profile.legal_name || ''}
-                onChange={(e) => handleChange('legal_name', e.target.value)}
+                value={profile.brand_name || ''}
+                onChange={(e) => handleChange('brand_name', e.target.value)}
                 className={inputCls}
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Official Support Email</label>
+              <label className="block font-semibold text-slate-300 mb-1">Tagline</label>
+              <input
+                type="text"
+                value={profile.tagline || ''}
+                onChange={(e) => handleChange('tagline', e.target.value)}
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <label className="block font-semibold text-slate-300 mb-1">Email</label>
               <input
                 type="email"
                 value={profile.email || ''}
@@ -224,17 +233,7 @@ export const CompanyProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Support Email (shown to customers)</label>
-              <input
-                type="email"
-                value={profile.support_email || ''}
-                onChange={(e) => handleChange('support_email', e.target.value)}
-                placeholder="Defaults to the official email if left blank in invoices"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label className="block font-semibold text-slate-300 mb-1">Phone / WhatsApp Number</label>
+              <label className="block font-semibold text-slate-300 mb-1">Phone</label>
               <input
                 type="tel"
                 value={profile.phone || ''}
@@ -263,7 +262,7 @@ export const CompanyProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">GSTIN Number</label>
+              <label className="block font-semibold text-slate-300 mb-1">GSTIN</label>
               <input
                 type="text"
                 value={profile.gst_number || ''}
@@ -273,7 +272,7 @@ export const CompanyProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">PAN Number</label>
+              <label className="block font-semibold text-slate-300 mb-1">PAN</label>
               <input
                 type="text"
                 value={profile.pan_number || ''}
@@ -286,50 +285,12 @@ export const CompanyProfile: React.FC = () => {
           <div className="space-y-4 text-xs pt-2">
             <div>
               <label className="block font-semibold text-slate-300 mb-1">Address</label>
-              <input
-                type="text"
+              <textarea
+                rows={3}
                 value={profile.address || ''}
                 onChange={(e) => handleChange('address', e.target.value)}
                 className={inputCls}
               />
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div>
-                <label className="block font-semibold text-slate-300 mb-1">City</label>
-                <input
-                  type="text"
-                  value={profile.city || ''}
-                  onChange={(e) => handleChange('city', e.target.value)}
-                  className={inputCls}
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-slate-300 mb-1">State</label>
-                <input
-                  type="text"
-                  value={profile.state || ''}
-                  onChange={(e) => handleChange('state', e.target.value)}
-                  className={inputCls}
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-slate-300 mb-1">PIN Code</label>
-                <input
-                  type="text"
-                  value={profile.pincode || ''}
-                  onChange={(e) => handleChange('pincode', e.target.value)}
-                  className={`${inputCls} font-mono`}
-                />
-              </div>
-              <div>
-                <label className="block font-semibold text-slate-300 mb-1">Country</label>
-                <input
-                  type="text"
-                  value={profile.country || ''}
-                  onChange={(e) => handleChange('country', e.target.value)}
-                  className={inputCls}
-                />
-              </div>
             </div>
           </div>
         </div>
@@ -365,7 +326,7 @@ export const CompanyProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">IFSC Code</label>
+              <label className="block font-semibold text-slate-300 mb-1">IFSC</label>
               <input
                 type="text"
                 value={profile.bank_ifsc || ''}
@@ -374,7 +335,7 @@ export const CompanyProfile: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Official UPI ID</label>
+              <label className="block font-semibold text-slate-300 mb-1">UPI ID</label>
               <input
                 type="text"
                 value={profile.upi_id || ''}
@@ -406,7 +367,7 @@ export const CompanyProfile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Invoice Footer Note</label>
+              <label className="block font-semibold text-slate-300 mb-1">Invoice Notes/Footer</label>
               <textarea
                 rows={2}
                 value={profile.invoice_notes || ''}
@@ -416,7 +377,7 @@ export const CompanyProfile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Standard Terms & Conditions</label>
+              <label className="block font-semibold text-slate-300 mb-1">Terms & Conditions</label>
               <textarea
                 rows={3}
                 value={profile.terms_conditions || ''}

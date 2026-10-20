@@ -24,14 +24,14 @@ type Banner = { type: 'success' | 'error'; message: string } | null;
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
 const inputCls =
-  'w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-[#0A1330] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
 const primaryBtn =
   'px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2';
 
 function statusPill(status: string) {
-  if (status === 'paid') return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
-  if (status === 'failed' || status === 'refunded') return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
-  return 'bg-slate-800 text-slate-300 border border-slate-700';
+  if (status === 'paid') return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20';
+  if (status === 'failed' || status === 'refunded') return 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20';
+  return 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700';
 }
 
 export const InvoiceGenerator: React.FC = () => {
@@ -198,11 +198,11 @@ export const InvoiceGenerator: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <Receipt className="w-8 h-8 text-[#8fa0ff]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
+            <Receipt className="w-8 h-8 text-[#1E40FF] dark:text-[#8fa0ff]" />
             Invoice & Tax Billing Center
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Automated GST invoices, manual tax billing generator, and instant PDF downloads.
           </p>
         </div>
@@ -217,8 +217,8 @@ export const InvoiceGenerator: React.FC = () => {
         <div
           className={`flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-sm ${
             banner.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-              : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+              : 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
           }`}
           role={banner.type === 'error' ? 'alert' : 'status'}
         >
@@ -244,7 +244,7 @@ export const InvoiceGenerator: React.FC = () => {
       )}
 
       {/* Filter Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -252,14 +252,14 @@ export const InvoiceGenerator: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search invoice no, buyer..."
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+            className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1E40FF] w-full md:w-auto"
+          className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1E40FF] w-full md:w-auto"
         >
           <option value="all">All Payment Statuses</option>
           <option value="paid">Paid</option>
@@ -269,10 +269,10 @@ export const InvoiceGenerator: React.FC = () => {
       </div>
 
       {/* Invoices Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-700">
+          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="p-4">Invoice No</th>
                 <th className="p-4">Customer</th>
@@ -283,21 +283,21 @@ export const InvoiceGenerator: React.FC = () => {
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {isLoading ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#8fa0ff]" />
+                  <td colSpan={7} className="p-10 text-center text-slate-500 dark:text-slate-400">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#1E40FF] dark:text-[#8fa0ff]" />
                     Loading invoices…
                   </td>
                 </tr>
               ) : filteredInvoices.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-slate-400">
-                    <Receipt className="w-10 h-10 mx-auto mb-3 text-[#8fa0ff]" />
+                  <td colSpan={7} className="p-10 text-center text-slate-500 dark:text-slate-400">
+                    <Receipt className="w-10 h-10 mx-auto mb-3 text-[#1E40FF] dark:text-[#8fa0ff]" />
                     {invoices.length === 0 ? (
                       <>
-                        <div className="font-bold text-white text-base">No invoices generated yet</div>
+                        <div className="font-bold text-[#0A1330] dark:text-white text-base">No invoices generated yet</div>
                         <p className="text-xs mt-1.5 mb-5">
                           When you issue a tax invoice it will appear here with its real invoice number.
                         </p>
@@ -313,24 +313,24 @@ export const InvoiceGenerator: React.FC = () => {
                 </tr>
               ) : (
                 filteredInvoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-slate-800/50 transition-colors">
-                    <td className="p-4 font-mono font-bold text-[#8fa0ff]">
+                  <tr key={inv.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                    <td className="p-4 font-mono font-bold text-[#1E40FF] dark:text-[#8fa0ff]">
                       {inv.invoice_number}
                     </td>
                     <td className="p-4">
-                      <div className="font-semibold text-white">{inv.billing_name}</div>
-                      <div className="text-xs text-slate-400">{inv.billing_email}</div>
+                      <div className="font-semibold text-[#0A1330] dark:text-white">{inv.billing_name}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">{inv.billing_email}</div>
                     </td>
                     <td className="p-4">
-                      <div className="font-medium text-slate-200 text-xs">{inv.product_name}</div>
-                      <div className="text-[11px] text-slate-400">{inv.plan_name}</div>
+                      <div className="font-medium text-slate-700 dark:text-slate-200 text-xs">{inv.product_name}</div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400">{inv.plan_name}</div>
                     </td>
-                    <td className="p-4 font-bold text-white">
+                    <td className="p-4 font-bold text-[#0A1330] dark:text-white">
                       {formatCurrency(inv.total_amount, inv.currency)}
                     </td>
                     <td className="p-4">
                       <div className="flex flex-col items-start gap-1">
-                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-800 border border-slate-700 text-slate-300">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
                           {inv.payment_method}
                         </span>
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${statusPill(inv.payment_status)}`}>
@@ -338,7 +338,7 @@ export const InvoiceGenerator: React.FC = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="p-4 text-xs text-slate-400">
+                    <td className="p-4 text-xs text-slate-500 dark:text-slate-400">
                       {formatDate(inv.issued_at)}
                     </td>
                     <td className="p-4 text-right">
@@ -346,14 +346,14 @@ export const InvoiceGenerator: React.FC = () => {
                         <button
                           onClick={() => handleDownloadPDF(inv)}
                           disabled={!inv.id || !inv.invoice_number}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-[#8fa0ff] hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-[#1E40FF] dark:hover:text-[#8fa0ff] hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed"
                           title="Download PDF"
                         >
                           <Download className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => setViewInvoice(inv)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                           title="View Invoice"
                         >
                           <Eye className="w-4 h-4" />
@@ -371,27 +371,27 @@ export const InvoiceGenerator: React.FC = () => {
       {/* Modal: Create Manual Invoice */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-1">Generate Official Tax Invoice</h2>
-            <p className="text-xs text-slate-400 mb-6">Create compliant tax invoice with sequential numbering and GST breakdown.</p>
+            <h2 className="text-xl font-bold text-[#0A1330] dark:text-white mb-1">Generate Official Tax Invoice</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">Create compliant tax invoice with sequential numbering and GST breakdown.</p>
 
             {modalError && (
-              <div className="flex items-start gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300 mb-4" role="alert">
+              <div className="flex items-start gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300 mb-4" role="alert">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{modalError}</span>
               </div>
             )}
 
             {noProducts && (
-              <div className="flex items-start gap-2 rounded-2xl border border-[#1E40FF]/30 bg-[#1E40FF]/10 px-4 py-3 text-sm text-slate-200 mb-4">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#8fa0ff]" />
+              <div className="flex items-start gap-2 rounded-2xl border border-[#1E40FF]/30 bg-[#1E40FF]/10 px-4 py-3 text-sm text-slate-700 dark:text-slate-200 mb-4">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#1E40FF] dark:text-[#8fa0ff]" />
                 <span>No products exist yet. Add one in the Product Catalog before generating an invoice.</span>
               </div>
             )}
@@ -399,22 +399,22 @@ export const InvoiceGenerator: React.FC = () => {
             <form onSubmit={handleCreateInvoice} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Customer / Company Name</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Customer / Company Name</label>
                   <input type="text" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Customer Email</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Customer Email</label>
                   <input type="email" required value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} className={inputCls} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Phone Number</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Phone Number</label>
                   <input type="tel" value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">GSTIN Number (Optional)</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">GSTIN Number (Optional)</label>
                   <input
                     type="text"
                     value={customerGst}
@@ -426,7 +426,7 @@ export const InvoiceGenerator: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Billing Address</label>
+                <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Billing Address</label>
                 <input
                   type="text"
                   value={customerAddress}
@@ -438,7 +438,7 @@ export const InvoiceGenerator: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Product</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Product</label>
                   <select
                     value={selectedProduct}
                     onChange={(e) => setSelectedProduct(e.target.value)}
@@ -457,7 +457,7 @@ export const InvoiceGenerator: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Plan Title</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Plan Title</label>
                   <input
                     type="text"
                     required
@@ -471,46 +471,46 @@ export const InvoiceGenerator: React.FC = () => {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Base Price (₹)</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Base Price (₹)</label>
                   <input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} min={0} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Discount (₹)</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Discount (₹)</label>
                   <input type="number" value={discountAmount} onChange={(e) => setDiscountAmount(Number(e.target.value))} min={0} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Tax Rate (%)</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Tax Rate (%)</label>
                   <input type="number" value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} min={0} max={100} className={inputCls} />
                 </div>
               </div>
 
               {/* Live totals preview — same math that is submitted */}
-              <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-4 space-y-1.5 text-xs">
+              <div className="bg-[#EEF1FF] dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 space-y-1.5 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Subtotal</span>
-                  <span className="text-white font-semibold">{formatCurrency(subtotal)}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Subtotal</span>
+                  <span className="text-[#0A1330] dark:text-white font-semibold">{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Discount</span>
-                  <span className="text-white font-semibold">− {formatCurrency(discount)}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Discount</span>
+                  <span className="text-[#0A1330] dark:text-white font-semibold">− {formatCurrency(discount)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Taxable Amount</span>
-                  <span className="text-white font-semibold">{formatCurrency(taxableAmount)}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Taxable Amount</span>
+                  <span className="text-[#0A1330] dark:text-white font-semibold">{formatCurrency(taxableAmount)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">GST ({Number(taxRate) || 0}% on taxable)</span>
-                  <span className="text-white font-semibold">+ {formatCurrency(taxAmount)}</span>
+                  <span className="text-slate-500 dark:text-slate-400">GST ({Number(taxRate) || 0}% on taxable)</span>
+                  <span className="text-[#0A1330] dark:text-white font-semibold">+ {formatCurrency(taxAmount)}</span>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-slate-700 text-sm">
-                  <span className="font-bold text-white">Grand Total (Amount + Tax − Discount)</span>
-                  <span className="font-extrabold text-emerald-400">{formatCurrency(totalAmount)}</span>
+                <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-sm">
+                  <span className="font-bold text-[#0A1330] dark:text-white">Grand Total (Amount + Tax − Discount)</span>
+                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrency(totalAmount)}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Payment Method</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Payment Method</label>
                   <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)} className={inputCls}>
                     <option value="upi">Direct UPI</option>
                     <option value="bank_transfer">Bank Transfer (NEFT/RTGS)</option>
@@ -520,7 +520,7 @@ export const InvoiceGenerator: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Transaction Ref ID (Optional)</label>
+                  <label className="block font-semibold text-slate-600 dark:text-slate-300 mb-1">Transaction Ref ID (Optional)</label>
                   <input
                     type="text"
                     value={paymentId}
@@ -536,7 +536,7 @@ export const InvoiceGenerator: React.FC = () => {
                   type="button"
                   onClick={() => setModalOpen(false)}
                   disabled={isCreating}
-                  className="px-4 py-2 rounded-full bg-slate-800 text-slate-300 font-semibold disabled:opacity-50"
+                  className="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -557,69 +557,69 @@ export const InvoiceGenerator: React.FC = () => {
       {/* Modal: View Invoice */}
       {viewInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setViewInvoice(null)}
-              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h3 className="text-xl font-bold text-white mb-1">Invoice {viewInvoice.invoice_number}</h3>
-            <p className="text-xs text-slate-400 mb-4">Issued on {formatDate(viewInvoice.issued_at)}</p>
+            <h3 className="text-xl font-bold text-[#0A1330] dark:text-white mb-1">Invoice {viewInvoice.invoice_number}</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">Issued on {formatDate(viewInvoice.issued_at)}</p>
 
-            <div className="space-y-3 text-xs bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
+            <div className="space-y-3 text-xs bg-[#EEF1FF] dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
               <div className="flex justify-between gap-4">
-                <span className="text-slate-400">Billed To:</span>
-                <span className="font-bold text-white text-right">{viewInvoice.billing_name}</span>
+                <span className="text-slate-500 dark:text-slate-400">Billed To:</span>
+                <span className="font-bold text-[#0A1330] dark:text-white text-right">{viewInvoice.billing_name}</span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-slate-400">Email:</span>
-                <span className="text-white text-right">{viewInvoice.billing_email}</span>
+                <span className="text-slate-500 dark:text-slate-400">Email:</span>
+                <span className="text-[#0A1330] dark:text-white text-right">{viewInvoice.billing_email}</span>
               </div>
               {viewInvoice.billing_phone && (
                 <div className="flex justify-between gap-4">
-                  <span className="text-slate-400">Phone:</span>
-                  <span className="text-white text-right">{viewInvoice.billing_phone}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Phone:</span>
+                  <span className="text-[#0A1330] dark:text-white text-right">{viewInvoice.billing_phone}</span>
                 </div>
               )}
               {viewInvoice.billing_address && (
                 <div className="flex justify-between gap-4">
-                  <span className="text-slate-400">Address:</span>
-                  <span className="text-white text-right">{viewInvoice.billing_address}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Address:</span>
+                  <span className="text-[#0A1330] dark:text-white text-right">{viewInvoice.billing_address}</span>
                 </div>
               )}
               {viewInvoice.billing_gst && (
                 <div className="flex justify-between gap-4">
-                  <span className="text-slate-400">Buyer GSTIN:</span>
-                  <span className="text-white font-mono text-right">{viewInvoice.billing_gst}</span>
+                  <span className="text-slate-500 dark:text-slate-400">Buyer GSTIN:</span>
+                  <span className="text-[#0A1330] dark:text-white font-mono text-right">{viewInvoice.billing_gst}</span>
                 </div>
               )}
               <div className="flex justify-between gap-4">
-                <span className="text-slate-400">Item:</span>
-                <span className="text-white text-right">{viewInvoice.product_name} ({viewInvoice.plan_name})</span>
+                <span className="text-slate-500 dark:text-slate-400">Item:</span>
+                <span className="text-[#0A1330] dark:text-white text-right">{viewInvoice.product_name} ({viewInvoice.plan_name})</span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-slate-400">Payment:</span>
-                <span className="text-white text-right uppercase">
+                <span className="text-slate-500 dark:text-slate-400">Payment:</span>
+                <span className="text-[#0A1330] dark:text-white text-right uppercase">
                   {viewInvoice.payment_method} · {viewInvoice.payment_status}
                 </span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-slate-700">
-                <span className="text-slate-400">Subtotal:</span>
-                <span className="text-white">{formatCurrency(viewInvoice.amount, viewInvoice.currency)}</span>
+              <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                <span className="text-slate-500 dark:text-slate-400">Subtotal:</span>
+                <span className="text-[#0A1330] dark:text-white">{formatCurrency(viewInvoice.amount, viewInvoice.currency)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Discount:</span>
-                <span className="text-white">− {formatCurrency(viewInvoice.discount_amount || 0, viewInvoice.currency)}</span>
+                <span className="text-slate-500 dark:text-slate-400">Discount:</span>
+                <span className="text-[#0A1330] dark:text-white">− {formatCurrency(viewInvoice.discount_amount || 0, viewInvoice.currency)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">GST ({viewInvoice.tax_rate}%):</span>
-                <span className="text-white">+ {formatCurrency(viewInvoice.tax_amount, viewInvoice.currency)}</span>
+                <span className="text-slate-500 dark:text-slate-400">GST ({viewInvoice.tax_rate}%):</span>
+                <span className="text-[#0A1330] dark:text-white">+ {formatCurrency(viewInvoice.tax_amount, viewInvoice.currency)}</span>
               </div>
-              <div className="flex justify-between pt-2 border-t border-slate-700 text-sm">
-                <span className="font-bold text-white">Grand Total:</span>
-                <span className="font-extrabold text-emerald-400">{formatCurrency(viewInvoice.total_amount, viewInvoice.currency)}</span>
+              <div className="flex justify-between pt-2 border-t border-slate-200 dark:border-slate-700 text-sm">
+                <span className="font-bold text-[#0A1330] dark:text-white">Grand Total:</span>
+                <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{formatCurrency(viewInvoice.total_amount, viewInvoice.currency)}</span>
               </div>
               <p className="text-[11px] text-slate-500">Total = Subtotal + GST − Discount, with GST charged on the discounted amount.</p>
             </div>

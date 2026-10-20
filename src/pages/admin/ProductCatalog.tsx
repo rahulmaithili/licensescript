@@ -43,7 +43,7 @@ function slugify(value: string): string {
 }
 
 const inputCls =
-  'w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
 const primaryBtn =
   'px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2';
 
@@ -199,11 +199,11 @@ export const ProductCatalog: React.FC = () => {
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <Package className="w-8 h-8 text-[#8fa0ff]" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
+            <Package className="w-8 h-8 text-[#1E40FF] dark:text-[#8fa0ff]" />
             Product Catalog
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Manage browser extensions, automation scripts, binaries, and version downloads.
           </p>
         </div>
@@ -218,8 +218,8 @@ export const ProductCatalog: React.FC = () => {
         <div
           className={`flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-sm ${
             banner.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-              : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+              : 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300'
           }`}
           role={banner.type === 'error' ? 'alert' : 'status'}
         >
@@ -238,27 +238,27 @@ export const ProductCatalog: React.FC = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="Loading products">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl animate-pulse">
-              <div className="h-5 w-24 bg-slate-800 rounded-full mb-4" />
+            <div key={n} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl animate-pulse">
+              <div className="h-5 w-24 bg-slate-200 dark:bg-slate-800 rounded-full mb-4" />
               <div className="flex items-center gap-3.5 mb-3">
-                <div className="w-12 h-12 rounded-2xl bg-slate-800 shrink-0" />
+                <div className="w-12 h-12 rounded-2xl bg-slate-200 dark:bg-slate-800 shrink-0" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 w-3/4 bg-slate-800 rounded" />
-                  <div className="h-3 w-1/3 bg-slate-800 rounded" />
+                  <div className="h-4 w-3/4 bg-slate-200 dark:bg-slate-800 rounded" />
+                  <div className="h-3 w-1/3 bg-slate-200 dark:bg-slate-800 rounded" />
                 </div>
               </div>
-              <div className="h-3 w-full bg-slate-800 rounded mb-2" />
-              <div className="h-3 w-2/3 bg-slate-800 rounded" />
+              <div className="h-3 w-full bg-slate-200 dark:bg-slate-800 rounded mb-2" />
+              <div className="h-3 w-2/3 bg-slate-200 dark:bg-slate-800 rounded" />
             </div>
           ))}
         </div>
       ) : products.length === 0 ? (
-        <div className="bg-slate-900 border border-dashed border-slate-700 rounded-3xl p-10 sm:p-14 text-center shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-10 sm:p-14 text-center shadow-sm dark:shadow-xl">
           <div className="w-16 h-16 mx-auto rounded-full bg-[#EEF1FF] flex items-center justify-center mb-4">
             <Package className="w-8 h-8 text-[#1E40FF]" />
           </div>
-          <h2 className="text-lg font-bold text-white">No products yet</h2>
-          <p className="text-sm text-slate-400 mt-1.5 max-w-md mx-auto">
+          <h2 className="text-lg font-bold text-[#0A1330] dark:text-white">No products yet</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-md mx-auto">
             Your catalog is empty. Add your first product to start creating pricing plans and selling licenses.
           </p>
           <button onClick={openCreateModal} className={`${primaryBtn} mx-auto mt-6`}>
@@ -271,11 +271,11 @@ export const ProductCatalog: React.FC = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between hover:border-slate-700 transition-all"
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-all"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#1E40FF]/10 text-[#8fa0ff] border border-[#1E40FF]/25">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
                     {product.category}
                   </span>
                   <button
@@ -283,8 +283,8 @@ export const ProductCatalog: React.FC = () => {
                     title={product.is_active ? 'Click to move to draft' : 'Click to activate'}
                     className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase transition-colors ${
                       product.is_active
-                        ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
-                        : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     {product.is_active ? 'Active' : 'Draft'}
@@ -296,7 +296,7 @@ export const ProductCatalog: React.FC = () => {
                     <img
                       src={product.logo_url}
                       alt={product.name}
-                      className="w-12 h-12 rounded-2xl object-cover ring-2 ring-slate-800 shrink-0"
+                      className="w-12 h-12 rounded-2xl object-cover ring-2 ring-slate-200 dark:ring-slate-800 shrink-0"
                     />
                   ) : (
                     <div className="w-12 h-12 rounded-2xl bg-[#EEF1FF] flex items-center justify-center shrink-0">
@@ -304,20 +304,20 @@ export const ProductCatalog: React.FC = () => {
                     </div>
                   )}
                   <div>
-                    <h3 className="font-bold text-white text-base leading-tight">{product.name}</h3>
-                    <span className="text-xs text-slate-400 font-mono">{product.version || 'v1.0.0'}</span>
+                    <h3 className="font-bold text-[#0A1330] dark:text-white text-base leading-tight">{product.name}</h3>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">{product.version || 'v1.0.0'}</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 line-clamp-2 mb-4 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mb-4 leading-relaxed">
                   {product.short_description || product.description}
                 </p>
 
                 {product.features && product.features.length > 0 && (
-                  <div className="space-y-1.5 py-3 border-t border-slate-800 text-xs text-slate-400">
+                  <div className="space-y-1.5 py-3 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
                     {product.features.slice(0, 3).map((f, i) => (
                       <div key={i} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-[#8fa0ff] shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-[#1E40FF] dark:text-[#8fa0ff] shrink-0" />
                         <span className="truncate">{f}</span>
                       </div>
                     ))}
@@ -325,32 +325,32 @@ export const ProductCatalog: React.FC = () => {
                 )}
               </div>
 
-              <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
                 {product.download_url ? (
                   <a
                     href={product.download_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs text-[#8fa0ff] hover:underline flex items-center gap-1 font-semibold"
+                    className="text-xs text-[#1E40FF] dark:text-[#8fa0ff] hover:underline flex items-center gap-1 font-semibold"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Download Build
                   </a>
                 ) : (
-                  <span className="text-xs text-slate-500">No binary URL</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">No binary URL</span>
                 )}
 
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => openEditModal(product)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#0A1330] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
                     title="Edit Product"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(product.id, product.name)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800"
+                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                     title="Delete Product"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -365,21 +365,21 @@ export const ProductCatalog: React.FC = () => {
       {/* Modal: Add/Edit Product */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-xl p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              className="absolute top-5 right-5 p-1.5 text-slate-500 dark:text-slate-400 hover:text-[#0A1330] dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-1">
+            <h2 className="text-xl font-bold text-[#0A1330] dark:text-white mb-1">
               {editingProduct ? 'Edit Product' : 'Add New Product'}
             </h2>
-            <p className="text-xs text-slate-400 mb-6">Set product name, extension binary url, and marketing features.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">Set product name, extension binary url, and marketing features.</p>
 
             {modalError && (
-              <div className="flex items-start gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300 mb-4" role="alert">
+              <div className="flex items-start gap-2 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-300 mb-4" role="alert">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{modalError}</span>
               </div>
@@ -388,7 +388,7 @@ export const ProductCatalog: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Product Name</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Product Name</label>
                   <input
                     type="text"
                     required
@@ -401,7 +401,7 @@ export const ProductCatalog: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Category</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Category</label>
                   <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputCls}>
                     <option value="Browser Extension">Browser Extension (.crx)</option>
                     <option value="Automation Script">Automation Script (Python/Node)</option>
@@ -412,7 +412,7 @@ export const ProductCatalog: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">URL Slug</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">URL Slug</label>
                 <input
                   type="text"
                   value={slug}
@@ -420,26 +420,26 @@ export const ProductCatalog: React.FC = () => {
                   placeholder="auto-generated-from-name"
                   className={`${inputCls} font-mono`}
                 />
-                <p className="text-[11px] text-slate-500 mt-1">Used in the storefront URL. Leave the auto-generated value unless you need a custom one.</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Used in the storefront URL. Leave the auto-generated value unless you need a custom one.</p>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Short Headline</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Short Headline</label>
                 <input type="text" value={shortDesc} onChange={(e) => setShortDesc(e.target.value)} className={inputCls} />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Full Description</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Description</label>
                 <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Version Tag</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Version Tag</label>
                   <input type="text" value={version} onChange={(e) => setVersion(e.target.value)} className={inputCls} />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Download URL</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Download URL</label>
                   <input
                     type="url"
                     value={downloadUrl}
@@ -451,7 +451,7 @@ export const ProductCatalog: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Logo URL</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Logo URL</label>
                 <input
                   type="url"
                   value={logoUrl}
@@ -462,7 +462,7 @@ export const ProductCatalog: React.FC = () => {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1">Key Features (One per line, or comma-separated)</label>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Key Features (One per line, or comma-separated)</label>
                 <textarea
                   rows={3}
                   value={features}
@@ -478,9 +478,9 @@ export const ProductCatalog: React.FC = () => {
                   id="isActive"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded bg-slate-800 border-slate-700 accent-[#1E40FF]"
+                  className="rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 accent-[#1E40FF]"
                 />
-                <label htmlFor="isActive" className="text-slate-300 font-semibold cursor-pointer">
+                <label htmlFor="isActive" className="text-slate-700 dark:text-slate-300 font-semibold cursor-pointer">
                   Product is Active & visible in storefront
                 </label>
               </div>
@@ -490,7 +490,7 @@ export const ProductCatalog: React.FC = () => {
                   type="button"
                   onClick={() => setModalOpen(false)}
                   disabled={isSaving}
-                  className="px-4 py-2 rounded-full bg-slate-800 text-slate-300 font-semibold disabled:opacity-50"
+                  className="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold disabled:opacity-50"
                 >
                   Cancel
                 </button>

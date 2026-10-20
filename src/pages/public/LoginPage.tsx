@@ -25,7 +25,7 @@ export const LoginPage: React.FC = () => {
   const [googleLoading, setGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { user, isAdmin, isLoading: authLoading, signInWithGoogle } = useAuth();
+  const { user, profile, isAdmin, isLoading: authLoading, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,10 +33,10 @@ export const LoginPage: React.FC = () => {
 
   // Already signed in? Send the user to their dashboard
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && user && profile) {
       navigate(from || (isAdmin ? '/admin' : '/account'), { replace: true });
     }
-  }, [authLoading, user, isAdmin, from, navigate]);
+  }, [authLoading, user, profile, isAdmin, from, navigate]);
 
   const friendlyError = (message: string) => {
     if (/invalid login credentials/i.test(message)) {

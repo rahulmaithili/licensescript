@@ -185,6 +185,10 @@ export interface Payment {
 export interface CompanyProfile {
   id: string;
   company_name: string;
+  brand_name?: string;
+  tagline?: string;
+  favicon_url?: string;
+  social_links?: Record<string, string>;
   legal_name?: string;
   email: string;
   phone?: string;

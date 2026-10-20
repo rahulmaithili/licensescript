@@ -38,12 +38,12 @@ import { ThemeSettings } from '@/pages/admin/ThemeSettings';
 
 // Protected Route Guard for Admin — real auth only, no demo bypass
 function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { user, isAdmin, isLoading } = useAuth();
+  const { user, profile, isAdmin, isLoading } = useAuth();
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1E40FF]"></div>
       </div>
     );
   }
@@ -52,7 +52,15 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (!isAdmin) {
+  if (user && !profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1E40FF]"></div>
+      </div>
+    );
+  }
+
+  if (profile && !isAdmin) {
     return <Navigate to="/account" replace />;
   }
 
