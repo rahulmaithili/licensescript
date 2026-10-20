@@ -252,13 +252,12 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
-                1-Click Area Booking, Bulk Cash Memo &{' '}
-                <span className="text-gradient-brand">A4 Delivery Sheet Automation</span>{' '}
-                Suite
+                Book. Print. Deliver.{' '}
+                <span className="text-gradient-brand">All in One Click.</span>
               </h1>
 
               <p className="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                The all-in-one daily operational powerhouse for <strong>IndianOil (Indane)</strong>, <strong>HP Gas</strong> &amp; <strong>Bharat Petroleum</strong> distributors. Fast-track <strong>1-Click Area-Wise Booking</strong>, <strong>Batch Cash Memo Auto-Print</strong>, <strong>1-Click Booking Canceller</strong>, <strong>Instant Download &amp; Upload</strong>, and <strong>A4 Multi-Cashmemo Delivery Run-Sheets</strong>.
+                The premium automation suite crafted exclusively for <strong>IndianOil</strong>, <strong>HP Gas</strong> &amp; <strong>Bharat Petroleum</strong> distributors. Area-wise bookings, batch cash memos, A4 delivery run-sheets and bulk cancellations — your entire day&apos;s counter work, finished in minutes.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4">
@@ -294,6 +293,25 @@ export const LandingPage: React.FC = () => {
                 <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 text-left">
                   Trusted by <strong className="text-slate-900 dark:text-white">1,200+</strong> gas agencies
                 </p>
+              </div>
+
+              {/* Feature chips */}
+              <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-2">
+                {[
+                  '1-Click Area-Wise Booking',
+                  'Bulk Cash Memo Print',
+                  'A4 Delivery Run-Sheets',
+                  '1-Click Booking Canceller',
+                  'Instant Download & Upload',
+                ].map((chip) => (
+                  <span
+                    key={chip}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#EEF1FF] dark:bg-[#1E40FF]/10 border border-[#1E40FF]/15 dark:border-[#1E40FF]/25 text-[#1E40FF] dark:text-[#8fa0ff] text-xs font-bold"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    {chip}
+                  </span>
+                ))}
               </div>
             </div>
 
