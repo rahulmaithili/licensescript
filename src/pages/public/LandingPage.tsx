@@ -25,6 +25,7 @@ import {
   Wallet,
   Plus,
 } from 'lucide-react';
+import { ServicesShowcase } from '@/components/ServicesShowcase';
 import { getProducts, getPlans } from '@/services/productService';
 import { formatCurrency, getPlanDisplay } from '@/lib/utils';
 import type { Product, Plan } from '@/types';
@@ -744,6 +745,9 @@ export const LandingPage: React.FC = () => {
           })}
         </div>
       </section>
+
+      {/* ============ TOOLS & SERVICES SHOWCASE ============ */}
+      <ServicesShowcase />
 
       {/* ============ WHY CHOOSE BANNER ============ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

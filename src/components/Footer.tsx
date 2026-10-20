@@ -144,6 +144,11 @@ export const Footer: React.FC = () => {
                     Plans & Pricing
                   </Link>
                 </li>
+                <li>
+                  <a href="/#services" className="hover:text-[#7d92ff] transition-colors">
+                    Tools &amp; Services
+                  </a>
+                </li>
               </ul>
             </div>
 

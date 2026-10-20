@@ -34,6 +34,7 @@ export const Navbar: React.FC = () => {
     { label: 'Home', to: '/', active: location.pathname === '/' },
     { label: 'Products & Extensions', to: '/products', active: location.pathname.startsWith('/products') },
     { label: 'Pricing Plans', to: '/pricing', active: location.pathname.startsWith('/pricing') },
+    { label: 'Services', href: '/#services', active: false },
     { label: 'How It Works', href: '/#how-it-works', active: false },
     { label: 'FAQ', href: '/#faq', active: false },
   ];
