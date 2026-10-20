@@ -24,6 +24,7 @@ import {
   X,
   Search,
   ExternalLink,
+  Tag,
 } from 'lucide-react';
 
 export const ADMIN_MENU_ITEMS = [
@@ -32,6 +33,7 @@ export const ADMIN_MENU_ITEMS = [
   { id: 'key-generator', label: 'Key Generator', path: '/admin/keys', icon: KeyRound },
   { id: 'product-catalog', label: 'Product Catalog', path: '/admin/products', icon: Package },
   { id: 'pricing-plans', label: 'Pricing & Plans', path: '/admin/pricing', icon: Layers },
+  { id: 'coupons', label: 'Coupons', path: '/admin/coupons', icon: Tag },
   { id: 'invoice-generator', label: 'Invoice Generator', path: '/admin/invoices', icon: Receipt },
   { id: 'company-profile', label: 'Company Profile', path: '/admin/company', icon: Building2 },
   { id: 'integrations', label: 'Supabase & Razorpay', path: '/admin/integrations', icon: Cpu },

@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import type { Plan, Product, Profile, PaymentMethod } from '@/types';
 import { generateCryptoRandomKey } from './keyGeneratorService';
 import { createInvoice } from './invoiceService';
+import { redeemCoupon } from './couponService';
 
 declare global {
   interface Window {
@@ -76,7 +77,7 @@ export async function processPaymentSuccess(payload: CheckoutPayload, paymentId:
     const { error: licenseError } = await supabase.from('licenses').insert([
       {
         license_key: licenseKey,
-        user_id: payload.user.id,
+        customer_id: payload.user.id,
         product_id: payload.product.id,
         plan_id: payload.plan.id,
         invoice_id: invoice?.id || null,
@@ -84,7 +85,6 @@ export async function processPaymentSuccess(payload: CheckoutPayload, paymentId:
         issue_date: now.toISOString(),
         expiry_date: expiryDate,
         max_devices: payload.plan.max_devices || 1,
-        current_devices: 0,
         is_locked: false,
         priority: 'normal',
         notes: `Purchased via ${payload.paymentGateway.toUpperCase()} (${paymentId})`,
@@ -93,6 +93,16 @@ export async function processPaymentSuccess(payload: CheckoutPayload, paymentId:
     ]);
     if (licenseError) {
       console.error('Payment succeeded but license record failed to save:', licenseError.message);
+    }
+
+    // 5. Redeem coupon (best-effort — redeemCoupon never throws, and this
+    // guard ensures a coupon failure can never break checkout).
+    if (!licenseError && payload.couponCode) {
+      try {
+        await redeemCoupon(payload.couponCode);
+      } catch (redeemErr) {
+        console.warn('Coupon redemption failed after payment success:', redeemErr);
+      }
     }
   } catch (err) {
     console.error('Payment recording failed:', err);

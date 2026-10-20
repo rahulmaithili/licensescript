@@ -58,16 +58,17 @@ export interface Plan {
 export interface Coupon {
   id: string;
   code: string;
-  discount_type: 'percentage' | 'fixed';
-  discount_value: number;
+  /** Real coupons table columns: type is 'percentage' | 'flat' (₹ off). */
+  type: 'percentage' | 'flat';
+  value: number;
+  /** Added by migration 20261020010000 — may be absent on older DBs. */
   min_order_amount?: number;
-  max_discount_amount?: number;
-  valid_from: string;
-  valid_until: string;
-  usage_limit?: number;
-  times_used: number;
+  usage_limit?: number | null;
+  used_count: number;
+  expires_at?: string | null;
   is_active: boolean;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface Invoice {
@@ -110,6 +111,9 @@ export interface License {
   max_devices: number;
   current_devices: number;
   is_locked: boolean;
+  /** True for free-trial licenses (licenses.is_trial, premium migration).
+   *  Frontend also treats LW-TRIAL-* keys as trials when the column is absent. */
+  is_trial?: boolean;
   priority: LicensePriority;
   notes?: string;
   salesperson_id?: string;

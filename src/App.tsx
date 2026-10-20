@@ -31,6 +31,7 @@ import { UserLicenses } from '@/pages/admin/UserLicenses';
 import { KeyGenerator } from '@/pages/admin/KeyGenerator';
 import { ProductCatalog } from '@/pages/admin/ProductCatalog';
 import { PricingPlans } from '@/pages/admin/PricingPlans';
+import { CouponsPage } from '@/pages/admin/CouponsPage';
 import { InvoiceGenerator } from '@/pages/admin/InvoiceGenerator';
 import { CompanyProfile } from '@/pages/admin/CompanyProfile';
 import { Integrations } from '@/pages/admin/Integrations';
@@ -117,6 +118,7 @@ export function App() {
               <Route path="keys" element={<KeyGenerator />} />
               <Route path="products" element={<ProductCatalog />} />
               <Route path="pricing" element={<PricingPlans />} />
+              <Route path="coupons" element={<CouponsPage />} />
               <Route path="invoices" element={<InvoiceGenerator />} />
               <Route path="company" element={<CompanyProfile />} />
               <Route path="integrations" element={<Integrations />} />

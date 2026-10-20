@@ -183,10 +183,11 @@ export async function validateCoupon(code: string, orderAmount: number): Promise
   coupon?: Coupon;
 }> {
   try {
+    const normalized = code.toUpperCase().trim();
     const { data, error } = await supabase
       .from('coupons')
       .select('*')
-      .eq('code', code.toUpperCase().trim())
+      .eq('code', normalized)
       .eq('is_active', true)
       .single();
 
@@ -196,28 +197,26 @@ export async function validateCoupon(code: string, orderAmount: number): Promise
 
     const coupon = data as Coupon;
     const now = new Date();
-    if (coupon.valid_from && new Date(coupon.valid_from) > now) {
-      return { valid: false, discount: 0, message: 'Coupon is not yet active' };
+
+    if (coupon.expires_at && new Date(coupon.expires_at) < now) {
+      return { valid: false, discount: 0, message: 'This coupon has expired' };
     }
-    if (coupon.valid_until && new Date(coupon.valid_until) < now) {
-      return { valid: false, discount: 0, message: 'Coupon has expired' };
-    }
-    if (coupon.usage_limit && coupon.times_used >= coupon.usage_limit) {
+    if (coupon.usage_limit != null && coupon.used_count >= coupon.usage_limit) {
       return { valid: false, discount: 0, message: 'Coupon usage limit reached' };
     }
+    // min_order_amount may be absent pre-migration — with select('*') it
+    // simply won't be on the object, so read it defensively.
     if (coupon.min_order_amount && orderAmount < coupon.min_order_amount) {
       return { valid: false, discount: 0, message: `Minimum order of ₹${coupon.min_order_amount} required` };
     }
 
     let discount = 0;
-    if (coupon.discount_type === 'percentage') {
-      discount = (orderAmount * coupon.discount_value) / 100;
-      if (coupon.max_discount_amount) {
-        discount = Math.min(discount, coupon.max_discount_amount);
-      }
+    if (coupon.type === 'percentage') {
+      discount = (orderAmount * coupon.value) / 100;
     } else {
-      discount = coupon.discount_value;
+      discount = coupon.value;
     }
+    discount = Math.min(discount, orderAmount);
 
     return {
       valid: true,
