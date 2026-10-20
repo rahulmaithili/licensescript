@@ -1,41 +1,46 @@
 import { supabase } from '@/lib/supabase';
 import type { CompanyProfile, IntegrationSettings, SystemSettings } from '@/types';
 
+// Neutral starting values used ONLY when no settings row exists yet in the DB.
+// No fabricated business/financial data — the admin fills these in from the
+// Company Profile / Integrations / System Settings pages and they are saved
+// to Supabase. (Supabase URL + publishable key are the project's real public
+// config values, shown so the integrations page can display the connection.)
 export const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
   id: '00000000-0000-0000-0000-000000000001',
   company_name: 'LicenseWala Technologies',
-  legal_name: 'LicenseWala Solutions Private Limited',
+  legal_name: '',
   email: 'support@licensewala.com',
-  phone: '+91 98765 43210',
+  phone: '',
   website: 'https://licensewala.netlify.app',
-  gst_number: '27AABCL1234D1ZM',
-  pan_number: 'AABCL1234D',
-  address: 'Level 4, Cyber City, Tech Park',
-  city: 'Patna / Mumbai',
-  state: 'Maharashtra',
-  pincode: '400051',
+  gst_number: '',
+  pan_number: '',
+  address: '',
+  city: '',
+  state: '',
+  pincode: '',
   country: 'India',
-  logo_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&h=120&fit=crop',
-  bank_name: 'HDFC Bank Ltd',
-  bank_account_no: '50200012345678',
-  bank_ifsc: 'HDFC0001234',
-  upi_id: 'rahulmaithili@okhdfcbank',
-  invoice_prefix: 'LW-',
+  logo_url: '',
+  bank_name: '',
+  bank_account_no: '',
+  bank_ifsc: '',
+  upi_id: '',
+  invoice_prefix: 'INV-',
   invoice_notes: 'Thank you for choosing LicenseWala! For instant support or API integration, reach out on WhatsApp.',
-  terms_conditions: 'Licenses are non-transferable without admin approval. One license key is valid for designated devices only as per selected plan.',
+  terms_conditions: '',
   support_email: 'support@licensewala.com',
 };
 
 export const DEFAULT_INTEGRATION_SETTINGS: IntegrationSettings = {
   id: '00000000-0000-0000-0000-000000000001',
-  razorpay_enabled: true,
-  razorpay_key_id: 'rzp_test_1DP5mmOlF5G5ag',
-  cashfree_enabled: true,
-  cashfree_app_id: 'TEST10375628',
+  razorpay_enabled: false,
+  razorpay_key_id: '',
+  cashfree_enabled: false,
+  cashfree_app_id: '',
   cashfree_mode: 'sandbox',
   supabase_url: 'https://wyeejbncddpxhwtijkjt.supabase.co',
   supabase_anon_key: 'sb_publishable_VfUVN_NPMbe9OudO5ZonPw_kMKaub_u',
-  webhook_secret: 'whsec_lw_sample_secret_key_2026',
+  webhook_secret: '',
 };
 
 export const DEFAULT_SYSTEM_SETTINGS: SystemSettings = {

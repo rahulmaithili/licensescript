@@ -85,7 +85,14 @@ export async function generateBulkKeys(options: KeyGenOptions): Promise<{
 
     const { error } = await supabase.from('license_keys_pool').insert(rows);
     if (error) {
-      console.warn('Could not save to license_keys_pool directly, fallback:', error.message);
+      // Keys that are not persisted in the pool can never be verified or
+      // assigned — report an honest failure instead of a fake success.
+      return {
+        success: false,
+        keys: [],
+        count: 0,
+        error: `Keys could not be saved to the key pool: ${error.message}`,
+      };
     }
 
     return {

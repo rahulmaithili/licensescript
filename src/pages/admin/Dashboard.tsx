@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -8,28 +8,129 @@ import {
   PauseCircle,
   Users,
   IndianRupee,
-  TrendingUp,
   Sparkles,
-  ArrowUpRight,
-  Filter,
   CheckCircle2,
-  Calendar,
-  CreditCard,
   KeyRound,
   Download,
+  Receipt,
+  Package,
 } from 'lucide-react';
 import { getLicenses } from '@/services/licenseService';
 import { getUsers } from '@/services/userService';
 import { getInvoices } from '@/services/invoiceService';
+import { getProducts } from '@/services/productService';
 import { formatCurrency, formatDate, calculateDaysLeft } from '@/lib/utils';
-import type { License, Profile, Invoice } from '@/types';
+import type { License, Profile, Invoice, Product } from '@/types';
+
+type DateRange = '7d' | '30d' | '90d' | 'all';
+
+interface RevenueBucket {
+  label: string;
+  revenue: number;
+}
+
+const GATEWAY_COLORS = ['#1E40FF', '#10b981', '#0ea5e9', '#64748b', '#1740D6', '#94a3b8'];
+
+function invoiceDate(inv: Invoice): Date | null {
+  const raw = inv.issued_at || inv.created_at;
+  if (!raw) return null;
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/** Group real invoice totals into time buckets for the selected range. No invented data. */
+function buildRevenueBuckets(invoices: Invoice[], range: DateRange): RevenueBucket[] {
+  const now = new Date();
+  const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+  if (range === 'all') {
+    const byMonth = new Map<string, { label: string; revenue: number; sort: number }>();
+    invoices.forEach((inv) => {
+      const d = invoiceDate(inv);
+      if (!d) return;
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const entry = byMonth.get(key) || {
+        label: d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' }),
+        revenue: 0,
+        sort: d.getFullYear() * 12 + d.getMonth(),
+      };
+      entry.revenue += inv.total_amount || 0;
+      byMonth.set(key, entry);
+    });
+    return Array.from(byMonth.values())
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ label, revenue }) => ({ label, revenue }));
+  }
+
+  if (range === '90d') {
+    // 13 weekly buckets ending today
+    const buckets: RevenueBucket[] = [];
+    const starts: Date[] = [];
+    for (let i = 12; i >= 0; i--) {
+      const s = startOfDay(now);
+      s.setDate(s.getDate() - i * 7 - 6);
+      starts.push(s);
+      buckets.push({
+        label: s.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+        revenue: 0,
+      });
+    }
+    invoices.forEach((inv) => {
+      const d = invoiceDate(inv);
+      if (!d) return;
+      for (let i = starts.length - 1; i >= 0; i--) {
+        if (d >= starts[i]) {
+          if (i === starts.length - 1 || d < new Date(starts[i].getTime() + 7 * 86400000)) {
+            buckets[i].revenue += inv.total_amount || 0;
+          }
+          break;
+        }
+      }
+    });
+    return buckets;
+  }
+
+  const days = range === '7d' ? 7 : 30;
+  const buckets: RevenueBucket[] = [];
+  const starts: Date[] = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const s = startOfDay(now);
+    s.setDate(s.getDate() - i);
+    starts.push(s);
+    buckets.push({
+      label: s.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+      revenue: 0,
+    });
+  }
+  invoices.forEach((inv) => {
+    const d = invoiceDate(inv);
+    if (!d) return;
+    const idx = starts.findIndex(
+      (s) => d >= s && d < new Date(s.getTime() + 86400000)
+    );
+    if (idx >= 0) buckets[idx].revenue += inv.total_amount || 0;
+  });
+  return buckets;
+}
+
+function invoicesInRange(invoices: Invoice[], range: DateRange): Invoice[] {
+  if (range === 'all') return invoices;
+  const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
+  const cutoff = Date.now() - days * 86400000;
+  return invoices.filter((inv) => {
+    const d = invoiceDate(inv);
+    return d ? d.getTime() >= cutoff : false;
+  });
+}
 
 export const AdminDashboard: React.FC = () => {
   const [licenses, setLicenses] = useState<License[]>([]);
   const [users, setUsers] = useState<Profile[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d');
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange>('30d');
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
 
   useEffect(() => {
@@ -38,18 +139,26 @@ export const AdminDashboard: React.FC = () => {
 
   const loadData = async () => {
     setIsLoading(true);
-    const [lics, usrs, invs] = await Promise.all([
-      getLicenses(),
-      getUsers(),
-      getInvoices(),
-    ]);
-    setLicenses(lics);
-    setUsers(usrs);
-    setInvoices(invs);
-    setIsLoading(false);
+    setLoadError(null);
+    try {
+      const [lics, usrs, invs, prods] = await Promise.all([
+        getLicenses(),
+        getUsers(),
+        getInvoices(),
+        getProducts(),
+      ]);
+      setLicenses(lics);
+      setUsers(usrs);
+      setInvoices(invs);
+      setProducts(prods);
+    } catch (err: any) {
+      setLoadError(err?.message || 'Failed to load dashboard data. Please refresh.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // KPIs
+  // KPIs — all computed from real service data
   const totalLicenses = licenses.length;
   const activeLicenses = licenses.filter((l) => l.status === 'active').length;
   const expiringSoon = licenses.filter((l) => {
@@ -67,59 +176,100 @@ export const AdminDashboard: React.FC = () => {
   const pausedLicenses = licenses.filter((l) => l.status === 'paused' || l.status === 'locked').length;
 
   const totalRevenue = invoices.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
-  const totalProfit = Math.round(totalRevenue * 0.85);
+  const paidInvoices = invoices.filter((i) => i.payment_status === 'paid');
+  const paidRevenue = paidInvoices.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
 
-  // Monthly Revenue Data
-  const monthlyRevenueData = [
-    { month: 'Oct 25', revenue: 42000, profit: 35700 },
-    { month: 'Nov 25', revenue: 58000, profit: 49300 },
-    { month: 'Dec 25', revenue: 76000, profit: 64600 },
-    { month: 'Jan 26', revenue: 94000, profit: 79900 },
-    { month: 'Feb 26', revenue: 112000, profit: 95200 },
-    { month: 'Mar 26', revenue: totalRevenue > 0 ? totalRevenue : 145000, profit: totalProfit > 0 ? totalProfit : 123250 },
-  ];
+  const rangeInvoices = useMemo(() => invoicesInRange(invoices, dateRange), [invoices, dateRange]);
+  const rangeRevenue = rangeInvoices.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
 
-  // Gateway Distribution
-  const gatewayData = [
-    { name: 'Razorpay', value: 68, color: '#3b82f6' },
-    { name: 'Cashfree', value: 24, color: '#10b981' },
-    { name: 'Direct UPI/Bank', value: 8, color: '#f59e0b' },
-  ];
+  const revenueData = useMemo(
+    () => buildRevenueBuckets(invoices, dateRange),
+    [invoices, dateRange]
+  );
+  const hasChartData = revenueData.some((d) => d.revenue > 0);
+
+  // Gateway distribution — real share of invoices by payment method
+  const gatewayData = useMemo(() => {
+    const counts = new Map<string, number>();
+    invoices.forEach((inv) => {
+      const name = (inv.payment_method || 'unknown').replace(/_/g, ' ');
+      counts.set(name, (counts.get(name) || 0) + 1);
+    });
+    const total = invoices.length || 1;
+    return Array.from(counts.entries())
+      .map(([name, count], i) => ({
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        count,
+        value: Math.round((count / total) * 100),
+        color: GATEWAY_COLORS[i % GATEWAY_COLORS.length],
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [invoices]);
 
   // SVG Chart Geometry
   const chartHeight = 220;
   const chartWidth = 560;
-  const maxVal = Math.max(...monthlyRevenueData.map((d) => d.revenue), 160000);
+  const maxVal = Math.max(...revenueData.map((d) => d.revenue), 1);
+  const pointX = (i: number) =>
+    revenueData.length <= 1
+      ? chartWidth / 2
+      : (i / (revenueData.length - 1)) * (chartWidth - 40) + 20;
+  const pointY = (v: number) => chartHeight - (v / maxVal) * (chartHeight - 40) - 20;
 
-  const getPoints = (key: 'revenue' | 'profit') => {
-    return monthlyRevenueData
-      .map((d, i) => {
-        const x = (i / (monthlyRevenueData.length - 1)) * (chartWidth - 40) + 20;
-        const y = chartHeight - (d[key] / maxVal) * (chartHeight - 40) - 20;
-        return `${x},${y}`;
-      })
-      .join(' ');
-  };
+  const revenuePoints = revenueData.map((d, i) => `${pointX(i)},${pointY(d.revenue)}`).join(' ');
+  const revenueArea =
+    revenueData.length > 1
+      ? `20,${chartHeight - 10} ${revenuePoints} ${chartWidth - 20},${chartHeight - 10}`
+      : '';
 
-  const revenuePoints = getPoints('revenue');
-  const profitPoints = getPoints('profit');
+  const upcomingExpirations = licenses
+    .map((lic) => ({ lic, ...calculateDaysLeft(lic.expiry_date) }))
+    .filter((item) => !item.isExpired && !item.isLifetime && item.days <= 45)
+    .sort((a, b) => a.days - b.days)
+    .slice(0, 4);
 
-  // Closed area polygon for gradient fill
-  const revenueArea = `20,${chartHeight - 10} ${revenuePoints} ${chartWidth - 20},${chartHeight - 10}`;
-  const profitArea = `20,${chartHeight - 10} ${profitPoints} ${chartWidth - 20},${chartHeight - 10}`;
+  if (isLoading) {
+    return (
+      <div className="space-y-8 max-w-7xl mx-auto pb-12" aria-busy="true">
+        <div className="h-36 rounded-3xl bg-slate-900 border border-slate-800 animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-24 rounded-2xl bg-slate-900 border border-slate-800 animate-pulse" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-32 rounded-2xl bg-slate-900 border border-slate-800 animate-pulse" />
+          ))}
+        </div>
+        <div className="h-80 rounded-3xl bg-slate-900 border border-slate-800 animate-pulse flex items-center justify-center">
+          <span className="w-8 h-8 border-2 border-slate-700 border-t-[#1E40FF] rounded-full animate-spin" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto pb-12">
+      {loadError && (
+        <div className="rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 px-5 py-3 text-sm font-medium flex items-center justify-between gap-3">
+          <span>{loadError}</span>
+          <button onClick={loadData} className="px-3 py-1.5 rounded-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 text-xs font-bold shrink-0">
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 p-6 sm:p-8 border border-indigo-800/40 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-[#0A1330] p-6 sm:p-8 border border-[#1E40FF]/30 shadow-2xl">
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold mb-3 border border-indigo-500/30">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E40FF]/15 text-[#8fa0ff] text-xs font-semibold mb-3 border border-[#1E40FF]/30">
+              <Sparkles className="w-3.5 h-3.5 text-[#8fa0ff]" />
               Live Super Admin Overview
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Welcome back, <span className="text-indigo-400">RM Rahul</span>!
+              Welcome back, <span className="text-[#8fa0ff]">RM Rahul</span>!
             </h1>
             <p className="text-sm text-slate-300 mt-1 max-w-xl">
               Real-time software licensing metrics, automated key activations, subscription renewals, and live payment settlements.
@@ -129,14 +279,14 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/admin/licenses"
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2"
             >
               <KeyRound className="w-4 h-4" />
               <span>Issue New License</span>
             </Link>
             <Link
               to="/admin/keys"
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold border border-slate-700 transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold border border-slate-700 transition-all flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
               <span>Bulk Keys</span>
@@ -144,34 +294,34 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-[#1E40FF]/10 rounded-full blur-3xl pointer-events-none"></div>
       </div>
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Total Licenses</span>
-            <ShieldCheck className="w-4 h-4 text-indigo-400" />
+            <ShieldCheck className="w-4 h-4 text-[#8fa0ff]" />
           </div>
           <div className="mt-2">
             <span className="text-2xl font-bold text-white">{totalLicenses}</span>
-            <span className="block text-[11px] text-emerald-400 font-medium mt-0.5">All created</span>
+            <span className="block text-[11px] text-slate-400 font-medium mt-0.5">All created</span>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Active</span>
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="mt-2">
             <span className="text-2xl font-bold text-emerald-400">{activeLicenses}</span>
-            <span className="block text-[11px] text-slate-400 font-medium mt-0.5">Hardware bound</span>
+            <span className="block text-[11px] text-slate-400 font-medium mt-0.5">Currently valid</span>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Expiring &le; 30d</span>
             <Clock className="w-4 h-4 text-amber-400" />
@@ -182,7 +332,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Expiring Today</span>
             <AlertTriangle className="w-4 h-4 text-rose-400" />
@@ -193,7 +343,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Expired</span>
             <XCircle className="w-4 h-4 text-slate-500" />
@@ -204,96 +354,89 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Paused / Locked</span>
-            <PauseCircle className="w-4 h-4 text-purple-400" />
+            <PauseCircle className="w-4 h-4 text-amber-400" />
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-bold text-purple-400">{pausedLicenses}</span>
+            <span className="text-2xl font-bold text-white">{pausedLicenses}</span>
             <span className="block text-[11px] text-slate-400 font-medium mt-0.5">Admin hold</span>
           </div>
         </div>
       </div>
 
-      {/* Financial Overview Cards */}
+      {/* Financial Overview Cards — real invoice data only (no profit estimate: no cost source exists) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-slate-900 to-indigo-950/60 border border-indigo-900/50 rounded-2xl p-5 shadow-lg">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-400">Total Collected Revenue</span>
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+            <span className="text-sm font-medium text-slate-400">Total Invoiced Revenue</span>
+            <div className="p-2 rounded-xl bg-[#1E40FF]/10 text-[#8fa0ff]">
               <IndianRupee className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-extrabold text-white">
-              {formatCurrency(totalRevenue > 0 ? totalRevenue : 145000)}
-            </span>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold mt-1">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>+34.2% from last month</span>
+            <span className="text-3xl font-extrabold text-white">{formatCurrency(totalRevenue)}</span>
+            <div className="text-xs text-slate-400 font-medium mt-1">
+              {formatCurrency(paidRevenue)} collected from {paidInvoices.length} paid invoice{paidInvoices.length === 1 ? '' : 's'}
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-slate-900 to-emerald-950/60 border border-emerald-900/50 rounded-2xl p-5 shadow-lg">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-400">Estimated Net Profit</span>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
-              <Sparkles className="w-5 h-5" />
+            <span className="text-sm font-medium text-slate-400">
+              Revenue — {dateRange === 'all' ? 'All Time' : `Last ${dateRange.replace('d', ' Days')}`}
+            </span>
+            <div className="p-2 rounded-xl bg-[#1E40FF]/10 text-[#8fa0ff]">
+              <Receipt className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-extrabold text-emerald-400">
-              {formatCurrency(totalProfit > 0 ? totalProfit : 123250)}
-            </span>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold mt-1">
-              <span>85% margin on digital licenses</span>
+            <span className="text-3xl font-extrabold text-white">{formatCurrency(rangeRevenue)}</span>
+            <div className="text-xs text-slate-400 font-medium mt-1">
+              From {rangeInvoices.length} invoice{rangeInvoices.length === 1 ? '' : 's'} in this period
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-slate-900 to-blue-950/60 border border-blue-900/50 rounded-2xl p-5 shadow-lg">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-400">Total Registered Users</span>
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
+            <div className="p-2 rounded-xl bg-[#1E40FF]/10 text-[#8fa0ff]">
               <Users className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3">
             <span className="text-3xl font-extrabold text-white">{users.length}</span>
-            <div className="flex items-center gap-1.5 text-xs text-blue-400 font-semibold mt-1">
-              <span>100% verified buyers & clients</span>
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium mt-1">
+              <Package className="w-3.5 h-3.5" />
+              <span>{products.length} product{products.length === 1 ? '' : 's'} in catalog</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* SVG Charts Section */}
+      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Monthly Revenue Trend SVG Chart */}
-        <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-6">
-          <div className="flex items-center justify-between mb-6">
+        {/* Revenue Trend */}
+        <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
             <div>
-              <h3 className="text-lg font-bold text-white">Revenue & Profit Trend</h3>
-              <p className="text-xs text-slate-400">Monthly billing gross vs net revenue (INR)</p>
+              <h3 className="text-lg font-bold text-white">Revenue Trend</h3>
+              <p className="text-xs text-slate-400">Invoice totals (INR) grouped from real invoices</p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-4 text-xs mr-2">
-                <span className="flex items-center gap-1.5 text-indigo-400 font-semibold">
-                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Gross
-                </span>
-                <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Profit
-                </span>
-              </div>
+              <span className="hidden sm:flex items-center gap-1.5 text-xs text-[#8fa0ff] font-semibold mr-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#1E40FF]"></span> Revenue
+              </span>
               {(['7d', '30d', '90d', 'all'] as const).map((r) => (
                 <button
                   key={r}
-                  onClick={() => setDateRange(r)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase transition-all ${
+                  onClick={() => { setDateRange(r); setHoveredPoint(null); }}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold uppercase transition-all ${
                     dateRange === r
-                      ? 'bg-indigo-600 text-white'
+                      ? 'bg-[#1E40FF] hover:bg-[#1740D6] text-white'
                       : 'bg-slate-800 text-slate-400 hover:text-white'
                   }`}
                 >
@@ -303,230 +446,209 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Pure SVG Area Graph */}
-          <div className="relative w-full overflow-hidden">
-            <svg
-              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-              className="w-full h-64 overflow-visible"
-            >
-              <defs>
-                <linearGradient id="svgRevGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
-                </linearGradient>
-                <linearGradient id="svgProfGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
+          {!hasChartData ? (
+            <div className="h-64 flex flex-col items-center justify-center text-center text-slate-500">
+              <Receipt className="w-10 h-10 mb-3 opacity-40" />
+              <p className="text-sm font-semibold text-slate-400">No invoice revenue in this period</p>
+              <p className="text-xs mt-1 max-w-xs">Revenue appears here once invoices exist. Try a wider date range.</p>
+            </div>
+          ) : (
+            <div className="relative w-full overflow-hidden" onMouseLeave={() => setHoveredPoint(null)}>
+              {hoveredPoint !== null && revenueData[hoveredPoint] && (
+                <div
+                  className="absolute -top-1 z-10 -translate-x-1/2 bg-[#0A1330] border border-[#1E40FF]/40 text-white text-[11px] font-semibold rounded-xl px-2.5 py-1.5 pointer-events-none whitespace-nowrap shadow-xl"
+                  style={{ left: `${(pointX(hoveredPoint) / chartWidth) * 100}%` }}
+                >
+                  {revenueData[hoveredPoint].label}: {formatCurrency(revenueData[hoveredPoint].revenue)}
+                </div>
+              )}
+              <svg viewBox={`0 0 ${chartWidth} ${chartHeight + 16}`} className="w-full h-64 overflow-visible">
+                <defs>
+                  <linearGradient id="svgRevGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#1E40FF" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#1E40FF" stopOpacity="0.0" />
+                  </linearGradient>
+                </defs>
 
-              {/* Grid Lines */}
-              {[0, 0.25, 0.5, 0.75, 1].map((pct, idx) => {
-                const y = chartHeight - pct * (chartHeight - 40) - 20;
-                return (
-                  <g key={idx}>
-                    <line
-                      x1="20"
-                      y1={y}
-                      x2={chartWidth - 20}
-                      y2={y}
-                      stroke="#1e293b"
-                      strokeDasharray="4 4"
-                    />
-                    <text
-                      x="0"
-                      y={y + 3}
-                      fill="#64748b"
-                      fontSize="9"
-                      fontFamily="monospace"
-                    >
-                      ₹{Math.round((pct * maxVal) / 1000)}k
-                    </text>
-                  </g>
-                );
-              })}
+                {[0, 0.25, 0.5, 0.75, 1].map((pct, idx) => {
+                  const y = chartHeight - pct * (chartHeight - 40) - 20;
+                  return (
+                    <g key={idx}>
+                      <line x1="20" y1={y} x2={chartWidth - 20} y2={y} stroke="#1e293b" strokeDasharray="4 4" />
+                      <text x="0" y={y + 3} fill="#64748b" fontSize="9" fontFamily="monospace">
+                        ₹{Math.round((pct * maxVal) / 1000)}k
+                      </text>
+                    </g>
+                  );
+                })}
 
-              {/* Area Fills */}
-              <polygon points={revenueArea} fill="url(#svgRevGrad)" />
-              <polygon points={profitArea} fill="url(#svgProfGrad)" />
+                {revenueArea && <polygon points={revenueArea} fill="url(#svgRevGrad)" />}
+                {revenueData.length > 1 && (
+                  <polyline fill="none" stroke="#1E40FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" points={revenuePoints} />
+                )}
 
-              {/* Lines */}
-              <polyline
-                fill="none"
-                stroke="#6366f1"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                points={revenuePoints}
-              />
-              <polyline
-                fill="none"
-                stroke="#10b981"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                points={profitPoints}
-              />
-
-              {/* Points */}
-              {monthlyRevenueData.map((d, i) => {
-                const x = (i / (monthlyRevenueData.length - 1)) * (chartWidth - 40) + 20;
-                const yRev = chartHeight - (d.revenue / maxVal) * (chartHeight - 40) - 20;
-                const yProf = chartHeight - (d.profit / maxVal) * (chartHeight - 40) - 20;
-
-                return (
-                  <g key={i}>
-                    <circle
-                      cx={x}
-                      cy={yRev}
-                      r="4.5"
-                      fill="#6366f1"
-                      stroke="#0f172a"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx={x}
-                      cy={yProf}
-                      r="4"
-                      fill="#10b981"
-                      stroke="#0f172a"
-                      strokeWidth="2"
-                    />
-                    <text
-                      x={x}
-                      y={chartHeight + 12}
-                      textAnchor="middle"
-                      fill="#94a3b8"
-                      fontSize="10"
-                      fontWeight="600"
-                    >
-                      {d.month}
-                    </text>
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
+                {revenueData.map((d, i) => {
+                  const showLabel = revenueData.length <= 12 || i % 5 === 0 || i === revenueData.length - 1;
+                  return (
+                    <g key={i}>
+                      <circle
+                        cx={pointX(i)}
+                        cy={pointY(d.revenue)}
+                        r={hoveredPoint === i ? '6.5' : '4.5'}
+                        fill="#1E40FF"
+                        stroke="#0f172a"
+                        strokeWidth="2"
+                        onMouseEnter={() => setHoveredPoint(i)}
+                        style={{ cursor: 'pointer' }}
+                      />
+                      {showLabel && (
+                        <text x={pointX(i)} y={chartHeight + 12} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="600">
+                          {d.label}
+                        </text>
+                      )}
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          )}
         </div>
 
-        {/* Payment Gateways Split SVG Donut */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between">
+        {/* Payment Method Distribution Donut */}
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-sm">
           <div>
-            <h3 className="text-lg font-bold text-white">Gateway Distribution</h3>
-            <p className="text-xs text-slate-400">Transactions processed by gateway</p>
+            <h3 className="text-lg font-bold text-white">Payment Method Distribution</h3>
+            <p className="text-xs text-slate-400">Share of invoices by payment method</p>
           </div>
 
-          {/* SVG Donut Visualizer */}
-          <div className="flex items-center justify-center py-6">
-            <svg width="180" height="180" viewBox="0 0 100 100" className="transform -rotate-90">
-              <circle cx="50" cy="50" r="38" stroke="#1e293b" strokeWidth="12" fill="none" />
-              {/* Razorpay 68% */}
-              <circle
-                cx="50"
-                cy="50"
-                r="38"
-                stroke="#3b82f6"
-                strokeWidth="12"
-                strokeDasharray="162.4 238.7"
-                strokeDashoffset="0"
-                fill="none"
-              />
-              {/* Cashfree 24% */}
-              <circle
-                cx="50"
-                cy="50"
-                r="38"
-                stroke="#10b981"
-                strokeWidth="12"
-                strokeDasharray="57.3 238.7"
-                strokeDashoffset="-162.4"
-                fill="none"
-              />
-              {/* UPI 8% */}
-              <circle
-                cx="50"
-                cy="50"
-                r="38"
-                stroke="#f59e0b"
-                strokeWidth="12"
-                strokeDasharray="19.1 238.7"
-                strokeDashoffset="-219.7"
-                fill="none"
-              />
-            </svg>
-          </div>
-
-          <div className="space-y-2 pt-2 border-t border-slate-800">
-            {gatewayData.map((g) => (
-              <div key={g.name} className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: g.color }}></span>
-                  <span className="text-slate-300 font-medium">{g.name}</span>
-                </div>
-                <span className="font-bold text-white">{g.value}%</span>
+          {invoices.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-500 py-10">
+              <Receipt className="w-10 h-10 mb-3 opacity-40" />
+              <p className="text-sm font-semibold text-slate-400">No invoices yet</p>
+              <p className="text-xs mt-1">Payment methods will appear once invoices are issued.</p>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-center py-6">
+                <svg width="180" height="180" viewBox="0 0 100 100" className="transform -rotate-90">
+                  <circle cx="50" cy="50" r="38" stroke="#1e293b" strokeWidth="12" fill="none" />
+                  {(() => {
+                    const circumference = 2 * Math.PI * 38;
+                    let offset = 0;
+                    return gatewayData.map((g) => {
+                      const len = (g.count / invoices.length) * circumference;
+                      const el = (
+                        <circle
+                          key={g.name}
+                          cx="50"
+                          cy="50"
+                          r="38"
+                          stroke={g.color}
+                          strokeWidth="12"
+                          strokeDasharray={`${Math.max(len - 1, 0)} ${circumference}`}
+                          strokeDashoffset={-offset}
+                          fill="none"
+                        />
+                      );
+                      offset += len;
+                      return el;
+                    });
+                  })()}
+                </svg>
               </div>
-            ))}
-          </div>
+
+              <div className="space-y-2 pt-2 border-t border-slate-800">
+                {gatewayData.map((g) => (
+                  <div key={g.name} className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: g.color }}></span>
+                      <span className="text-slate-300 font-medium capitalize">{g.name}</span>
+                      <span className="text-slate-500">({g.count})</span>
+                    </div>
+                    <span className="font-bold text-white">{g.value}%</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       {/* Recent Purchases & Expirations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-white">Recent License Purchases</h3>
-            <Link to="/admin/licenses" className="text-xs font-semibold text-indigo-400 hover:underline">
+            <Link to="/admin/licenses" className="text-xs font-semibold text-[#8fa0ff] hover:underline">
               View All
             </Link>
           </div>
 
-          <div className="divide-y divide-slate-800/80">
-            {licenses.slice(0, 4).map((lic) => (
-              <div key={lic.id} className="py-3 flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-sm text-white">{lic.user?.full_name || 'Customer'}</div>
-                  <div className="text-xs text-slate-400">{lic.product?.name}</div>
-                  <div className="font-mono text-[11px] text-indigo-400 mt-0.5">{lic.license_key}</div>
-                </div>
-                <div className="text-right">
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    {lic.status}
-                  </span>
-                  <div className="text-xs text-slate-400 mt-1">
-                    {formatDate(lic.issue_date)}
+          {licenses.length === 0 ? (
+            <div className="py-10 flex flex-col items-center justify-center text-center text-slate-500">
+              <ShieldCheck className="w-10 h-10 mb-3 opacity-40" />
+              <p className="text-sm font-semibold text-slate-400">No licenses yet</p>
+              <p className="text-xs mt-1 mb-4">Issue the first license to see it here.</p>
+              <Link to="/admin/licenses" className="px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-xs font-bold transition-colors">
+                Issue License
+              </Link>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-800/80">
+              {licenses.slice(0, 4).map((lic) => (
+                <div key={lic.id} className="py-3 flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-sm text-white">{lic.user?.full_name || 'Customer'}</div>
+                    <div className="text-xs text-slate-400">{lic.product?.name || '—'}</div>
+                    <div className="font-mono text-[11px] text-[#8fa0ff] mt-0.5">{lic.license_key}</div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase border ${
+                      lic.status === 'active'
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : lic.status === 'paused' || lic.status === 'locked'
+                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                        : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                    }`}>
+                      {lic.status}
+                    </span>
+                    <div className="text-xs text-slate-400 mt-1">{formatDate(lic.issue_date)}</div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-white">Upcoming Expirations</h3>
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
-                Action Required
-              </span>
+              {upcomingExpirations.length > 0 && (
+                <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold">
+                  Action Required
+                </span>
+              )}
             </div>
             <Link to="/admin/licenses" className="text-xs font-semibold text-amber-400 hover:underline">
               Manage
             </Link>
           </div>
 
-          <div className="divide-y divide-slate-800/80">
-            {licenses.map((lic) => {
-              const { days, text, isExpired } = calculateDaysLeft(lic.expiry_date);
-              return { lic, days, text, isExpired };
-            })
-              .filter((item) => !item.isExpired && item.days <= 45)
-              .slice(0, 4)
-              .map(({ lic, text, days }) => (
+          {upcomingExpirations.length === 0 ? (
+            <div className="py-10 flex flex-col items-center justify-center text-center text-slate-500">
+              <CheckCircle2 className="w-10 h-10 mb-3 opacity-40" />
+              <p className="text-sm font-semibold text-slate-400">Nothing expiring in the next 45 days</p>
+              <p className="text-xs mt-1">All active licenses are comfortably within their term.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-800/80">
+              {upcomingExpirations.map(({ lic, text, days }) => (
                 <div key={lic.id} className="py-3 flex items-center justify-between">
                   <div>
                     <div className="font-semibold text-sm text-white">{lic.user?.full_name || 'Customer'}</div>
-                    <div className="text-xs text-slate-400">{lic.product?.name}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{lic.user?.phone || lic.user?.email}</div>
+                    <div className="text-xs text-slate-400">{lic.product?.name || '—'}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{lic.user?.phone || lic.user?.email || ''}</div>
                   </div>
                   <div className="text-right">
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold ${
@@ -536,13 +658,12 @@ export const AdminDashboard: React.FC = () => {
                     }`}>
                       {text}
                     </span>
-                    <div className="text-xs text-slate-400 mt-1">
-                      Expires {formatDate(lic.expiry_date)}
-                    </div>
+                    <div className="text-xs text-slate-400 mt-1">Expires {formatDate(lic.expiry_date)}</div>
                   </div>
                 </div>
               ))}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

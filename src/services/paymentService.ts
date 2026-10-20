@@ -73,7 +73,7 @@ export async function processPaymentSuccess(payload: CheckoutPayload, paymentId:
     });
 
     // 4. Create license record
-    await supabase.from('licenses').insert([
+    const { error: licenseError } = await supabase.from('licenses').insert([
       {
         license_key: licenseKey,
         user_id: payload.user.id,
@@ -91,8 +91,11 @@ export async function processPaymentSuccess(payload: CheckoutPayload, paymentId:
         created_at: now.toISOString(),
       },
     ]);
+    if (licenseError) {
+      console.error('Payment succeeded but license record failed to save:', licenseError.message);
+    }
   } catch (err) {
-    console.warn('Payment recording fallback:', err);
+    console.error('Payment recording failed:', err);
   }
 
   return {
@@ -109,6 +112,10 @@ export function openRazorpayCheckout(
   onSuccess: (response: any) => void,
   onFailure: (err: any) => void
 ) {
+  if (!keyId) {
+    onFailure(new Error('Razorpay is not configured yet. Add your Razorpay Key ID in Admin → Integrations.'));
+    return;
+  }
   if (typeof window.Razorpay === 'undefined') {
     // If Razorpay SDK not loaded, dynamically inject it
     const script = document.createElement('script');
@@ -122,12 +129,12 @@ export function openRazorpayCheckout(
 
   function launchRazorpay() {
     const options = {
-      key: keyId || 'rzp_test_1DP5mmOlF5G5ag',
+      key: keyId,
       amount: Math.round(payload.totalAmount * 100), // in paise
       currency: 'INR',
       name: 'LicenseWala',
       description: `${payload.product.name} — ${payload.plan.name}`,
-      image: payload.product.logo_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&h=120&fit=crop',
+      image: payload.product.logo_url || '',
       handler: function (response: any) {
         onSuccess(response);
       },
@@ -141,7 +148,7 @@ export function openRazorpayCheckout(
         plan_id: payload.plan.id,
       },
       theme: {
-        color: '#4f46e5',
+        color: '#1E40FF',
       },
       modal: {
         ondismiss: function () {
@@ -168,17 +175,15 @@ export function openCashfreeCheckout(
   onSuccess: (res: any) => void,
   onFailure: (err: any) => void
 ) {
-  // Test simulated Cashfree Checkout flow
-  const orderId = `CF-ORD-${Date.now().toString(36).toUpperCase()}`;
-  const mockPaymentId = `cf_pay_${Math.random().toString(36).slice(2, 10)}`;
-
-  // Simulate smooth modal or direct redirect
-  setTimeout(() => {
-    onSuccess({
-      orderId,
-      paymentId: mockPaymentId,
-      gateway: 'cashfree',
-      status: 'PAID',
-    });
-  }, 1200);
+  // Cashfree has no live checkout integration yet (it requires a server-side
+  // order/session created with the secret key). Never simulate a successful
+  // payment — fail honestly so no unpaid order can mint a license.
+  void payload;
+  void appId;
+  void onSuccess;
+  onFailure(
+    new Error(
+      'Cashfree checkout is not live yet. Please pay with Razorpay, or contact support@licensewala.com to complete your order.'
+    )
+  );
 }

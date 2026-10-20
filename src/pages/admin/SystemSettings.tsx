@@ -3,10 +3,13 @@ import {
   Settings,
   Save,
   Check,
-  Shield,
   Sliders,
-  DollarSign,
   Lock,
+  Mail,
+  RefreshCw,
+  AlertCircle,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import {
   getSystemSettings,
@@ -14,51 +17,151 @@ import {
 } from '@/services/settingsService';
 import type { SystemSettings as ISystemSettings } from '@/types';
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  INR: '₹',
+  USD: '$',
+  EUR: '€',
+};
+
+const inputClass =
+  'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-[#0A1330] dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/40 focus:border-[#1E40FF]';
+const labelClass = 'block font-semibold text-slate-700 dark:text-slate-300 mb-1';
+const cardClass =
+  'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl space-y-4';
+
+type ToggleField = 'enable_device_binding' | 'enable_registration' | 'enable_coupons' | 'maintenance_mode';
+
 export const SystemSettings: React.FC = () => {
   const [settings, setSettings] = useState<ISystemSettings | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [savingToggle, setSavingToggle] = useState<string | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [showSmtpPass, setShowSmtpPass] = useState(false);
 
   useEffect(() => {
-    getSystemSettings().then((s) => setSettings(s));
+    getSystemSettings()
+      .then((s) => setSettings(s))
+      .finally(() => setIsLoading(false));
   }, []);
+
+  const flashSaved = () => {
+    setSavedSuccess(true);
+    setSaveError('');
+    setTimeout(() => setSavedSuccess(false), 3000);
+  };
 
   const handleChange = (field: keyof ISystemSettings, value: any) => {
     if (!settings) return;
+    setSavedSuccess(false);
+    if (field === 'default_currency') {
+      // Keep currency_symbol in sync — it is a real saved field and a
+      // stale symbol (e.g. ₹ with USD) would print wrong invoices.
+      setSettings({
+        ...settings,
+        default_currency: value,
+        currency_symbol: CURRENCY_SYMBOLS[value] ?? settings.currency_symbol,
+      });
+      return;
+    }
     setSettings({ ...settings, [field]: value });
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!settings) return;
+    const tax = Number(settings.default_tax_rate);
+    if (Number.isNaN(tax) || tax < 0 || tax > 100) {
+      setSaveError('Default tax rate must be a number between 0 and 100.');
+      return;
+    }
     setIsSaving(true);
-    const success = await saveSystemSettings(settings);
+    setSaveError('');
+    const success = await saveSystemSettings({ ...settings, default_tax_rate: tax });
     setIsSaving(false);
     if (success) {
-      setSavedSuccess(true);
-      setTimeout(() => setSavedSuccess(false), 3000);
+      flashSaved();
+    } else {
+      setSaveError('Could not save system settings. Please check your connection and try again.');
     }
   };
 
-  if (!settings) return null;
+  // Policy switches persist immediately; the switch reverts if the
+  // save fails so the UI never shows a state the DB doesn't have.
+  const handleToggle = async (field: ToggleField, checked: boolean) => {
+    if (!settings || savingToggle) return;
+    const next = { ...settings, [field]: checked };
+    setSettings(next);
+    setSavingToggle(field);
+    setSaveError('');
+    const success = await saveSystemSettings(next);
+    setSavingToggle(null);
+    if (success) {
+      flashSaved();
+    } else {
+      setSettings(settings);
+      setSaveError('Could not update that policy switch. Your change was not saved.');
+    }
+  };
+
+  if (isLoading || !settings) {
+    return (
+      <div className="space-y-6 max-w-4xl mx-auto pb-16" aria-busy="true">
+        <div className="animate-pulse space-y-6">
+          <div className="h-10 w-2/3 rounded-2xl bg-slate-200 dark:bg-slate-800" />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-44 rounded-3xl bg-slate-200 dark:bg-slate-800" />
+          ))}
+        </div>
+        <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2">
+          <RefreshCw className="w-4 h-4 animate-spin" /> Loading system settings…
+        </p>
+      </div>
+    );
+  }
+
+  const toggleRow = (
+    field: ToggleField,
+    title: string,
+    description: string,
+    danger = false
+  ) => (
+    <div className="flex items-center justify-between gap-4 p-3 rounded-2xl bg-[#EEF1FF] dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+      <div>
+        <span className={`font-semibold text-xs block ${danger ? 'text-rose-600 dark:text-rose-400' : 'text-[#0A1330] dark:text-white'}`}>
+          {title}
+        </span>
+        <span className="text-[11px] text-slate-500 dark:text-slate-400">{description}</span>
+      </div>
+      <input
+        type="checkbox"
+        checked={Boolean(settings[field])}
+        disabled={savingToggle === field}
+        onChange={(e) => handleToggle(field, e.target.checked)}
+        aria-label={title}
+        className={`w-4 h-4 rounded shrink-0 disabled:opacity-50 ${danger ? 'accent-rose-600' : 'accent-[#1E40FF]'}`}
+      />
+    </div>
+  );
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <Settings className="w-8 h-8 text-indigo-400" />
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
+            <Settings className="w-8 h-8 text-[#1E40FF]" />
             System & Billing Configuration
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Global currency rules, tax rates, device hardware binding enforcement, and portal policies.
           </p>
         </div>
 
         <button
-          onClick={handleSave}
+          onClick={() => handleSave()}
           disabled={isSaving}
-          className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2"
+          className="px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2 shrink-0"
         >
           {savedSuccess ? (
             <>
@@ -74,38 +177,51 @@ export const SystemSettings: React.FC = () => {
         </button>
       </div>
 
+      {saveError && (
+        <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-sm text-rose-600 dark:text-rose-400 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{saveError}</span>
+        </div>
+      )}
+      {settings.maintenance_mode && (
+        <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-sm text-rose-600 dark:text-rose-400 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>Maintenance mode is ON — customer purchases are currently blocked.</span>
+        </div>
+      )}
+
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-indigo-400" />
+        <div className={cardClass}>
+          <h2 className="text-base font-bold text-[#0A1330] dark:text-white flex items-center gap-2">
+            <Sliders className="w-5 h-5 text-[#1E40FF]" />
             Platform Defaults
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Platform Portal Name</label>
+              <label className={labelClass}>Platform Portal Name</label>
               <input
                 type="text"
                 value={settings.site_name}
                 onChange={(e) => handleChange('site_name', e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Production URL</label>
+              <label className={labelClass}>Production URL</label>
               <input
                 type="url"
                 value={settings.site_url}
                 onChange={(e) => handleChange('site_url', e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Default Currency</label>
+              <label className={labelClass}>Default Currency</label>
               <select
                 value={settings.default_currency}
                 onChange={(e) => handleChange('default_currency', e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
+                className={inputClass}
               >
                 <option value="INR">INR (₹ Indian Rupee)</option>
                 <option value="USD">USD ($ United States Dollar)</option>
@@ -113,75 +229,134 @@ export const SystemSettings: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Default GST Rate (%)</label>
+              <label className={labelClass}>Currency Symbol (saved with currency)</label>
+              <input
+                type="text"
+                value={settings.currency_symbol}
+                onChange={(e) => handleChange('currency_symbol', e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Default GST / Tax Rate (%)</label>
               <input
                 type="number"
                 value={settings.default_tax_rate}
-                onChange={(e) => handleChange('default_tax_rate', Number(e.target.value))}
+                onChange={(e) =>
+                  handleChange('default_tax_rate', e.target.value === '' ? 0 : Number(e.target.value))
+                }
                 min={0}
                 max={100}
-                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white"
+                className={inputClass}
               />
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Lock className="w-5 h-5 text-indigo-400" />
+        <div className={cardClass}>
+          <h2 className="text-base font-bold text-[#0A1330] dark:text-white flex items-center gap-2">
+            <Lock className="w-5 h-5 text-[#1E40FF]" />
             Security & Feature Policies
           </h2>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 -mt-2">
+            Switches save immediately — no need to press Save Configuration.
+          </p>
 
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/60 border border-slate-700">
-              <div>
-                <span className="font-semibold text-white text-xs block">Hardware Device Binding</span>
-                <span className="text-[11px] text-slate-400">Lock licenses strictly to verified hardware machines (anti-piracy)</span>
-              </div>
+            {toggleRow(
+              'enable_device_binding',
+              'Hardware Device Binding',
+              'Lock licenses strictly to verified hardware machines (anti-piracy)'
+            )}
+            {toggleRow(
+              'enable_registration',
+              'Public Customer Registration',
+              'Allow new clients to sign up directly at /register'
+            )}
+            {toggleRow(
+              'enable_coupons',
+              'Promotional Coupons',
+              'Enable discount code box at checkout'
+            )}
+            {toggleRow(
+              'maintenance_mode',
+              'Maintenance Mode',
+              'Temporarily block customer purchases during upgrades',
+              true
+            )}
+          </div>
+        </div>
+
+        <div className={cardClass}>
+          <h2 className="text-base font-bold text-[#0A1330] dark:text-white flex items-center gap-2">
+            <Mail className="w-5 h-5 text-[#1E40FF]" />
+            Email (SMTP)
+          </h2>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 -mt-2">
+            Optional. Leave blank if email is not configured — these fields save with Save Configuration.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label className={labelClass}>SMTP Host</label>
               <input
-                type="checkbox"
-                checked={settings.enable_device_binding}
-                onChange={(e) => handleChange('enable_device_binding', e.target.checked)}
-                className="rounded bg-slate-800 border-slate-700 text-indigo-600"
+                type="text"
+                value={settings.smtp_host || ''}
+                onChange={(e) => handleChange('smtp_host', e.target.value)}
+                placeholder="Not configured"
+                className={inputClass}
               />
             </div>
-
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/60 border border-slate-700">
-              <div>
-                <span className="font-semibold text-white text-xs block">Public Customer Registration</span>
-                <span className="text-[11px] text-slate-400">Allow new clients to sign up directly at /register</span>
-              </div>
+            <div>
+              <label className={labelClass}>SMTP Port</label>
               <input
-                type="checkbox"
-                checked={settings.enable_registration}
-                onChange={(e) => handleChange('enable_registration', e.target.checked)}
-                className="rounded bg-slate-800 border-slate-700 text-indigo-600"
+                type="number"
+                value={settings.smtp_port ?? ''}
+                onChange={(e) =>
+                  handleChange('smtp_port', e.target.value === '' ? undefined : Number(e.target.value))
+                }
+                placeholder="Not configured — e.g. 587"
+                className={inputClass}
               />
             </div>
-
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/60 border border-slate-700">
-              <div>
-                <span className="font-semibold text-white text-xs block">Promotional Coupons</span>
-                <span className="text-[11px] text-slate-400">Enable discount code box at checkout</span>
-              </div>
+            <div>
+              <label className={labelClass}>SMTP Username</label>
               <input
-                type="checkbox"
-                checked={settings.enable_coupons}
-                onChange={(e) => handleChange('enable_coupons', e.target.checked)}
-                className="rounded bg-slate-800 border-slate-700 text-indigo-600"
+                type="text"
+                value={settings.smtp_user || ''}
+                onChange={(e) => handleChange('smtp_user', e.target.value)}
+                placeholder="Not configured"
+                className={inputClass}
               />
             </div>
-
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/60 border border-slate-700">
-              <div>
-                <span className="font-semibold text-rose-400 text-xs block">Maintenance Mode</span>
-                <span className="text-[11px] text-slate-400">Temporarily block customer purchases during upgrades</span>
+            <div>
+              <label className={labelClass}>SMTP Password</label>
+              <div className="relative">
+                <input
+                  type={showSmtpPass ? 'text' : 'password'}
+                  value={settings.smtp_pass || ''}
+                  onChange={(e) => handleChange('smtp_pass', e.target.value)}
+                  placeholder="Not configured"
+                  className={`${inputClass} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSmtpPass((v) => !v)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-[#1E40FF]"
+                  aria-label={showSmtpPass ? 'Hide SMTP password' : 'Show SMTP password'}
+                >
+                  {showSmtpPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+            </div>
+            <div>
+              <label className={labelClass}>From Address</label>
               <input
-                type="checkbox"
-                checked={settings.maintenance_mode}
-                onChange={(e) => handleChange('maintenance_mode', e.target.checked)}
-                className="rounded bg-slate-800 border-slate-700 text-rose-600"
+                type="email"
+                value={settings.smtp_from || ''}
+                onChange={(e) => handleChange('smtp_from', e.target.value)}
+                placeholder="Not configured"
+                className={inputClass}
               />
             </div>
           </div>

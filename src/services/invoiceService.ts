@@ -5,104 +5,36 @@ import autoTable from 'jspdf-autotable';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { getCompanyProfile } from './settingsService';
 
-export const DEFAULT_INVOICES: Invoice[] = [
-  {
-    id: 'inv-demo-1',
-    invoice_number: 'INV-2026-00101',
-    user_id: 'user-1',
-    product_name: 'WhatsApp Bulk Sender & Filter Extension',
-    plan_name: 'Professional (6 Months)',
-    amount: 1999,
-    tax_rate: 18,
-    tax_amount: 359.82,
-    discount_amount: 0,
-    total_amount: 2358.82,
-    currency: 'INR',
-    payment_status: 'paid',
-    payment_method: 'razorpay',
-    payment_id: 'pay_ONV8291X002',
-    billing_name: 'Amit Patel',
-    billing_email: 'amit.patel@gmail.com',
-    billing_phone: '+91 98200 12345',
-    billing_address: '402 Sunrise Heights, Andheri East, Mumbai, Maharashtra 400069',
-    billing_gst: '27AABCP1122D1ZP',
-    issued_at: '2026-03-01T10:00:00Z',
-    paid_at: '2026-03-01T10:05:00Z',
-    created_at: '2026-03-01T10:00:00Z',
-  },
-  {
-    id: 'inv-demo-2',
-    invoice_number: 'INV-2026-00102',
-    user_id: 'user-2',
-    product_name: 'Telegram Group Member Scraper & Adder',
-    plan_name: 'Monthly License',
-    amount: 799,
-    tax_rate: 18,
-    tax_amount: 143.82,
-    discount_amount: 0,
-    total_amount: 942.82,
-    currency: 'INR',
-    payment_status: 'paid',
-    payment_method: 'cashfree',
-    payment_id: 'cf_order_998124',
-    billing_name: 'Rohit Sharma',
-    billing_email: 'rohit.sharma@outlook.com',
-    billing_phone: '+91 99341 87654',
-    billing_address: 'Sector 62, Noida, Uttar Pradesh',
-    issued_at: '2026-03-20T11:00:00Z',
-    paid_at: '2026-03-20T11:02:00Z',
-    created_at: '2026-03-20T11:00:00Z',
-  },
-  {
-    id: 'inv-demo-3',
-    invoice_number: 'INV-2026-00103',
-    user_id: 'user-3',
-    product_name: 'JustDial & Google Maps B2B Leads Extractor',
-    plan_name: 'Lifetime License',
-    amount: 2999,
-    tax_rate: 18,
-    tax_amount: 539.82,
-    discount_amount: 500,
-    total_amount: 3038.82,
-    currency: 'INR',
-    payment_status: 'paid',
-    payment_method: 'upi',
-    payment_id: 'UPI-98218921-HDFC',
-    billing_name: 'Vikas Verma',
-    billing_email: 'vikas.verma@gmail.com',
-    billing_phone: '+91 91234 56789',
-    billing_address: 'Kankarbagh Main Rd, Patna, Bihar',
-    issued_at: '2026-01-10T12:00:00Z',
-    paid_at: '2026-01-10T12:10:00Z',
-    created_at: '2026-01-10T12:00:00Z',
+// Normalize a joined profiles row: real DB columns are company / tax_id / status.
+function normalizeInvoice(row: any): Invoice {
+  if (!row) return row;
+  const inv = { ...row } as any;
+  if (inv.user) {
+    inv.user = {
+      ...inv.user,
+      company_name: inv.user.company_name ?? inv.user.company ?? undefined,
+      gst_number: inv.user.gst_number ?? inv.user.tax_id ?? undefined,
+      is_blocked: inv.user.is_blocked ?? inv.user.status === 'blocked',
+    };
   }
-];
-
-const isUUID = (str: string) =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+  return inv as Invoice;
+}
 
 export async function getInvoices(userId?: string): Promise<Invoice[]> {
   try {
-    if (userId && !isUUID(userId)) {
-      return DEFAULT_INVOICES.filter((i) => i.user_id === userId);
-    }
     let query = supabase.from('invoices').select('*, user:profiles(*)').order('created_at', { ascending: false });
     if (userId) {
       query = query.eq('user_id', userId);
     }
     const { data, error } = await query;
-    if (error || !data || data.length === 0) {
-      if (userId) {
-        return DEFAULT_INVOICES.filter((i) => i.user_id === userId);
-      }
-      return DEFAULT_INVOICES;
+    if (error) {
+      console.error('Failed to load invoices:', error.message);
+      return [];
     }
-    return data as Invoice[];
-  } catch {
-    if (userId) {
-      return DEFAULT_INVOICES.filter((i) => i.user_id === userId);
-    }
-    return DEFAULT_INVOICES;
+    return (data || []).map(normalizeInvoice);
+  } catch (err) {
+    console.error('Failed to load invoices:', err);
+    return [];
   }
 }
 
@@ -121,10 +53,9 @@ export async function createInvoice(invoice: Partial<Invoice>): Promise<{ succes
 
     const { data, error } = await supabase.from('invoices').insert([newInvoice]).select().single();
     if (error) {
-      console.warn('DB invoice insert failed, fallback:', error);
-      return { success: true, invoice: { ...newInvoice, id: `inv-${Date.now()}` } as Invoice };
+      return { success: false, error: error.message };
     }
-    return { success: true, invoice: data as Invoice };
+    return { success: true, invoice: normalizeInvoice(data) };
   } catch (err: any) {
     return { success: false, error: err.message };
   }
@@ -134,15 +65,15 @@ export async function generateInvoicePDF(invoice: Invoice, company?: CompanyProf
   const profile = company || (await getCompanyProfile());
   const doc = new jsPDF();
 
-  // Primary Accent Color (Indigo / Dark Slate)
-  doc.setFillColor(30, 41, 59);
+  // Primary Accent Color (Royal Blue / Dark Slate)
+  doc.setFillColor(10, 19, 48);
   doc.rect(0, 0, 210, 38, 'F');
 
   // Header Title
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
-  doc.text(profile.company_name.toUpperCase(), 14, 20);
+  doc.text((profile.company_name || 'LicenseWala').toUpperCase(), 14, 20);
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
@@ -164,10 +95,10 @@ export async function generateInvoicePDF(invoice: Invoice, company?: CompanyProf
 
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(71, 85, 105);
-  doc.text(profile.legal_name || profile.company_name, 14, 55);
+  doc.text(profile.legal_name || profile.company_name || '', 14, 55);
   doc.text(profile.address || '', 14, 61);
   doc.text(`${profile.city || ''}, ${profile.state || ''} - ${profile.pincode || ''}`, 14, 67);
-  doc.text(`Email: ${profile.email}`, 14, 73);
+  doc.text(`Email: ${profile.email || ''}`, 14, 73);
   doc.text(`Phone: ${profile.phone || 'N/A'}`, 14, 79);
 
   doc.text(invoice.billing_name || 'Valued Customer', 110, 55);
@@ -194,7 +125,7 @@ export async function generateInvoicePDF(invoice: Invoice, company?: CompanyProf
     head: [['#', 'Item Description', 'Qty', 'Base Rate', 'Discount', 'Tax', 'Net Amount']],
     body: tableData,
     theme: 'striped',
-    headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+    headStyles: { fillColor: [30, 64, 255], textColor: [255, 255, 255], fontStyle: 'bold' },
     styles: { fontSize: 9, cellPadding: 4 },
   });
 
@@ -213,7 +144,7 @@ export async function generateInvoicePDF(invoice: Invoice, company?: CompanyProf
     doc.setFont('helvetica', 'bold');
     doc.text('Payment Receipt Details:', 14, finalY + 16);
     doc.setFont('helvetica', 'normal');
-    doc.text(`Bank: ${profile.bank_name || 'HDFC Bank'} | A/C: ${profile.bank_account_no || 'N/A'} | IFSC: ${profile.bank_ifsc || 'N/A'}`, 14, finalY + 22);
+    doc.text(`Bank: ${profile.bank_name || 'N/A'} | A/C: ${profile.bank_account_no || 'N/A'} | IFSC: ${profile.bank_ifsc || 'N/A'}`, 14, finalY + 22);
     doc.text(`UPI ID: ${profile.upi_id || 'N/A'}`, 14, finalY + 28);
   }
 
@@ -243,7 +174,7 @@ export async function generateInvoicePDF(invoice: Invoice, company?: CompanyProf
   doc.setTextColor(148, 163, 184);
   const notes = profile.invoice_notes || 'This is a computer-generated tax invoice. No physical signature required.';
   doc.text(notes, 14, 275);
-  doc.text(`Authorized by: ${profile.legal_name || 'RM Rahul — Super Admin'} | ${profile.website}`, 14, 280);
+  doc.text(`Authorized by: ${profile.legal_name || 'LicenseWala'} | ${profile.website || ''}`, 14, 280);
 
   doc.save(`${invoice.invoice_number}.pdf`);
 }
@@ -252,7 +183,7 @@ export function generateLicenseCertificatePDF(license: License, company?: Compan
   const doc = new jsPDF({ orientation: 'landscape' });
 
   // Elegant border
-  doc.setDrawColor(79, 70, 229);
+  doc.setDrawColor(30, 64, 255);
   doc.setLineWidth(4);
   doc.rect(8, 8, 281, 194);
   doc.setLineWidth(1);
@@ -261,7 +192,7 @@ export function generateLicenseCertificatePDF(license: License, company?: Compan
   // Header
   doc.setFontSize(28);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(79, 70, 229);
+  doc.setTextColor(30, 64, 255);
   doc.text('SOFTWARE LICENSE CERTIFICATE', 148, 38, { align: 'center' });
 
   doc.setFontSize(12);
@@ -276,14 +207,14 @@ export function generateLicenseCertificatePDF(license: License, company?: Compan
   doc.text(license.product?.name || 'Software Product', 148, 70, { align: 'center' });
 
   // License Key Box
-  doc.setFillColor(241, 245, 249);
+  doc.setFillColor(238, 241, 255);
   doc.rect(48, 80, 201, 24, 'F');
   doc.setDrawColor(203, 213, 225);
   doc.rect(48, 80, 201, 24, 'D');
 
   doc.setFontSize(18);
   doc.setFont('courier', 'bold');
-  doc.setTextColor(67, 56, 202);
+  doc.setTextColor(23, 64, 214);
   doc.text(license.license_key, 148, 96, { align: 'center' });
 
   // License Details Table

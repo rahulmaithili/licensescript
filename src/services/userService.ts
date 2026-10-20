@@ -1,89 +1,42 @@
 import { supabase } from '@/lib/supabase';
 import type { Profile, UserRole, ActivityLog } from '@/types';
 
-export const DEFAULT_USERS: Profile[] = [
-  {
-    id: 'user-admin',
-    email: 'admin@licensewala.com',
-    full_name: 'RM Rahul (Super Admin)',
-    phone: '+91 98765 43210',
-    company_name: 'LicenseWala HQ',
-    role: 'super_admin',
-    is_blocked: false,
-    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop',
-    created_at: '2026-01-01T00:00:00Z',
-  },
-  {
-    id: 'user-1',
-    email: 'amit.patel@gmail.com',
-    full_name: 'Amit Patel',
-    phone: '+91 98200 12345',
-    company_name: 'Apex Digitech Solutions',
-    city: 'Mumbai',
-    country: 'India',
-    role: 'customer',
-    is_blocked: false,
-    created_at: '2026-02-15T10:00:00Z',
-  },
-  {
-    id: 'user-2',
-    email: 'rohit.sharma@outlook.com',
-    full_name: 'Rohit Sharma',
-    phone: '+91 99341 87654',
-    company_name: 'LeadBoosters Media',
-    city: 'Noida',
-    country: 'India',
-    role: 'customer',
-    is_blocked: false,
-    created_at: '2026-03-01T00:00:00Z',
-  },
-  {
-    id: 'user-3',
-    email: 'vikas.verma@gmail.com',
-    full_name: 'Vikas Verma',
-    phone: '+91 91234 56789',
-    company_name: 'Smart Solutions Inc',
-    city: 'Patna',
-    country: 'India',
-    role: 'customer',
-    is_blocked: false,
-    created_at: '2026-01-05T00:00:00Z',
-  },
-  {
-    id: 'user-4',
-    email: 'priya.sharma@yahoo.com',
-    full_name: 'Priya Sharma',
-    phone: '+91 97654 32109',
-    role: 'customer',
-    is_blocked: true,
-    created_at: '2026-02-01T00:00:00Z',
-  }
-];
+// Normalize a profiles row to the app Profile shape:
+// real DB columns are company / tax_id / status (not company_name / gst_number / is_blocked).
+export function normalizeProfile(row: any): Profile {
+  return {
+    ...row,
+    company_name: row.company_name ?? row.company ?? undefined,
+    gst_number: row.gst_number ?? row.tax_id ?? undefined,
+    is_blocked: row.is_blocked ?? row.status === 'blocked',
+  } as Profile;
+}
 
 export async function getUsers(): Promise<Profile[]> {
   try {
     const { data, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
-    if (error || !data || data.length === 0) {
-      return DEFAULT_USERS;
+    if (error) {
+      console.error('Failed to load users:', error.message);
+      return [];
     }
-    return data as Profile[];
-  } catch {
-    return DEFAULT_USERS;
+    return (data || []).map(normalizeProfile);
+  } catch (err) {
+    console.error('Failed to load users:', err);
+    return [];
   }
 }
 
-const isUUID = (str: string) =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-
 export async function updateUserRole(userId: string, role: UserRole): Promise<boolean> {
-  if (!isUUID(userId)) return true;
   const { error } = await supabase.from('profiles').update({ role }).eq('id', userId);
   return !error;
 }
 
 export async function toggleUserBlock(userId: string, isBlocked: boolean): Promise<boolean> {
-  if (!isUUID(userId)) return true;
-  const { error } = await supabase.from('profiles').update({ is_blocked: isBlocked }).eq('id', userId);
+  // profiles has no is_blocked column — blocked state lives in the status column.
+  const { error } = await supabase
+    .from('profiles')
+    .update({ status: isBlocked ? 'blocked' : 'active' })
+    .eq('id', userId);
   return !error;
 }
 
@@ -95,52 +48,13 @@ export async function getActivityLogs(): Promise<ActivityLog[]> {
       .order('created_at', { ascending: false })
       .limit(100);
 
-    if (error || !data || data.length === 0) {
-      return [
-        {
-          id: 'log-1',
-          action: 'PAYMENT_SUCCESS',
-          entity_type: 'order',
-          entity_id: 'ord-9921',
-          details: { amount: 1999, gateway: 'razorpay', product: 'WhatsApp Bulk Sender' },
-          ip_address: '103.21.12.89',
-          created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-          user: DEFAULT_USERS[1],
-        },
-        {
-          id: 'log-2',
-          action: 'LICENSE_GENERATED',
-          entity_type: 'license',
-          entity_id: 'LW-WAPRO-7K9A-4M2X-88PL',
-          details: { duration: 180, plan: 'Professional' },
-          ip_address: '103.21.12.89',
-          created_at: new Date(Date.now() - 14 * 60 * 1000).toISOString(),
-          user: DEFAULT_USERS[1],
-        },
-        {
-          id: 'log-3',
-          action: 'DEVICE_ACTIVATED',
-          entity_type: 'license_activation',
-          entity_id: 'act-001',
-          details: { browser: 'Chrome 122', os: 'Windows 11', hwid: 'HWID-WIN-98271' },
-          ip_address: '103.21.12.89',
-          created_at: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-          user: DEFAULT_USERS[1],
-        },
-        {
-          id: 'log-4',
-          action: 'ADMIN_LOGIN',
-          entity_type: 'auth',
-          entity_id: 'user-admin',
-          details: { email: 'admin@licensewala.com', role: 'super_admin' },
-          ip_address: '122.161.45.10',
-          created_at: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
-          user: DEFAULT_USERS[0],
-        },
-      ];
+    if (error) {
+      console.error('Failed to load activity logs:', error.message);
+      return [];
     }
-    return data as ActivityLog[];
-  } catch {
+    return (data || []) as ActivityLog[];
+  } catch (err) {
+    console.error('Failed to load activity logs:', err);
     return [];
   }
 }
