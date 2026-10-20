@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Send,
   ShieldCheck,
-  BadgeCheck,
   Wallet,
   Database,
   CheckCircle2,
@@ -33,7 +32,6 @@ export const Footer: React.FC = () => {
 
   const badges = [
     { icon: ShieldCheck, label: 'Razorpay Secured' },
-    { icon: BadgeCheck, label: 'Cashfree Verified' },
     { icon: Wallet, label: 'UPI Accepted' },
     { icon: Database, label: 'Supabase PostgreSQL' },
   ];
@@ -205,7 +203,7 @@ export const Footer: React.FC = () => {
                   <span className="w-8 h-8 rounded-full bg-[#1E40FF]/15 border border-[#1E40FF]/25 flex items-center justify-center shrink-0">
                     <Phone className="w-3.5 h-3.5 text-[#7d92ff]" />
                   </span>
-                  <span>+91 98765 43210</span>
+                  <span>+91 7564948617</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="w-8 h-8 rounded-full bg-[#1E40FF]/15 border border-[#1E40FF]/25 flex items-center justify-center shrink-0">

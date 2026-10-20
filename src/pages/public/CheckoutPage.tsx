@@ -5,7 +5,6 @@ import { getPlanById, validateCoupon } from '@/services/productService';
 import { getIntegrationSettings, getSystemSettings } from '@/services/settingsService';
 import {
   openRazorpayCheckout,
-  openCashfreeCheckout,
   processPaymentSuccess,
 } from '@/services/paymentService';
 import {
@@ -70,7 +69,6 @@ export const CheckoutPage: React.FC = () => {
 
       if (intg) {
         if (intg.razorpay_enabled) setSelectedGateway('razorpay');
-        else if (intg.cashfree_enabled) setSelectedGateway('cashfree');
       }
 
       setIsLoading(false);
@@ -202,29 +200,6 @@ export const CheckoutPage: React.FC = () => {
           setErrorMsg(error.message || 'Razorpay checkout cancelled or failed');
         }
       );
-    } else if (selectedGateway === 'cashfree') {
-      openCashfreeCheckout(
-        checkoutPayload,
-        integrations?.cashfree_app_id || 'TEST10375628',
-        async (response) => {
-          const result = await processPaymentSuccess(
-            checkoutPayload,
-            response.paymentId || `cf_${Date.now()}`
-          );
-          navigate('/payment-success', {
-            state: {
-              licenseKey: result.licenseKey,
-              invoiceNumber: result.invoiceNumber,
-              productName: plan.product?.name || 'Software License',
-              amount: grandTotal,
-            },
-          });
-        },
-        (error) => {
-          setIsProcessing(false);
-          setErrorMsg(error.message || 'Cashfree checkout failed');
-        }
-      );
     }
   };
 
@@ -338,7 +313,7 @@ export const CheckoutPage: React.FC = () => {
                 Select Payment Method
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {/* Razorpay Option */}
                 <div
                   onClick={() => setSelectedGateway('razorpay')}
@@ -361,27 +336,6 @@ export const CheckoutPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Cashfree Option */}
-                <div
-                  onClick={() => setSelectedGateway('cashfree')}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-3.5 ${
-                    selectedGateway === 'cashfree'
-                      ? 'bg-[#EEF1FF] dark:bg-[#1E40FF]/10 border-[#1E40FF] ring-2 ring-[#1E40FF]/20'
-                      : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-slate-300'
-                  }`}
-                >
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center font-black">
-                    CF
-                  </div>
-                  <div>
-                    <span className="font-extrabold text-xs text-slate-900 dark:text-white block">
-                      Cashfree Payments
-                    </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Instant Payment Gateway
-                    </span>
-                  </div>
-                </div>
               </div>
             </div>
 

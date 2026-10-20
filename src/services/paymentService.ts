@@ -7,7 +7,6 @@ import { redeemCoupon } from './couponService';
 declare global {
   interface Window {
     Razorpay: any;
-    Cashfree: any;
   }
 }
 
@@ -179,21 +178,3 @@ export function openRazorpayCheckout(
   }
 }
 
-export function openCashfreeCheckout(
-  payload: CheckoutPayload,
-  appId: string,
-  onSuccess: (res: any) => void,
-  onFailure: (err: any) => void
-) {
-  // Cashfree has no live checkout integration yet (it requires a server-side
-  // order/session created with the secret key). Never simulate a successful
-  // payment — fail honestly so no unpaid order can mint a license.
-  void payload;
-  void appId;
-  void onSuccess;
-  onFailure(
-    new Error(
-      'Cashfree checkout is not live yet. Please pay with Razorpay, or contact support@licensewala.com to complete your order.'
-    )
-  );
-}

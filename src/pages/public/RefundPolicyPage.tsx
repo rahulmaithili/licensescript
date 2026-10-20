@@ -77,7 +77,7 @@ export const RefundPolicyPage: React.FC = () => {
         <LegalList
           items={[
             'Approved refunds are processed to the original source account / payment method used at checkout (the same bank account, card or UPI ID) — refunds cannot be issued to a different account.',
-            'Refunds are credited within 5–7 business days of approval, depending on your bank and the payment gateway (Razorpay / Cashfree) timelines.',
+            'Refunds are credited within 5–7 business days of approval, depending on your bank and the payment gateway (Razorpay) timelines.',
             'You will receive the refund confirmation and reference number by email.',
             'On refund, the related license key is permanently deactivated and the software will stop working on the bound machine.',
           ]}

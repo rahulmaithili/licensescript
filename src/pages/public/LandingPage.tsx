@@ -22,7 +22,6 @@ import {
   CheckCheck,
   Building2,
   CreditCard,
-  Wallet,
   Plus,
 } from 'lucide-react';
 import { ServicesShowcase } from '@/components/ServicesShowcase';
@@ -214,7 +213,6 @@ export const LandingPage: React.FC = () => {
     { name: 'HP Gas', img: '/images/logos/hp-gas.png', icon: null },
     { name: 'Bharat Petroleum', img: '/images/logos/bharat-petroleum.png', icon: null },
     { name: 'Razorpay', img: null, icon: CreditCard },
-    { name: 'Cashfree', img: null, icon: Wallet },
   ];
 
   const pastelChips = [

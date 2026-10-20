@@ -21,7 +21,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </>,
             <>
               <strong className="text-slate-800 dark:text-slate-200">Payment information</strong> — payments are processed
-              directly by our payment partners, Razorpay and Cashfree. We never see or store your full card number, UPI PIN or
+              directly by our payment partner, Razorpay. We never see or store your full card number, UPI PIN or
               net-banking credentials. We receive only the transaction ID, amount, payment method type and payment status so we
               can confirm your order and issue your invoice.
             </>,
@@ -64,8 +64,8 @@ export const PrivacyPolicyPage: React.FC = () => {
         <LegalList
           items={[
             <>
-              <strong className="text-slate-800 dark:text-slate-200">Payment gateways</strong> — Razorpay and Cashfree process
-              your payment under their own privacy policies. This is the only category of third party that receives your payment
+              <strong className="text-slate-800 dark:text-slate-200">Payment gateway</strong> — Razorpay processes
+              your payment under its own privacy policy. This is the only category of third party that receives your payment
               details.
             </>,
             <>

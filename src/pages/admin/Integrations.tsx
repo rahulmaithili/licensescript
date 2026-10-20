@@ -54,7 +54,6 @@ export const Integrations: React.FC = () => {
   const [supabaseTest, setSupabaseTest] = useState<'idle' | 'testing' | 'success' | 'failed'>('idle');
   const [supabaseMsg, setSupabaseMsg] = useState('');
   const [razorpayCheck, setRazorpayCheck] = useState<ValidationResult>(null);
-  const [cashfreeCheck, setCashfreeCheck] = useState<ValidationResult>(null);
   const [copiedWebhook, setCopiedWebhook] = useState(false);
 
   useEffect(() => {
@@ -92,7 +91,7 @@ export const Integrations: React.FC = () => {
   // Gateway enable/disable switches persist immediately; local state only
   // flips permanently when the save succeeds, otherwise it reverts.
   const handleToggleGateway = async (
-    field: 'razorpay_enabled' | 'cashfree_enabled',
+    field: 'razorpay_enabled',
     checked: boolean
   ) => {
     if (!settings || savingToggle) return;
@@ -145,25 +144,6 @@ export const Integrations: React.FC = () => {
     }
   };
 
-  const handleValidateCashfree = () => {
-    const appId = (settings?.cashfree_app_id || '').trim();
-    if (!appId) {
-      setCashfreeCheck({ ok: false, message: 'No Cashfree App ID entered yet — nothing to validate.' });
-      return;
-    }
-    if (appId.length >= 8) {
-      setCashfreeCheck({
-        ok: true,
-        message: `App ID present (${appId.length} characters, ${settings?.cashfree_mode} mode). Local presence check only — this does not call Cashfree's API, so it cannot confirm the credentials are active.`,
-      });
-    } else {
-      setCashfreeCheck({
-        ok: false,
-        message: 'App ID looks too short for a Cashfree App ID. Local presence check only.',
-      });
-    }
-  };
-
   const handleCopyWebhook = async () => {
     const webhookUrl = `${window.location.origin}/api/payment-webhook`;
     await copyToClipboard(webhookUrl);
@@ -188,7 +168,6 @@ export const Integrations: React.FC = () => {
   }
 
   const razorpayConfigured = Boolean(settings.razorpay_key_id?.trim());
-  const cashfreeConfigured = Boolean(settings.cashfree_app_id?.trim());
   const webhookConfigured = Boolean(settings.webhook_secret?.trim());
 
   return (
@@ -198,7 +177,7 @@ export const Integrations: React.FC = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
             <Cpu className="w-8 h-8 text-[#1E40FF]" />
-            Supabase, Razorpay & Cashfree Integrations
+            Supabase & Razorpay Integrations
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Configure live payment gateway switches, webhook secrets, and PostgreSQL database connections.
@@ -404,93 +383,11 @@ export const Integrations: React.FC = () => {
           )}
         </div>
 
-        {/* Cashfree Gateway */}
-        <div className={cardClass}>
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E40FF]/10 text-[#1E40FF] flex items-center justify-center font-bold">
-                CF
-              </div>
-              <div>
-                <h2 className="text-base font-bold text-[#0A1330] dark:text-white">Cashfree Payment Gateway</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">High-speed instant checkout & auto settlements</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <ConfigBadge configured={cashfreeConfigured} />
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="cfActive"
-                  checked={settings.cashfree_enabled}
-                  disabled={savingToggle === 'cashfree_enabled'}
-                  onChange={(e) => handleToggleGateway('cashfree_enabled', e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#1E40FF] disabled:opacity-50"
-                />
-                <label htmlFor="cfActive" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
-                  {savingToggle === 'cashfree_enabled'
-                    ? 'Saving…'
-                    : settings.cashfree_enabled
-                      ? 'Active Gateway'
-                      : 'Disabled'}
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div>
-              <label className={labelClass}>Cashfree App ID</label>
-              <input
-                type="text"
-                value={settings.cashfree_app_id}
-                onChange={(e) => { handleChange('cashfree_app_id', e.target.value); setCashfreeCheck(null); }}
-                placeholder="Not configured — paste your Cashfree App ID"
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass}>Mode Environment</label>
-              <select
-                value={settings.cashfree_mode}
-                onChange={(e) => handleChange('cashfree_mode', e.target.value)}
-                className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-[#0A1330] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/40 focus:border-[#1E40FF]"
-              >
-                <option value="sandbox">Sandbox (Test Mode)</option>
-                <option value="production">Production (Live Payments)</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 flex-wrap">
-            <button
-              type="button"
-              onClick={handleValidateCashfree}
-              className="px-3.5 py-1.5 rounded-full bg-[#EEF1FF] dark:bg-slate-800 hover:bg-[#E0E6FF] dark:hover:bg-slate-700 text-xs font-semibold text-[#0A1330] dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5"
-            >
-              <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
-              <span>Validate App ID (local check)</span>
-            </button>
-            {cashfreeCheck && (
-              <span className={`text-xs flex items-start gap-1.5 ${cashfreeCheck.ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
-                {cashfreeCheck.ok ? <CheckCircle2 className="w-4 h-4 shrink-0" /> : <XCircle className="w-4 h-4 shrink-0" />}
-                {cashfreeCheck.message}
-              </span>
-            )}
-          </div>
-          {!cashfreeConfigured && (
-            <p className="text-[11px] text-slate-400 dark:text-slate-500">
-              Cashfree is not configured yet — add your App ID, then use Save Integrations.
-            </p>
-          )}
-        </div>
-
         {/* Global Webhook URL */}
         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl space-y-3">
           <h3 className="text-sm font-bold text-[#0A1330] dark:text-white">Payment Webhook URL</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Paste this URL in your Razorpay Dashboard & Cashfree Webhook settings:
+            Paste this URL in your Razorpay Dashboard webhook settings:
           </p>
           <div className="flex items-center gap-2 bg-[#EEF1FF] dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
             <span className="font-mono text-xs text-[#1E40FF] dark:text-[#B9C4FF] flex-1 truncate">

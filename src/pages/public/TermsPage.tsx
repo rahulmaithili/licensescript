@@ -85,7 +85,7 @@ export const TermsPage: React.FC = () => {
         <LegalList
           items={[
             'Prices are listed in Indian Rupees (INR) and are exclusive or inclusive of GST as shown at checkout. A GST tax invoice is issued for every successful purchase and is available in your customer portal.',
-            'Payments are processed securely by Razorpay and Cashfree. Your license key is delivered digitally, normally within a few minutes of payment confirmation.',
+            'Payments are processed securely by Razorpay. Your license key is delivered digitally, normally within a few minutes of payment confirmation.',
             'You are responsible for providing a correct GSTIN if you wish to claim input tax credit; invoices cannot be re-issued with a different GSTIN after generation.',
           ]}
         />
