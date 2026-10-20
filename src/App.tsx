@@ -1,44 +1,52 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { AdminLayout } from '@/components/AdminLayout';
+import { RouteFallback } from '@/components/RouteFallback';
 
-// Public Pages
+// Eager — homepage + core layout/auth so first paint is instant
 import { LandingPage } from '@/pages/public/LandingPage';
-import { ProductsPage } from '@/pages/public/ProductsPage';
-import { ProductDetailPage } from '@/pages/public/ProductDetailPage';
-import { PricingPage } from '@/pages/public/PricingPage';
-import { LoginPage } from '@/pages/public/LoginPage';
-import { RegisterPage } from '@/pages/public/RegisterPage';
-import { ForgotPasswordPage } from '@/pages/public/ForgotPasswordPage';
-import { CheckoutPage } from '@/pages/public/CheckoutPage';
-import { PaymentSuccessPage } from '@/pages/public/PaymentSuccessPage';
-import { PaymentFailedPage } from '@/pages/public/PaymentFailedPage';
-import { NotFoundPage } from '@/pages/public/NotFoundPage';
-import { PrivacyPolicyPage } from '@/pages/public/PrivacyPolicyPage';
-import { TermsPage } from '@/pages/public/TermsPage';
-import { RefundPolicyPage } from '@/pages/public/RefundPolicyPage';
+
+// Lazy — every other page ships in its own chunk, loaded on navigation
+const ProductsPage = lazy(() => import('@/pages/public/ProductsPage').then((m) => ({ default: m.ProductsPage })));
+const ProductDetailPage = lazy(() => import('@/pages/public/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
+const PricingPage = lazy(() => import('@/pages/public/PricingPage').then((m) => ({ default: m.PricingPage })));
+const LoginPage = lazy(() => import('@/pages/public/LoginPage').then((m) => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('@/pages/public/RegisterPage').then((m) => ({ default: m.RegisterPage })));
+const ForgotPasswordPage = lazy(() => import('@/pages/public/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })));
+const CheckoutPage = lazy(() => import('@/pages/public/CheckoutPage').then((m) => ({ default: m.CheckoutPage })));
+const PaymentSuccessPage = lazy(() => import('@/pages/public/PaymentSuccessPage').then((m) => ({ default: m.PaymentSuccessPage })));
+const PaymentFailedPage = lazy(() => import('@/pages/public/PaymentFailedPage').then((m) => ({ default: m.PaymentFailedPage })));
+const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
+const PrivacyPolicyPage = lazy(() => import('@/pages/public/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
+const TermsPage = lazy(() => import('@/pages/public/TermsPage').then((m) => ({ default: m.TermsPage })));
+const RefundPolicyPage = lazy(() => import('@/pages/public/RefundPolicyPage').then((m) => ({ default: m.RefundPolicyPage })));
 
 // Customer Pages
-import { AccountDashboard } from '@/pages/customer/AccountDashboard';
+const AccountDashboard = lazy(() => import('@/pages/customer/AccountDashboard').then((m) => ({ default: m.AccountDashboard })));
 
 // Admin Pages
-import { AdminDashboard } from '@/pages/admin/Dashboard';
-import { UserLicenses } from '@/pages/admin/UserLicenses';
-import { KeyGenerator } from '@/pages/admin/KeyGenerator';
-import { ProductCatalog } from '@/pages/admin/ProductCatalog';
-import { PricingPlans } from '@/pages/admin/PricingPlans';
-import { CouponsPage } from '@/pages/admin/CouponsPage';
-import { InvoiceGenerator } from '@/pages/admin/InvoiceGenerator';
-import { CompanyProfile } from '@/pages/admin/CompanyProfile';
-import { Integrations } from '@/pages/admin/Integrations';
-import { UsersControl } from '@/pages/admin/UsersControl';
-import { ActivityLogs } from '@/pages/admin/ActivityLogs';
-import { SystemSettings } from '@/pages/admin/SystemSettings';
-import { ThemeSettings } from '@/pages/admin/ThemeSettings';
+const AdminDashboard = lazy(() => import('@/pages/admin/Dashboard').then((m) => ({ default: m.AdminDashboard })));
+const UserLicenses = lazy(() => import('@/pages/admin/UserLicenses').then((m) => ({ default: m.UserLicenses })));
+const KeyGenerator = lazy(() => import('@/pages/admin/KeyGenerator').then((m) => ({ default: m.KeyGenerator })));
+const ProductCatalog = lazy(() => import('@/pages/admin/ProductCatalog').then((m) => ({ default: m.ProductCatalog })));
+const PricingPlans = lazy(() => import('@/pages/admin/PricingPlans').then((m) => ({ default: m.PricingPlans })));
+const CouponsPage = lazy(() => import('@/pages/admin/CouponsPage').then((m) => ({ default: m.CouponsPage })));
+const InvoiceGenerator = lazy(() => import('@/pages/admin/InvoiceGenerator').then((m) => ({ default: m.InvoiceGenerator })));
+const CompanyProfile = lazy(() => import('@/pages/admin/CompanyProfile').then((m) => ({ default: m.CompanyProfile })));
+const Integrations = lazy(() => import('@/pages/admin/Integrations').then((m) => ({ default: m.Integrations })));
+const UsersControl = lazy(() => import('@/pages/admin/UsersControl').then((m) => ({ default: m.UsersControl })));
+const ActivityLogs = lazy(() => import('@/pages/admin/ActivityLogs').then((m) => ({ default: m.ActivityLogs })));
+const SystemSettings = lazy(() => import('@/pages/admin/SystemSettings').then((m) => ({ default: m.SystemSettings })));
+const ThemeSettings = lazy(() => import('@/pages/admin/ThemeSettings').then((m) => ({ default: m.ThemeSettings })));
+
+// Suspense boundary for a lazy route — the surrounding layout stays mounted
+function LazyPage({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<RouteFallback />}>{children}</Suspense>;
+}
 
 // Protected Route Guard for Admin — real auth only, no demo bypass
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -90,19 +98,19 @@ export function App() {
           <Routes>
             {/* Public Routes with Navbar + Footer */}
             <Route path="/" element={<PublicLayout><LandingPage /></PublicLayout>} />
-            <Route path="/products" element={<PublicLayout><ProductsPage /></PublicLayout>} />
-            <Route path="/products/:slug" element={<PublicLayout><ProductDetailPage /></PublicLayout>} />
-            <Route path="/pricing" element={<PublicLayout><PricingPage /></PublicLayout>} />
-            <Route path="/login" element={<PublicLayout><LoginPage /></PublicLayout>} />
-            <Route path="/register" element={<PublicLayout><RegisterPage /></PublicLayout>} />
-            <Route path="/forgot-password" element={<PublicLayout><ForgotPasswordPage /></PublicLayout>} />
-            <Route path="/checkout/:planId" element={<PublicLayout><CheckoutPage /></PublicLayout>} />
-            <Route path="/payment-success" element={<PublicLayout><PaymentSuccessPage /></PublicLayout>} />
-            <Route path="/payment-failed" element={<PublicLayout><PaymentFailedPage /></PublicLayout>} />
-            <Route path="/account" element={<PublicLayout><AccountDashboard /></PublicLayout>} />
-            <Route path="/privacy" element={<PublicLayout><PrivacyPolicyPage /></PublicLayout>} />
-            <Route path="/terms" element={<PublicLayout><TermsPage /></PublicLayout>} />
-            <Route path="/refund-policy" element={<PublicLayout><RefundPolicyPage /></PublicLayout>} />
+            <Route path="/products" element={<PublicLayout><LazyPage><ProductsPage /></LazyPage></PublicLayout>} />
+            <Route path="/products/:slug" element={<PublicLayout><LazyPage><ProductDetailPage /></LazyPage></PublicLayout>} />
+            <Route path="/pricing" element={<PublicLayout><LazyPage><PricingPage /></LazyPage></PublicLayout>} />
+            <Route path="/login" element={<PublicLayout><LazyPage><LoginPage /></LazyPage></PublicLayout>} />
+            <Route path="/register" element={<PublicLayout><LazyPage><RegisterPage /></LazyPage></PublicLayout>} />
+            <Route path="/forgot-password" element={<PublicLayout><LazyPage><ForgotPasswordPage /></LazyPage></PublicLayout>} />
+            <Route path="/checkout/:planId" element={<PublicLayout><LazyPage><CheckoutPage /></LazyPage></PublicLayout>} />
+            <Route path="/payment-success" element={<PublicLayout><LazyPage><PaymentSuccessPage /></LazyPage></PublicLayout>} />
+            <Route path="/payment-failed" element={<PublicLayout><LazyPage><PaymentFailedPage /></LazyPage></PublicLayout>} />
+            <Route path="/account" element={<PublicLayout><LazyPage><AccountDashboard /></LazyPage></PublicLayout>} />
+            <Route path="/privacy" element={<PublicLayout><LazyPage><PrivacyPolicyPage /></LazyPage></PublicLayout>} />
+            <Route path="/terms" element={<PublicLayout><LazyPage><TermsPage /></LazyPage></PublicLayout>} />
+            <Route path="/refund-policy" element={<PublicLayout><LazyPage><RefundPolicyPage /></LazyPage></PublicLayout>} />
 
             {/* Admin Routes with Collapsible Sidebar & Super Admin Header */}
             <Route
@@ -113,23 +121,23 @@ export function App() {
                 </AdminRoute>
               }
             >
-              <Route index element={<AdminDashboard />} />
-              <Route path="licenses" element={<UserLicenses />} />
-              <Route path="keys" element={<KeyGenerator />} />
-              <Route path="products" element={<ProductCatalog />} />
-              <Route path="pricing" element={<PricingPlans />} />
-              <Route path="coupons" element={<CouponsPage />} />
-              <Route path="invoices" element={<InvoiceGenerator />} />
-              <Route path="company" element={<CompanyProfile />} />
-              <Route path="integrations" element={<Integrations />} />
-              <Route path="users" element={<UsersControl />} />
-              <Route path="logs" element={<ActivityLogs />} />
-              <Route path="settings" element={<SystemSettings />} />
-              <Route path="theme" element={<ThemeSettings />} />
+              <Route index element={<LazyPage><AdminDashboard /></LazyPage>} />
+              <Route path="licenses" element={<LazyPage><UserLicenses /></LazyPage>} />
+              <Route path="keys" element={<LazyPage><KeyGenerator /></LazyPage>} />
+              <Route path="products" element={<LazyPage><ProductCatalog /></LazyPage>} />
+              <Route path="pricing" element={<LazyPage><PricingPlans /></LazyPage>} />
+              <Route path="coupons" element={<LazyPage><CouponsPage /></LazyPage>} />
+              <Route path="invoices" element={<LazyPage><InvoiceGenerator /></LazyPage>} />
+              <Route path="company" element={<LazyPage><CompanyProfile /></LazyPage>} />
+              <Route path="integrations" element={<LazyPage><Integrations /></LazyPage>} />
+              <Route path="users" element={<LazyPage><UsersControl /></LazyPage>} />
+              <Route path="logs" element={<LazyPage><ActivityLogs /></LazyPage>} />
+              <Route path="settings" element={<LazyPage><SystemSettings /></LazyPage>} />
+              <Route path="theme" element={<LazyPage><ThemeSettings /></LazyPage>} />
             </Route>
 
             {/* 404 — premium not-found page */}
-            <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
+            <Route path="*" element={<PublicLayout><LazyPage><NotFoundPage /></LazyPage></PublicLayout>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

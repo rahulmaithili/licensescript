@@ -13,6 +13,25 @@ export default defineConfig({
     tailwindcss(),
     react(),
   ],
+  build: {
+    rolldownOptions: {
+      output: {
+        // Stable vendor code in its own chunk so it stays cached across deploys
+        manualChunks: (id: string) => {
+          if (
+            id.includes('/node_modules/react/') ||
+            id.includes('/node_modules/react-dom/') ||
+            id.includes('/node_modules/react-router/') ||
+            id.includes('/node_modules/react-router-dom/') ||
+            id.includes('/node_modules/scheduler/') ||
+            id.includes('/node_modules/@supabase/')
+          ) {
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
