@@ -173,6 +173,21 @@ export const Footer: React.FC = () => {
                   </a>
                 </li>
                 <li>
+                  <Link to="/privacy" className="hover:text-[#7d92ff] transition-colors">
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms" className="hover:text-[#7d92ff] transition-colors">
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/refund-policy" className="hover:text-[#7d92ff] transition-colors">
+                    Refund Policy
+                  </Link>
+                </li>
+                <li>
                   <span className="text-xs text-slate-500 font-mono">GSTIN: 27AABCL1234D1ZM</span>
                 </li>
               </ul>

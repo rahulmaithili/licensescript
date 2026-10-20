@@ -115,7 +115,7 @@ export const LandingPage: React.FC = () => {
       title: 'Quick Print Sheet: A4 Cash Memo & Delivery Sheet System',
       badge: '70% Paper Cost Savings',
       icon: FileSpreadsheet,
-      gradient: 'from-purple-600 to-indigo-600',
+      gradient: 'from-purple-600 to-blue-600',
       description:
         'Generate compact multi-up cash memos neatly arranged on standard A4 paper, slashing paper and ribbon expenses. Automatically prints delivery-boy run-sheets complete with customer details and cash collection totals.',
       bullets: [

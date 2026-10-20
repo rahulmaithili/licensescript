@@ -18,6 +18,9 @@ import { CheckoutPage } from '@/pages/public/CheckoutPage';
 import { PaymentSuccessPage } from '@/pages/public/PaymentSuccessPage';
 import { PaymentFailedPage } from '@/pages/public/PaymentFailedPage';
 import { NotFoundPage } from '@/pages/public/NotFoundPage';
+import { PrivacyPolicyPage } from '@/pages/public/PrivacyPolicyPage';
+import { TermsPage } from '@/pages/public/TermsPage';
+import { RefundPolicyPage } from '@/pages/public/RefundPolicyPage';
 
 // Customer Pages
 import { AccountDashboard } from '@/pages/customer/AccountDashboard';
@@ -96,6 +99,9 @@ export function App() {
             <Route path="/payment-success" element={<PublicLayout><PaymentSuccessPage /></PublicLayout>} />
             <Route path="/payment-failed" element={<PublicLayout><PaymentFailedPage /></PublicLayout>} />
             <Route path="/account" element={<PublicLayout><AccountDashboard /></PublicLayout>} />
+            <Route path="/privacy" element={<PublicLayout><PrivacyPolicyPage /></PublicLayout>} />
+            <Route path="/terms" element={<PublicLayout><TermsPage /></PublicLayout>} />
+            <Route path="/refund-policy" element={<PublicLayout><RefundPolicyPage /></PublicLayout>} />
 
             {/* Admin Routes with Collapsible Sidebar & Super Admin Header */}
             <Route

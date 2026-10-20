@@ -107,7 +107,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: 'Smart Cylinder Reconciliation, Instant WhatsApp Receipts',
       img: '/images/logos/bharat-petroleum.png',
       tag: 'Bharat Gas',
-      color: 'from-indigo-500/10 to-[#1E40FF]/10 border-indigo-500/30 text-indigo-600 dark:text-indigo-400',
+      color: 'from-[#1E40FF]/10 to-[#1E40FF]/10 border-[#1E40FF]/30 text-[#1E40FF] dark:text-[#8fa0ff]',
     },
   ];
 
@@ -149,7 +149,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
               </h4>
             </div>
           </div>
-          <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
+          <p className="text-xs font-semibold text-[#1E40FF] dark:text-[#8fa0ff] mb-1">
             {b.category}
           </p>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
