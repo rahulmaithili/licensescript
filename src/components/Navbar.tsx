@@ -67,7 +67,7 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Center pill nav */}
-          <nav className="hidden md:flex items-center gap-1 rounded-full bg-slate-100/70 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 p-1">
+          <nav className="hidden lg:flex items-center gap-1 rounded-full bg-slate-100/70 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 p-1">
             {navLinks.map((link) =>
               link.to ? (
                 <Link key={link.label} to={link.to} className={linkClass(link.active)}>
@@ -82,7 +82,7 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Actions */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
@@ -136,7 +136,7 @@ export const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile: theme + hamburger */}
-          <div className="flex md:hidden items-center gap-1">
+          <div className="flex lg:hidden items-center gap-1">
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
@@ -156,7 +156,7 @@ export const Navbar: React.FC = () => {
 
         {/* Mobile dropdown drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden mt-2 rounded-3xl bg-white/95 dark:bg-[#0A1330]/95 backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-brand p-4 space-y-1">
+          <div className="lg:hidden mt-2 rounded-3xl bg-white/95 dark:bg-[#0A1330]/95 backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-brand p-4 space-y-1">
             {navLinks.map((link) =>
               link.to ? (
                 <Link

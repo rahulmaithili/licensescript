@@ -17,6 +17,7 @@ import { ForgotPasswordPage } from '@/pages/public/ForgotPasswordPage';
 import { CheckoutPage } from '@/pages/public/CheckoutPage';
 import { PaymentSuccessPage } from '@/pages/public/PaymentSuccessPage';
 import { PaymentFailedPage } from '@/pages/public/PaymentFailedPage';
+import { NotFoundPage } from '@/pages/public/NotFoundPage';
 
 // Customer Pages
 import { AccountDashboard } from '@/pages/customer/AccountDashboard';
@@ -111,8 +112,8 @@ export function App() {
               <Route path="theme" element={<ThemeSettings />} />
             </Route>
 
-            {/* Fallback to Home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* 404 — premium not-found page */}
+            <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

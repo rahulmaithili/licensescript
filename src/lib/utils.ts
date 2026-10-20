@@ -102,3 +102,59 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     return false;
   }
 }
+
+// Shared plan display logic — handles monthly / quarterly / semi-annual /
+// yearly / lifetime uniformly across Landing, Pricing and Product pages.
+export interface PlanDisplay {
+  isLifetime: boolean;
+  isPopular: boolean;
+  isYearly: boolean;
+  periodLabel: string;
+  priceSuffix: string;
+  durationLabel: string;
+  badge: string | null;
+}
+
+export function getPlanDisplay(plan: {
+  billing_period?: string;
+  duration_days?: number;
+  is_lifetime?: boolean;
+}): PlanDisplay {
+  const days = plan.duration_days ?? 0;
+  const bp = plan.billing_period;
+  const isLifetime = plan.is_lifetime === true || bp === 'lifetime' || days >= 3650;
+  const isPopular = !isLifetime && (bp === 'semi_annual' || days === 180);
+  const isYearly = !isLifetime && (bp === 'yearly' || days >= 365);
+
+  let periodLabel = '1 Month';
+  let priceSuffix = '1 month';
+  if (isLifetime) {
+    periodLabel = 'Lifetime';
+    priceSuffix = 'one-time';
+  } else if (bp === 'yearly' || days >= 365) {
+    periodLabel = '1 Year';
+    priceSuffix = '1 year';
+  } else if (bp === 'semi_annual' || days >= 180) {
+    periodLabel = '6 Months';
+    priceSuffix = '6 months';
+  } else if (bp === 'quarterly' || days >= 90) {
+    periodLabel = '3 Months';
+    priceSuffix = '3 months';
+  }
+
+  return {
+    isLifetime,
+    isPopular,
+    isYearly,
+    periodLabel,
+    priceSuffix,
+    durationLabel: isLifetime ? 'Lifetime' : `${days} Days`,
+    badge: isLifetime
+      ? 'Lifetime Access'
+      : isPopular
+      ? 'Most Popular'
+      : isYearly
+      ? 'Best Value'
+      : null,
+  };
+}

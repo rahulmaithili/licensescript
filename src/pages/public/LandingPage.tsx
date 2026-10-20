@@ -26,7 +26,7 @@ import {
   Plus,
 } from 'lucide-react';
 import { getProducts, getPlans } from '@/services/productService';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getPlanDisplay } from '@/lib/utils';
 import type { Product, Plan } from '@/types';
 import {
   IndianOilLogo,
@@ -623,13 +623,13 @@ export const LandingPage: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <span className="pill-badge mb-3">
             <IndianRupee className="w-3.5 h-3.5" />
-            Standardized Distributorship Rates
+            Transparent Distributorship Rates
           </span>
           <h3 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
             Choose Your Agency Plan
           </h3>
           <p className="text-sm text-slate-600 dark:text-slate-400 mt-3">
-            Every product features the exact same 4 flexible subscription options: 1 Month, 3 Months, 6 Months, or 1 Year. Instant key delivery with GST invoice.
+            Flexible plans for every product — monthly, quarterly, annual and even lifetime options. Instant key delivery with GST invoice on every plan.
           </p>
 
           {/* Product switcher pill tabs */}
@@ -650,22 +650,18 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 4 Standard Plans Grid: 1 Month, 3 Months, 6 Months, 1 Year */}
+        {/* Plans of the selected product only, sorted by duration */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {(plans.filter((p) => p.product_id === selectedPricingProductId).length === 4
-            ? plans.filter((p) => p.product_id === selectedPricingProductId)
-            : plans.slice(0, 4)
-          ).map((plan) => {
-            const isYearly = plan.billing_period === 'yearly' || plan.duration_days >= 365;
-            const isPopular = plan.billing_period === 'semi_annual' || plan.duration_days === 180;
-            const periodLabel =
-              plan.billing_period === 'yearly'
-                ? '1 Year'
-                : plan.billing_period === 'semi_annual'
-                ? '6 Months'
-                : plan.billing_period === 'quarterly'
-                ? '3 Months'
-                : '1 Month';
+          {plans
+            .filter((p) => p.product_id === selectedPricingProductId)
+            .sort((a, b) => a.duration_days - b.duration_days)
+            .slice(0, 4)
+            .map((plan) => {
+            const d = getPlanDisplay(plan);
+            const isPopular = d.isPopular;
+            const isYearly = d.isYearly;
+            const isLifetime = d.isLifetime;
+            const periodLabel = d.periodLabel;
 
             return (
               <div
@@ -673,19 +669,25 @@ export const LandingPage: React.FC = () => {
                 className={`rounded-[28px] p-6 sm:p-7 flex flex-col transition-all hover:-translate-y-1 relative ${
                   isPopular
                     ? 'bg-white dark:bg-slate-900 border-2 border-[#1E40FF] shadow-[0_24px_50px_-16px_rgba(30,64,255,0.45)]'
+                    : isLifetime
+                    ? 'bg-white dark:bg-slate-900 border-2 border-violet-500/60 shadow-brand'
                     : isYearly
                     ? 'bg-white dark:bg-slate-900 border-2 border-sky-400/60 shadow-brand'
                     : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-brand'
                 }`}
               >
-                {isPopular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#1E40FF] text-white text-[11px] font-extrabold uppercase tracking-wider shadow-[0_10px_20px_-8px_rgba(30,64,255,0.6)] whitespace-nowrap">
-                    Most Popular
-                  </span>
-                )}
-                {isYearly && !isPopular && (
-                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-sky-500 text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
-                    Best Value
+                {d.badge && (
+                  <span
+                    className={`absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-white text-[11px] font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap ${
+                      isLifetime
+                        ? 'bg-gradient-to-r from-violet-600 to-purple-500'
+                        : isPopular
+                        ? 'bg-[#1E40FF]'
+                        : 'bg-sky-500'
+                    }`}
+                  >
+                    {d.badge}
+                    {isPopular || isYearly ? ` (${periodLabel})` : ''}
                   </span>
                 )}
 
@@ -707,7 +709,7 @@ export const LandingPage: React.FC = () => {
                       {formatCurrency(plan.price)}
                     </span>
                     <span className="text-xs text-slate-400 font-medium">
-                      / {periodLabel.toLowerCase()}
+                      / {d.priceSuffix}
                     </span>
                   </div>
 
@@ -730,6 +732,8 @@ export const LandingPage: React.FC = () => {
                   className={`w-full mt-6 py-3 rounded-full font-extrabold text-xs text-center transition-all ${
                     isPopular
                       ? 'bg-[#1E40FF] hover:bg-[#1740D6] text-white shadow-[0_14px_30px_-10px_rgba(30,64,255,0.6)]'
+                      : isLifetime
+                      ? 'bg-violet-600 hover:bg-violet-700 text-white'
                       : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700'
                   }`}
                 >

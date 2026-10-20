@@ -4,10 +4,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Globe,
-  AtSign,
-  Share2,
-  Play,
   MessageCircle,
   Send,
   ShieldCheck,
@@ -30,11 +26,9 @@ export const Footer: React.FC = () => {
   };
 
   const socials = [
-    { icon: Globe, label: 'Facebook' },
-    { icon: AtSign, label: 'Instagram' },
-    { icon: Share2, label: 'LinkedIn' },
-    { icon: Play, label: 'YouTube' },
-    { icon: MessageCircle, label: 'WhatsApp' },
+    { icon: MessageCircle, label: 'WhatsApp Support', href: 'https://wa.me/919876543210' },
+    { icon: Mail, label: 'Email Support', href: 'mailto:support@licensewala.com' },
+    { icon: Phone, label: 'Call Support', href: 'tel:+919876543210' },
   ];
 
   const badges = [
@@ -104,9 +98,11 @@ export const Footer: React.FC = () => {
                 return (
                   <a
                     key={s.label}
-                    href="#"
+                    href={s.href}
+                    target={s.href.startsWith('http') ? '_blank' : undefined}
+                    rel={s.href.startsWith('http') ? 'noreferrer' : undefined}
                     aria-label={s.label}
-                    onClick={(e) => e.preventDefault()}
+                    title={s.label}
                     className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-[#1E40FF] hover:border-[#1E40FF] transition-all"
                   >
                     <Icon className="w-4 h-4" />
@@ -124,28 +120,28 @@ export const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-2.5 text-sm text-slate-400">
                 <li>
-                  <Link to="/products" className="hover:text-[#7d92ff] transition-colors">
-                    CDCMS Pro Multi-Tool Suite
+                  <Link to="/products/cdcms-pro" className="hover:text-[#7d92ff] transition-colors">
+                    CDCMS Multi-Tool Suite (PRO)
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/products/cdc-tools" className="hover:text-[#7d92ff] transition-colors">
+                    CDC Tools Multi Extension
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/products/all-in-one-master" className="hover:text-[#7d92ff] transition-colors">
+                    Ultimate All-in-One Master Bundle
                   </Link>
                 </li>
                 <li>
                   <Link to="/products" className="hover:text-[#7d92ff] transition-colors">
-                    IndianOil Indane SDMS Tool
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/products" className="hover:text-[#7d92ff] transition-colors">
-                    HP Gas CMS Assistant
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/products" className="hover:text-[#7d92ff] transition-colors">
-                    Bharat Petroleum Refill Sync
+                    All Tools & Extensions
                   </Link>
                 </li>
                 <li>
                   <Link to="/pricing" className="hover:text-[#7d92ff] transition-colors">
-                    Agency Lifetime Deals
+                    Plans & Pricing
                   </Link>
                 </li>
               </ul>

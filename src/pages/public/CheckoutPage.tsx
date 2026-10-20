@@ -92,7 +92,10 @@ export const CheckoutPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-        <div className="animate-pulse text-slate-400">Loading checkout session...</div>
+        <div className="inline-flex items-center gap-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+          <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-[#1E40FF] rounded-full animate-spin" />
+          Loading checkout session...
+        </div>
       </div>
     );
   }
@@ -100,8 +103,8 @@ export const CheckoutPage: React.FC = () => {
   if (!plan) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
-        <h2 className="text-2xl font-bold text-white">Plan Not Found</h2>
-        <Link to="/pricing" className="inline-block px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Plan Not Found</h2>
+        <Link to="/pricing" className="inline-block px-5 py-2.5 bg-[#1E40FF] hover:bg-[#1740D6] text-white rounded-full font-bold transition-colors">
           View Pricing Plans
         </Link>
       </div>

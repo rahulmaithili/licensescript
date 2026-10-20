@@ -26,7 +26,7 @@ export const RegisterPage: React.FC = () => {
   const [gstNumber, setGstNumber] = useState('');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('India');
-  const [termsAccepted, setTermsAccepted] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

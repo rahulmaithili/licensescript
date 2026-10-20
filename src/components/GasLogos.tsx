@@ -11,7 +11,7 @@ export const IndianOilLogo: React.FC<LogoProps> = ({ className = '', size = 48 }
   return (
     <div
       style={{ width: dimension, height: dimension }}
-      className={`relative inline-flex items-center justify-center rounded-2xl bg-white p-1.5 shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden shrink-0 ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-white p-1.5 shadow-md border border-slate-300 dark:border-slate-600 ring-1 ring-slate-900/5 overflow-hidden shrink-0 ${className}`}
     >
       <img
         src="/images/logos/indianoil.jpg"
@@ -29,7 +29,7 @@ export const HpGasLogo: React.FC<LogoProps> = ({ className = '', size = 48 }) =>
   return (
     <div
       style={{ width: dimension, height: dimension }}
-      className={`relative inline-flex items-center justify-center rounded-2xl bg-white p-1.5 shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden shrink-0 ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-white p-1.5 shadow-md border border-slate-300 dark:border-slate-600 ring-1 ring-slate-900/5 overflow-hidden shrink-0 ${className}`}
     >
       <img
         src="/images/logos/hp-gas.png"
@@ -47,7 +47,7 @@ export const BharatGasLogo: React.FC<LogoProps> = ({ className = '', size = 48 }
   return (
     <div
       style={{ width: dimension, height: dimension }}
-      className={`relative inline-flex items-center justify-center rounded-2xl bg-white p-1.5 shadow-md border border-slate-100 dark:border-slate-800 overflow-hidden shrink-0 ${className}`}
+      className={`relative inline-flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-white p-1.5 shadow-md border border-slate-300 dark:border-slate-600 ring-1 ring-slate-900/5 overflow-hidden shrink-0 ${className}`}
     >
       <img
         src="/images/logos/bharat-petroleum.png"
@@ -91,7 +91,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: '1-Click Refill Booking, Cash Memo Auto-Print & Subsidies',
       img: '/images/logos/indianoil.jpg',
       tag: 'Indane Gas',
-      color: 'from-orange-500/10 to-blue-600/10 border-orange-500/30 text-orange-600 dark:text-orange-400',
+      color: 'from-[#1E40FF]/10 to-sky-500/10 border-[#1E40FF]/30 text-[#1E40FF] dark:text-[#8fa0ff]',
     },
     {
       name: 'HP Gas (HPCL)',
@@ -99,7 +99,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: 'Bulk Cash Memo Dispatch, PMUY 2.0 KYC & HWID Security',
       img: '/images/logos/hp-gas.png',
       tag: 'HPCL Portal',
-      color: 'from-blue-600/10 to-red-600/10 border-blue-500/30 text-blue-600 dark:text-blue-400',
+      color: 'from-sky-500/10 to-[#1E40FF]/10 border-sky-500/30 text-sky-600 dark:text-sky-400',
     },
     {
       name: 'Bharat Petroleum',
@@ -107,7 +107,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: 'Smart Cylinder Reconciliation, Instant WhatsApp Receipts',
       img: '/images/logos/bharat-petroleum.png',
       tag: 'Bharat Gas',
-      color: 'from-amber-500/10 to-emerald-600/10 border-amber-500/30 text-amber-600 dark:text-amber-400',
+      color: 'from-indigo-500/10 to-[#1E40FF]/10 border-indigo-500/30 text-indigo-600 dark:text-indigo-400',
     },
   ];
 
@@ -116,7 +116,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10">
         {brands.map((b) => (
           <div key={b.name} className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-white p-1 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-slate-50 dark:bg-white p-1 shadow-md border border-slate-300 dark:border-slate-600 ring-1 ring-slate-900/5 flex items-center justify-center shrink-0">
               <img src={b.img} alt={b.name} className="w-full h-full object-contain" />
             </div>
             <div className="text-left">
@@ -134,10 +134,10 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       {brands.map((b) => (
         <div
           key={b.name}
-          className="group relative rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-5 shadow-lg hover:shadow-2xl hover:border-orange-500/40 transition-all duration-300 transform hover:-translate-y-1 text-left"
+          className="group relative rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-5 shadow-lg hover:shadow-2xl hover:border-[#1E40FF]/40 transition-all duration-300 transform hover:-translate-y-1 text-left"
         >
           <div className="flex items-center gap-4 mb-3">
-            <div className="w-14 h-14 rounded-2xl bg-white p-1.5 shadow-md border border-slate-100 dark:border-slate-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-white p-1.5 shadow-md border border-slate-300 dark:border-slate-600 ring-1 ring-slate-900/5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <img src={b.img} alt={b.name} className="w-full h-full object-contain" />
             </div>
             <div>
