@@ -93,7 +93,7 @@ export const AdminLayout: React.FC = () => {
     }`;
 
   return (
-    <div className="min-h-screen bg-[#EEF1FF] dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased">
+    <div className="h-screen overflow-hidden bg-[#EEF1FF] dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased">
       {/* Top Header */}
       <header className="sticky top-0 z-40 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/85 dark:bg-slate-900/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
         {/* Left: Mobile hamburger + Brand */}
@@ -190,10 +190,10 @@ export const AdminLayout: React.FC = () => {
       </header>
 
       {/* Main Container: Sidebar + Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Desktop Sidebar (Collapsible) */}
         <aside
-          className={`hidden lg:flex flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/95 transition-all duration-300 select-none ${
+          className={`hidden lg:flex flex-col h-full shrink-0 overflow-y-auto border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/95 transition-all duration-300 select-none ${
             collapsed ? 'w-20' : 'w-64'
           }`}
         >
@@ -295,7 +295,7 @@ export const AdminLayout: React.FC = () => {
         )}
 
         {/* Page Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#EEF1FF] dark:bg-slate-950">
+        <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#EEF1FF] dark:bg-slate-950">
           <Outlet />
         </main>
       </div>
