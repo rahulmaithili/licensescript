@@ -72,6 +72,7 @@ The sidebar matches the exact order requested:
 10. **Activity Logs**: Append-only security audit trail of logins, payments, activations, and key alterations.
 11. **System Settings**: Platform currency (INR default), tax rates (18% GST default), device binding enforcement, and maintenance mode toggle.
 12. **Theme**: Light / Dark / System mode with instant accent color presets (Indigo, Emerald, Rose, Amber, Sky, Violet).
+13. **Coupons & Discounts** (`/admin/coupons`): Create and manage discount codes (percentage % or flat ₹), optional minimum order amount, usage limits, expiry dates and active/inactive toggles. Codes are validated live at checkout against the `coupons` table, and each successful paid order records a redemption (`used_count`).
 
 ---
 
@@ -144,7 +145,7 @@ Three new admin endpoints plus hardened license verification. All new functions 
 ### Auth
 `license-analytics`, `webhooks`, and `trial-license` require the admin key header:
 `x-api-key: <LICENSE_API_KEY env var>` — missing/mismatch → `401 {"success":false,"message":"Unauthorized"}`.
-`/verify` (public) needs no auth.
+`/verify` (public) needs no auth. `trial-license` additionally accepts the signed-in user's own Supabase JWT (`Authorization: Bearer <access_token>`) for the automatic in-app free trial — see **Tool Integration API** below.
 
 ### POST /api/trial-license — issue a trial key
 Body: `{"email":"user@example.com","product_id":"<uuid, optional>","days":7}` (days default 7, clamped 1–30).
@@ -186,6 +187,72 @@ Keys use the unambiguous alphabet `ABCDEFGHJKMNPQRSTUVWXYZ23456789`. If `is_tria
 
 ### Migration
 Run `supabase/migrations/20261018000000_premium_features.sql` in the Supabase SQL editor: creates `webhooks` + `api_logs`, adds `licenses.is_trial`, `licenses.grace_days`, `licenses.current_devices`, `license_activations.last_seen_at` (existing `last_seen` untouched), indexes, and RLS (admin-only `api_logs`, read-active `webhooks`).
+
+---
+
+## 🖥 Tool Integration API (for the desktop-tool developer)
+
+The desktop tool activates against the **same account and licenses** as the website. Two paths are supported — both read the same `licenses` table, share the same expiry / grace / HWID-binding rules, and are rate-limited to 60 req/min per IP. Re-check activation on every tool start (and periodically while running); never trust a locally stored "days left" — always ask the server.
+
+### Path A (recommended): Google sign-in — `POST /api/google-verify`
+
+The customer signs in to the tool with the **same Google account** they used on the website. The tool runs a standard Google sign-in using the website's OAuth client ID (`17079355400-krquge8l14g0vjp3tbsqmjrkdmh2repk.apps.googleusercontent.com`), receives an **ID token**, and posts it to the API. The server verifies the token with Google (audience + `email_verified` are enforced server-side), finds the account by email, picks its best license — **active paid first, then active trial** — applies HWID binding, and answers.
+
+```http
+POST https://licensescript.netlify.app/api/google-verify
+Content-Type: application/json
+
+{ "id_token": "<google id token>", "hwid": "<machine fingerprint>", "product_slug": "cdcms-pro" }
+```
+`product_slug` is optional; omit it to accept a license for any product. Trial licenses are suite-wide and match any product.
+
+Active:
+```json
+{
+  "active": true, "status": "active", "type": "paid",
+  "email": "customer@gmail.com", "customer_name": "Ramesh Kumar",
+  "product_name": "CDCMS Multi-Tool Suite (PRO)", "plan_name": "3 Months Pro",
+  "license_key": "LW-XXXX-XXXX-XXXX", "expiry_date": "2027-01-15",
+  "days_left": 87, "max_devices": 1,
+  "message": "License activated via Google sign-in."
+}
+```
+For a trial, `"type": "trial"` (plus `"trial": true, "trial_ends_at": "<date>"`). A paid license inside its 3-day grace window returns `"active": true, "status": "grace"` with a renew reminder in `message`.
+
+Not active — always show `message` to the user and offer the `renew_url` link:
+```json
+{ "active": false, "reason": "expired",       "expiry_date": "2026-10-01", "renew_url": "https://licensescript.netlify.app/pricing" }
+{ "active": false, "reason": "trial_expired", "expiry_date": "2026-10-12", "renew_url": "https://licensescript.netlify.app/pricing" }
+{ "active": false, "reason": "no_license",    "renew_url": "https://licensescript.netlify.app/pricing" }
+{ "active": false, "reason": "no_account",    "renew_url": "https://licensescript.netlify.app/pricing" }
+{ "active": false, "reason": "device_mismatch", "portal_url": "https://licensescript.netlify.app/account" }
+```
+`reason` can also be `locked` / `paused` / `revoked` (tell the user to contact support), `invalid_token` / `email_unverified` (HTTP 401 — ask the user to sign in again), or `rate_limited` (HTTP 429 — back off and retry).
+
+**HWID rules (identical on both paths):** first machine to check in is bound automatically; the same machine always passes; a different machine is rejected once the license's device slots (`max_devices`, 1 by default) are full — the customer can free slots from the website's `/account` page ("Reset devices").
+
+### Path B: license key — `POST /verify`
+
+The classic flow (see *Extension Integration Example* above): the customer pastes the key shown in their website account (`/account`) into the tool.
+
+```json
+{ "key": "LW-XXXX-XXXX-XXXX", "hwid": "<machine fingerprint>", "deviceName": "Desktop Tool" }
+```
+→ `{ "valid": true, "status": "active", "days_left": 87, "expires_at": "...", "product_name": "...", "plan_name": "..." }`. Trial keys (`LW-TRIAL-…`) verify here too and add `"trial": true, "trial_ends_at": "..."`. Expired-beyond-grace → `"valid": false, "status": "expired"` with a `renewal_url`.
+
+### The 7-day free trial (automatic)
+
+1. A customer registers or signs in on the website (email **or** Google). The site then calls `POST /api/trial-license` once with the user's own Supabase access token (`Authorization: Bearer …`); the function verifies the token, so no API key ever reaches the browser.
+2. The function is **idempotent**: if the account already has a trial it returns `{ "success": true, "already_issued": true, "license_key": "LW-TRIAL-…", "expires_at": "...", "days_left": n }` instead of minting a second one. Exactly one 7-day trial per account, ever.
+3. The trial is attached to the first active product, has `max_devices: 1`, and appears in the customer's `/account` page with a **"Free Trial · Nd left"** badge (then "Trial Ended").
+4. The trial binds to the machine HWID on its first verification through either path above. Trials get **no grace period** — at expiry the tool receives `trial_expired` and must stop and prompt for a plan.
+5. Admins/backends can still mint trials with the API-key mode: `POST /api/trial-license` + `x-api-key` + `{"email": "...", "product_id": "<optional>", "days": 7}`.
+
+### Renew behavior (what the tool must do)
+
+- On `expired` / `trial_expired`: stop premium features, show the message, and open `renew_url` (`https://licensescript.netlify.app/pricing`) when the user clicks **Renew**.
+- Renewal needs **no re-install and no new key entry** for Path A: once the customer buys/renews on the website under the same Google account, the next `google-verify` call returns `active: true` again. For Path B, an extended license keeps the same key, so the next `/verify` call succeeds.
+- Paid licenses get a **3-day grace** after expiry (`status: "grace"`, still active) — use it to warn, not to block.
 
 ---
 © 2026 LicenseWala Technologies. Designed & Managed by **RM Rahul**.
