@@ -28,6 +28,17 @@ function normalizePlan(row: any) {
 function normalizeLicense(row: any): License {
   return {
     ...row,
+    // The real licenses table links users via customer_id; the app type
+    // calls it user_id. Keep both in sync so filters/cards work everywhere.
+    user_id: row.user_id ?? row.customer_id ?? undefined,
+    customer_id: row.customer_id ?? row.user_id ?? undefined,
+    // Trial detection that also works before the premium migration adds
+    // licenses.is_trial: trial keys always carry the LW-TRIAL- prefix.
+    is_trial:
+      row.is_trial === true ||
+      (typeof row.license_key === 'string' && row.license_key.startsWith('LW-TRIAL')),
+    // current_devices only exists after the premium migration; default 0.
+    current_devices: row.current_devices ?? 0,
     user: normalizeUser(row.user),
     plan: normalizePlan(row.plan),
   } as License;
@@ -44,7 +55,8 @@ export async function getLicenses(userId?: string): Promise<License[]> {
     `).order('created_at', { ascending: false });
 
     if (userId) {
-      query = query.eq('user_id', userId);
+      // Real column is customer_id (licenses has no user_id column).
+      query = query.eq('customer_id', userId);
     }
 
     const { data, error } = await query;
@@ -79,14 +91,15 @@ export async function createManualLicense(params: {
 
     const licensePayload = {
       license_key: key,
-      user_id: params.userId,
+      customer_id: params.userId,
       product_id: params.productId,
       plan_id: params.planId || null,
       status: 'active' as LicenseStatus,
       issue_date: now.toISOString(),
       expiry_date: expiryStr,
       max_devices: params.maxDevices || 1,
-      current_devices: 0,
+      // current_devices omitted: column only exists after the premium
+      // migration; its DB default (0) applies when present.
       is_locked: false,
       priority: params.priority || 'normal',
       notes: params.notes || 'Manually issued by Super Admin RM Rahul',

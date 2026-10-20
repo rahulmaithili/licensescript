@@ -143,7 +143,7 @@ export const AccountDashboard: React.FC = () => {
               Active Software Licenses & Extensions
             </h2>
             <a
-              href="https://wa.me/919876543210?text=Hi%20Rahul,%20need%20help%20with%20my%20license"
+              href="https://wa.me/917564948617?text=Hi%20Rahul,%20need%20help%20with%20my%20license"
               target="_blank"
               rel="noreferrer"
               className="text-xs font-bold text-emerald-500 hover:underline flex items-center gap-1"
@@ -199,6 +199,11 @@ export const AccountDashboard: React.FC = () => {
                       </div>
 
                       <div className="flex items-center gap-2">
+                        {lic.is_trial && (
+                          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
+                            {daysInfo.isExpired ? 'Trial Ended' : `Free Trial · ${daysInfo.days}d left`}
+                          </span>
+                        )}
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
                             effectiveStatus === 'expired' || effectiveStatus === 'revoked'

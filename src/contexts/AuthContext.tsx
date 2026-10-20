@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
+import { ensureTrialLicense } from '@/services/trialService';
 import type { Profile } from '@/types';
 
 interface AuthContextType {
@@ -128,6 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user);
+        ensureTrialLicense();
       }
       setIsLoading(false);
     });
@@ -140,6 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         await fetchProfile(session.user);
+        ensureTrialLicense();
       } else {
         setProfile(null);
       }
