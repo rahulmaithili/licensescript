@@ -74,6 +74,7 @@ export const RegisterPage: React.FC = () => {
           data: {
             full_name: fullName,
             phone,
+            company: companyName,
             company_name: companyName,
             gst_number: gstNumber,
             city,
@@ -85,20 +86,20 @@ export const RegisterPage: React.FC = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Upsert into profiles
+        // Profile row is created by the DB trigger; update it with the
+        // extra registration details using real schema columns
         await supabase.from('profiles').upsert([
           {
             id: data.user.id,
             email: email.trim(),
             full_name: fullName,
             phone,
-            company_name: companyName,
-            gst_number: gstNumber,
+            company: companyName,
+            tax_id: gstNumber,
             city,
             country,
             role: 'customer',
-            is_blocked: false,
-            created_at: new Date().toISOString(),
+            status: 'active',
           },
         ]);
 

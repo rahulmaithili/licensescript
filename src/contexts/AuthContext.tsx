@@ -13,54 +13,49 @@ interface AuthContextType {
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
   signInWithGoogle: () => Promise<string | null>;
-  loginAsDemo: (role: 'admin' | 'customer') => void;
 }
 
-const DEMO_ADMIN_USER: User = {
-  id: 'usr-admin-rahul',
-  app_metadata: { provider: 'email' },
-  user_metadata: { full_name: 'RM Rahul' },
-  aud: 'authenticated',
-  created_at: '2026-01-01T00:00:00Z',
-  email: 'admin@licensewala.com',
-  phone: '+91 99999 88888',
-  role: 'authenticated',
-  updated_at: new Date().toISOString(),
-} as User;
-
-const DEMO_ADMIN_PROFILE: Profile = {
-  id: 'usr-admin-rahul',
-  email: 'admin@licensewala.com',
-  full_name: 'RM Rahul (Super Admin)',
-  phone: '+91 99999 88888',
-  role: 'super_admin',
-  is_blocked: false,
-  created_at: '2026-01-01T00:00:00Z',
-};
-
-const DEMO_CUSTOMER_USER: User = {
-  id: 'user-1',
-  app_metadata: { provider: 'email' },
-  user_metadata: { full_name: 'Amit Patel' },
-  aud: 'authenticated',
-  created_at: '2026-03-01T00:00:00Z',
-  email: 'amit.patel@gmail.com',
-  phone: '+91 98200 12345',
-  role: 'authenticated',
-  updated_at: new Date().toISOString(),
-} as User;
-
-const DEMO_CUSTOMER_PROFILE: Profile = {
-  id: 'user-1',
-  email: 'amit.patel@gmail.com',
-  full_name: 'Amit Patel',
-  phone: '+91 98200 12345',
-  role: 'customer',
-  is_blocked: false,
-  created_at: '2026-03-01T00:00:00Z',
-};
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Map a raw profiles row (DB schema) to the app's Profile type
+function normalizeProfile(data: any, authUser?: User | null): Profile {
+  return {
+    id: data.id,
+    email: data.email || authUser?.email || '',
+    full_name:
+      data.full_name ||
+      authUser?.user_metadata?.full_name ||
+      authUser?.user_metadata?.name ||
+      (data.email || authUser?.email || '').split('@')[0] ||
+      'User',
+    phone: data.phone || undefined,
+    company_name: data.company_name ?? data.company ?? undefined,
+    gst_number: data.gst_number ?? data.tax_id ?? undefined,
+    city: data.city || undefined,
+    country: data.country || 'India',
+    role: data.role || 'customer',
+    is_blocked: data.is_blocked ?? (data.status === 'blocked' || data.status === 'disabled'),
+    avatar_url: data.avatar_url || authUser?.user_metadata?.avatar_url || undefined,
+    created_at: data.created_at || new Date().toISOString(),
+    updated_at: data.updated_at || undefined,
+  };
+}
+
+function fallbackProfile(authUser: User): Profile {
+  return {
+    id: authUser.id,
+    email: authUser.email || '',
+    full_name:
+      authUser.user_metadata?.full_name ||
+      authUser.user_metadata?.name ||
+      (authUser.email || '').split('@')[0] ||
+      'User',
+    role: 'customer',
+    is_blocked: false,
+    avatar_url: authUser.user_metadata?.avatar_url || undefined,
+    created_at: new Date().toISOString(),
+  };
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -68,76 +63,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isUUID = (str: string) =>
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-
-  const fetchProfile = async (userId: string, email?: string) => {
+  const fetchProfile = async (authUser: User) => {
     try {
-      if (!isUUID(userId)) {
-        const isSuper =
-          email?.toLowerCase().includes('rahul') ||
-          email?.toLowerCase().includes('admin') ||
-          userId.includes('admin');
-        const fallbackProfile: Profile = {
-          id: userId,
-          email: email || (isSuper ? 'admin@licensewala.com' : 'user@example.com'),
-          full_name: isSuper ? 'RM Rahul (Super Admin)' : email?.split('@')[0] || 'User',
-          role: isSuper ? 'super_admin' : 'customer',
-          is_blocked: false,
-          created_at: new Date().toISOString(),
-        };
-        setProfile(fallbackProfile);
-        return;
-      }
-
       const { data } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('id', authUser.id)
         .maybeSingle();
 
       if (data) {
-        setProfile(data as Profile);
-      } else {
-        const isSuper = email?.toLowerCase().includes('rahul') || email?.toLowerCase().includes('admin');
-        const fallbackProfile: Profile = {
-          id: userId,
-          email: email || '',
-          full_name: isSuper ? 'RM Rahul (Super Admin)' : email?.split('@')[0] || 'User',
-          role: isSuper ? 'super_admin' : 'customer',
-          is_blocked: false,
-          created_at: new Date().toISOString(),
-        };
-        setProfile(fallbackProfile);
+        setProfile(normalizeProfile(data, authUser));
+        return;
       }
+
+      // No profile row yet — create one from the auth user (the DB trigger
+      // normally does this; this is a safety net for OAuth first logins)
+      const base = fallbackProfile(authUser);
+      try {
+        await supabase.from('profiles').insert([
+          {
+            id: base.id,
+            email: base.email,
+            full_name: base.full_name,
+            role: 'customer',
+            status: 'active',
+          },
+        ]);
+      } catch {
+        // Ignore — in-state fallback profile below still lets the app work
+      }
+      setProfile(base);
     } catch (err) {
       console.error('Exception fetching profile:', err);
+      setProfile(fallbackProfile(authUser));
     }
-  };
-
-  const loginAsDemo = (role: 'admin' | 'customer') => {
-    localStorage.setItem('lw_demo_role', role);
-    if (role === 'admin') {
-      setUser(DEMO_ADMIN_USER);
-      setProfile(DEMO_ADMIN_PROFILE);
-    } else {
-      setUser(DEMO_CUSTOMER_USER);
-      setProfile(DEMO_CUSTOMER_PROFILE);
-    }
-    setIsLoading(false);
   };
 
   const signInWithGoogle = async (): Promise<string | null> => {
     try {
-      // Clear any demo session so the real OAuth session is picked up on return
-      localStorage.removeItem('lw_demo_role');
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin },
       });
       if (error) {
         if (/provider/i.test(error.message)) {
-          return 'Google login is not enabled yet. Enable it in Supabase Dashboard → Authentication → Providers → Google.';
+          return 'Google login is not enabled yet. Enable it in Supabase Dashboard → Authentication → Sign In / Providers → Google.';
         }
         return error.message;
       }
@@ -148,43 +118,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Check saved demo role first
-    const savedRole = localStorage.getItem('lw_demo_role');
-    if (savedRole === 'admin') {
-      setUser(DEMO_ADMIN_USER);
-      setProfile(DEMO_ADMIN_PROFILE);
-      setIsLoading(false);
-      return;
-    } else if (savedRole === 'customer') {
-      setUser(DEMO_CUSTOMER_USER);
-      setProfile(DEMO_CUSTOMER_PROFILE);
-      setIsLoading(false);
-      return;
-    }
+    // Clean up legacy demo-mode flags from older versions
+    localStorage.removeItem('lw_demo_role');
+    localStorage.removeItem('lw_demo_admin_bypass');
 
     // 1. Initial Supabase session check
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        fetchProfile(session.user.id, session.user.email);
+        fetchProfile(session.user);
       }
       setIsLoading(false);
     });
 
     // 2. Auth listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id, session.user.email);
-        } else if (!localStorage.getItem('lw_demo_role')) {
-          setProfile(null);
-        }
-        setIsLoading(false);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        await fetchProfile(session.user);
+      } else {
+        setProfile(null);
       }
-    );
+      setIsLoading(false);
+    });
 
     return () => {
       subscription.unsubscribe();
@@ -192,13 +152,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const refreshProfile = async () => {
-    if (user && !localStorage.getItem('lw_demo_role')) {
-      await fetchProfile(user.id, user.email);
+    if (user) {
+      await fetchProfile(user);
     }
   };
 
   const signOut = async () => {
-    localStorage.removeItem('lw_demo_role');
     try {
       await supabase.auth.signOut();
     } catch {
@@ -209,16 +168,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
   };
 
-  const isSuperAdmin = Boolean(
-    profile?.role === 'super_admin' || 
-    user?.email?.toLowerCase().includes('rahul') ||
-    user?.email?.toLowerCase().includes('admin@')
-  );
-
+  // Roles come only from the real profiles table — no hardcoded accounts
+  const isSuperAdmin = profile?.role === 'super_admin';
   const isAdmin = Boolean(
-    isSuperAdmin || 
-    profile?.role === 'admin' || 
-    profile?.role === 'staff'
+    isSuperAdmin || profile?.role === 'admin' || profile?.role === 'staff'
   );
 
   return (
@@ -233,7 +186,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut,
         refreshProfile,
         signInWithGoogle,
-        loginAsDemo,
       }}
     >
       {children}

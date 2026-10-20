@@ -35,7 +35,7 @@ import { ActivityLogs } from '@/pages/admin/ActivityLogs';
 import { SystemSettings } from '@/pages/admin/SystemSettings';
 import { ThemeSettings } from '@/pages/admin/ThemeSettings';
 
-// Protected Route Guard for Admin
+// Protected Route Guard for Admin — real auth only, no demo bypass
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, isAdmin, isLoading } = useAuth();
 
@@ -47,9 +47,12 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Allow access for authenticated admins or default to allow inspection
-  if (!user && !localStorage.getItem('lw_demo_admin_bypass')) {
-    // Return children for seamless local demo, or redirect to login if strictly enforced
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/account" replace />;
   }
 
   return <>{children}</>;
