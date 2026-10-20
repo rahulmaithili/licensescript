@@ -180,7 +180,7 @@ export const CheckoutPage: React.FC = () => {
     if (selectedGateway === 'razorpay') {
       openRazorpayCheckout(
         checkoutPayload,
-        integrations?.razorpay_key_id || 'rzp_test_1DP5mmOlF5G5ag',
+        integrations?.razorpay_key_id || '',
         async (response) => {
           const result = await processPaymentSuccess(
             checkoutPayload,
