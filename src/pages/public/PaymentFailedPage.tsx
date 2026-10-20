@@ -36,7 +36,7 @@ export const PaymentFailedPage: React.FC = () => {
         </Link>
 
         <a
-          href="https://wa.me/919876543210?text=Hi%20Rahul,%20my%20payment%20failed%20on%20LicenseWala"
+          href="https://wa.me/917564948617?text=Hi%20Rahul,%20my%20payment%20failed%20on%20LicenseWala"
           target="_blank"
           rel="noreferrer"
           className="w-full py-3.5 rounded-2xl bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition-all flex items-center justify-center gap-2"

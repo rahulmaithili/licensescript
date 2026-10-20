@@ -51,7 +51,7 @@ export const NotFoundPage: React.FC = () => {
         <p className="mt-10 text-xs text-slate-400 dark:text-slate-500">
           Still stuck?{' '}
           <a
-            href="https://wa.me/919876543210"
+            href="https://wa.me/917564948617"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1 font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline"

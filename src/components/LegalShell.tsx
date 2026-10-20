@@ -61,7 +61,7 @@ export const LegalShell: React.FC<LegalShellProps> = ({ icon: Icon, badge, title
               Email Support
             </a>
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/917564948617"
               target="_blank"
               rel="noreferrer"
               className="px-5 py-3 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-extrabold text-sm hover:border-[#1E40FF]/50 transition-all flex items-center justify-center gap-2"

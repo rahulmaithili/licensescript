@@ -26,9 +26,9 @@ export const Footer: React.FC = () => {
   };
 
   const socials = [
-    { icon: MessageCircle, label: 'WhatsApp Support', href: 'https://wa.me/919876543210' },
+    { icon: MessageCircle, label: 'WhatsApp Support', href: 'https://wa.me/917564948617' },
     { icon: Mail, label: 'Email Support', href: 'mailto:support@licensewala.com' },
-    { icon: Phone, label: 'Call Support', href: 'tel:+919876543210' },
+    { icon: Phone, label: 'Call Support', href: 'tel:+917564948617' },
   ];
 
   const badges = [
@@ -186,9 +186,6 @@ export const Footer: React.FC = () => {
                   <Link to="/refund-policy" className="hover:text-[#7d92ff] transition-colors">
                     Refund Policy
                   </Link>
-                </li>
-                <li>
-                  <span className="text-xs text-slate-500 font-mono">GSTIN: 27AABCL1234D1ZM</span>
                 </li>
               </ul>
             </div>

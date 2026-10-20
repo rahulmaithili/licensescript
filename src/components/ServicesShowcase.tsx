@@ -53,7 +53,7 @@ const Reveal: React.FC<{
   );
 };
 
-const WHATSAPP_LINK = 'https://wa.me/919876543210';
+const WHATSAPP_LINK = 'https://wa.me/917564948617';
 
 const toolCards = [
   {

@@ -210,11 +210,11 @@ export const LandingPage: React.FC = () => {
   ];
 
   const partners = [
-    { name: 'IndianOil', icon: Building2 },
-    { name: 'HP Gas', icon: Flame },
-    { name: 'Bharat Petroleum', icon: Zap },
-    { name: 'Razorpay', icon: CreditCard },
-    { name: 'Cashfree', icon: Wallet },
+    { name: 'IndianOil', img: '/images/logos/indianoil.jpg', icon: null },
+    { name: 'HP Gas', img: '/images/logos/hp-gas.png', icon: null },
+    { name: 'Bharat Petroleum', img: '/images/logos/bharat-petroleum.png', icon: null },
+    { name: 'Razorpay', img: null, icon: CreditCard },
+    { name: 'Cashfree', img: null, icon: Wallet },
   ];
 
   const pastelChips = [
@@ -403,7 +403,13 @@ export const LandingPage: React.FC = () => {
                           key={partner.name}
                           className="flex items-center gap-2.5 text-white/90 font-bold text-lg whitespace-nowrap"
                         >
-                          <Icon className="w-5 h-5" />
+                          {partner.img ? (
+                            <span className="w-9 h-9 rounded-xl bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                              <img src={partner.img} alt={partner.name} className="w-full h-full object-contain p-0.5" />
+                            </span>
+                          ) : Icon ? (
+                            <Icon className="w-5 h-5" />
+                          ) : null}
                           {partner.name}
                         </span>
                       );
