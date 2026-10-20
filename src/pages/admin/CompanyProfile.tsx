@@ -20,7 +20,7 @@ import type { CompanyProfile as ICompanyProfile } from '@/types';
 type Banner = { type: 'success' | 'error'; message: string } | null;
 
 const inputCls =
-  'w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+  'w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:ring-2 focus:ring-(--brand)';
 
 // Key fields that appear on PDF invoices — used only to tell the admin
 // which of *their own* fields are still blank, never to fill them in.
@@ -91,7 +91,7 @@ export const CompanyProfile: React.FC = () => {
     return (
       <div className="space-y-6 max-w-5xl mx-auto pb-16" aria-label="Loading company profile">
         <div className="flex items-center gap-3 text-slate-300">
-          <Loader2 className="w-6 h-6 animate-spin text-[#8fa0ff]" />
+          <Loader2 className="w-6 h-6 animate-spin text-(--brand-ink)" />
           <span className="text-sm font-semibold">Loading company profile…</span>
         </div>
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl animate-pulse space-y-4">
@@ -139,7 +139,7 @@ export const CompanyProfile: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <Building2 className="w-8 h-8 text-[#8fa0ff]" />
+            <Building2 className="w-8 h-8 text-(--brand-ink)" />
             Company & Business Profile
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -151,7 +151,7 @@ export const CompanyProfile: React.FC = () => {
           type="button"
           onClick={handleSave}
           disabled={isSaving}
-          className="px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2"
+          className="px-5 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2"
         >
           {saveButtonContent}
         </button>
@@ -176,8 +176,8 @@ export const CompanyProfile: React.FC = () => {
       )}
 
       {missingKeyFields.length > 0 && (
-        <div className="flex items-start gap-2.5 rounded-2xl border border-[#1E40FF]/30 bg-[#EEF1FF] px-4 py-3 text-sm text-[#0A1330]">
-          <Info className="w-4 h-4 shrink-0 mt-0.5 text-[#1E40FF]" />
+        <div className="flex items-start gap-2.5 rounded-2xl border border-(--brand)/30 bg-(--brand-soft) px-4 py-3 text-sm text-[#0A1330]">
+          <Info className="w-4 h-4 shrink-0 mt-0.5 text-(--brand)" />
           <span>
             <strong>Profile incomplete:</strong> {missingKeyFields.map((f) => f.label).join(', ')}{' '}
             {missingKeyFields.length === 1 ? 'is' : 'are'} still blank. Invoices generated before you fill{' '}
@@ -191,7 +191,7 @@ export const CompanyProfile: React.FC = () => {
         {/* Basic Brand Details */}
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#8fa0ff]" />
+            <Sparkles className="w-5 h-5 text-(--brand-ink)" />
             Brand & Legal Identity
           </h2>
 
@@ -298,7 +298,7 @@ export const CompanyProfile: React.FC = () => {
         {/* Banking & UPI Settlement Coordinates */}
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-[#8fa0ff]" />
+            <CreditCard className="w-5 h-5 text-(--brand-ink)" />
             Banking & Offline Payment Coordinates
           </h2>
           <p className="text-xs text-slate-400">
@@ -350,7 +350,7 @@ export const CompanyProfile: React.FC = () => {
         {/* Invoice Customization & Terms */}
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <FileText className="w-5 h-5 text-[#8fa0ff]" />
+            <FileText className="w-5 h-5 text-(--brand-ink)" />
             Invoice Terms & Notes
           </h2>
 
@@ -362,7 +362,7 @@ export const CompanyProfile: React.FC = () => {
                 value={profile.invoice_prefix || ''}
                 onChange={(e) => handleChange('invoice_prefix', e.target.value.toUpperCase())}
                 placeholder="INV-"
-                className="w-48 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                className="w-48 bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-(--brand)"
               />
             </div>
 
@@ -392,7 +392,7 @@ export const CompanyProfile: React.FC = () => {
           <button
             type="submit"
             disabled={isSaving}
-            className="px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2"
+            className="px-5 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2"
           >
             {saveButtonContent}
           </button>

@@ -138,7 +138,7 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="min-h-[calc(100vh-4rem)] grid lg:grid-cols-[1.05fr_1fr]">
       {/* LEFT — Brand Panel */}
-      <aside className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-gradient-to-br from-[#1E40FF] via-[#1a35d6] to-[#0A1330] text-white p-10 xl:p-14">
+      <aside className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-gradient-to-br from-(--brand) via-(--brand-hover) to-[#0A1330] text-white p-10 xl:p-14">
         {/* Decorations */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.15] pointer-events-none" />
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
@@ -200,8 +200,8 @@ export const LoginPage: React.FC = () => {
       </aside>
 
       {/* RIGHT — Login Form */}
-      <section className="relative flex items-center justify-center px-4 sm:px-8 py-12 bg-[#F4F6FF] dark:bg-slate-950 overflow-hidden">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-[#1E40FF]/10 blur-[100px] rounded-full pointer-events-none" />
+      <section className="relative flex items-center justify-center px-4 sm:px-8 py-12 bg-(--brand-soft) dark:bg-slate-950 overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-(--brand)/10 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="w-full max-w-md relative">
           {/* Mobile brand */}
@@ -209,7 +209,7 @@ export const LoginPage: React.FC = () => {
             <Link to="/" className="inline-flex items-center gap-2.5">
               <GasAgencyMasterLogo size={38} />
               <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                License<span className="text-[#1E40FF]">Wala</span>
+                License<span className="text-(--brand)">Wala</span>
               </span>
             </Link>
           </div>
@@ -229,10 +229,10 @@ export const LoginPage: React.FC = () => {
               type="button"
               onClick={handleGoogleLogin}
               disabled={googleLoading}
-              className="w-full py-3 px-4 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-[#1E40FF]/60 hover:shadow-[0_10px_30px_-10px_rgba(30,64,255,0.4)] text-slate-700 dark:text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60"
+              className="w-full py-3 px-4 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-(--brand)/60 hover:shadow-[0_10px_30px_-10px_rgba(var(--brand-rgb),0.4)] text-slate-700 dark:text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60"
             >
               {googleLoading ? (
-                <span className="w-5 h-5 border-2 border-slate-300 border-t-[#1E40FF] rounded-full animate-spin" />
+                <span className="w-5 h-5 border-2 border-slate-300 border-t-(--brand) rounded-full animate-spin" />
               ) : (
                 <GoogleIcon className="w-5 h-5" />
               )}
@@ -267,7 +267,7 @@ export const LoginPage: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@youragency.com"
                     autoComplete="email"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF] focus:border-transparent transition"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full pl-11 pr-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand) focus:border-transparent transition"
                   />
                 </div>
               </div>
@@ -279,7 +279,7 @@ export const LoginPage: React.FC = () => {
                   </label>
                   <Link
                     to="/forgot-password"
-                    className="text-xs font-semibold text-[#1E40FF] hover:underline"
+                    className="text-xs font-semibold text-(--brand) hover:underline"
                   >
                     Forgot password?
                   </Link>
@@ -292,7 +292,7 @@ export const LoginPage: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     autoComplete="current-password"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF] focus:border-transparent transition"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full pl-11 pr-11 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand) focus:border-transparent transition"
                   />
                   <button
                     type="button"
@@ -308,7 +308,7 @@ export const LoginPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3.5 mt-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white font-extrabold text-sm shadow-[0_14px_30px_-10px_rgba(30,64,255,0.55)] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full py-3.5 mt-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white font-extrabold text-sm shadow-[0_14px_30px_-10px_rgba(var(--brand-rgb),0.55)] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {isLoading ? (
                   <>
@@ -326,7 +326,7 @@ export const LoginPage: React.FC = () => {
 
             <div className="mt-7 pt-6 border-t border-slate-100 dark:border-slate-800 text-center text-[13px] text-slate-500 dark:text-slate-400">
               Don't have an account yet?{' '}
-              <Link to="/register" className="font-bold text-[#1E40FF] hover:underline">
+              <Link to="/register" className="font-bold text-(--brand) hover:underline">
                 Create account
               </Link>
             </div>

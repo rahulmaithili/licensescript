@@ -23,7 +23,7 @@ import type { IntegrationSettings } from '@/types';
 type ValidationResult = { ok: boolean; message: string } | null;
 
 const inputClass =
-  'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-[#0A1330] dark:text-white font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/40 focus:border-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-[#0A1330] dark:text-white font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand)/40 focus:border-(--brand)';
 const labelClass = 'block font-semibold text-slate-700 dark:text-slate-300 mb-1';
 const cardClass =
   'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl space-y-4';
@@ -176,7 +176,7 @@ export const Integrations: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
-            <Cpu className="w-8 h-8 text-[#1E40FF]" />
+            <Cpu className="w-8 h-8 text-(--brand)" />
             Supabase & Razorpay Integrations
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -187,7 +187,7 @@ export const Integrations: React.FC = () => {
         <button
           onClick={() => handleSave()}
           disabled={isSaving}
-          className="px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2 shrink-0"
+          className="px-5 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2 shrink-0"
         >
           {savedSuccess ? (
             <>
@@ -228,7 +228,7 @@ export const Integrations: React.FC = () => {
               type="button"
               onClick={handleTestSupabase}
               disabled={supabaseTest === 'testing'}
-              className="px-3.5 py-1.5 rounded-full bg-[#EEF1FF] dark:bg-slate-800 hover:bg-[#E0E6FF] dark:hover:bg-slate-700 text-xs font-semibold text-[#0A1330] dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 disabled:opacity-50"
+              className="px-3.5 py-1.5 rounded-full bg-(--brand-soft) dark:bg-slate-800 hover:bg-(--brand-soft-hover) dark:hover:bg-slate-700 text-xs font-semibold text-[#0A1330] dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 disabled:opacity-50"
             >
               {supabaseTest === 'testing' ? (
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
@@ -277,7 +277,7 @@ export const Integrations: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowAnonKey((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-[#1E40FF]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-(--brand)"
                   aria-label={showAnonKey ? 'Hide anon key' : 'Show anon key'}
                 >
                   {showAnonKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -294,7 +294,7 @@ export const Integrations: React.FC = () => {
         <div className={cardClass}>
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E40FF]/10 text-[#1E40FF] flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-(--brand)/10 text-(--brand) flex items-center justify-center font-bold">
                 RZ
               </div>
               <div>
@@ -312,7 +312,7 @@ export const Integrations: React.FC = () => {
                   checked={settings.razorpay_enabled}
                   disabled={savingToggle === 'razorpay_enabled'}
                   onChange={(e) => handleToggleGateway('razorpay_enabled', e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#1E40FF] disabled:opacity-50"
+                  className="w-4 h-4 rounded accent-(--brand) disabled:opacity-50"
                 />
                 <label htmlFor="rzpActive" className="text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer">
                   {savingToggle === 'razorpay_enabled'
@@ -351,7 +351,7 @@ export const Integrations: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowSecret((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-[#1E40FF]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-(--brand)"
                   aria-label={showSecret ? 'Hide webhook secret' : 'Show webhook secret'}
                 >
                   {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -364,9 +364,9 @@ export const Integrations: React.FC = () => {
             <button
               type="button"
               onClick={handleValidateRazorpay}
-              className="px-3.5 py-1.5 rounded-full bg-[#EEF1FF] dark:bg-slate-800 hover:bg-[#E0E6FF] dark:hover:bg-slate-700 text-xs font-semibold text-[#0A1330] dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-full bg-(--brand-soft) dark:bg-slate-800 hover:bg-(--brand-soft-hover) dark:hover:bg-slate-700 text-xs font-semibold text-[#0A1330] dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5"
             >
-              <Zap className="w-3.5 h-3.5 text-[#1E40FF]" />
+              <Zap className="w-3.5 h-3.5 text-(--brand)" />
               <span>Validate Key Format (local check)</span>
             </button>
             {razorpayCheck && (
@@ -389,14 +389,14 @@ export const Integrations: React.FC = () => {
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Paste this URL in your Razorpay Dashboard webhook settings:
           </p>
-          <div className="flex items-center gap-2 bg-[#EEF1FF] dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
-            <span className="font-mono text-xs text-[#1E40FF] dark:text-[#B9C4FF] flex-1 truncate">
+          <div className="flex items-center gap-2 bg-(--brand-soft) dark:bg-slate-800/80 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700">
+            <span className="font-mono text-xs text-(--brand) dark:text-(--brand-ink) flex-1 truncate">
               {window.location.origin}/api/payment-webhook
             </span>
             <button
               type="button"
               onClick={handleCopyWebhook}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-[#1E40FF] hover:bg-white dark:hover:bg-slate-700"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-(--brand) hover:bg-white dark:hover:bg-slate-700"
               aria-label="Copy webhook URL"
             >
               {copiedWebhook ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}

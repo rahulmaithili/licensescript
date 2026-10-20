@@ -50,8 +50,8 @@ export const PricingPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#7d92ff] text-xs font-bold border border-[#1E40FF]/25">
-          <Sparkles className="w-3.5 h-3.5 text-[#1E40FF] dark:text-[#7d92ff]" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) text-xs font-bold border border-(--brand)/25">
+          <Sparkles className="w-3.5 h-3.5 text-(--brand) dark:text-(--brand-ink)" />
           <span>Flexible Plans for Every Tool: Monthly • Quarterly • Annual • Lifetime</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white">
@@ -67,8 +67,8 @@ export const PricingPage: React.FC = () => {
             onClick={() => setSelectedProductId('all')}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               selectedProductId === 'all'
-                ? 'bg-[#1E40FF] text-white shadow-md shadow-[#1E40FF]/30'
-                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[#1E40FF]/40'
+                ? 'bg-(--brand) text-white shadow-md shadow-(--brand)/30'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-(--brand)/40'
             }`}
           >
             All Products
@@ -79,8 +79,8 @@ export const PricingPage: React.FC = () => {
               onClick={() => setSelectedProductId(p.id)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 selectedProductId === p.id
-                  ? 'bg-[#1E40FF] text-white shadow-md shadow-[#1E40FF]/30'
-                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-[#1E40FF]/40'
+                  ? 'bg-(--brand) text-white shadow-md shadow-(--brand)/30'
+                  : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-(--brand)/40'
               }`}
             >
               {p.name}
@@ -143,7 +143,7 @@ export const PricingPage: React.FC = () => {
               setSelectedProductId('all');
               setSelectedDuration('all');
             }}
-            className="mt-5 px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-xs font-bold transition-colors"
+            className="mt-5 px-5 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-xs font-bold transition-colors"
           >
             Reset Filters
           </button>
@@ -159,12 +159,12 @@ export const PricingPage: React.FC = () => {
                 key={plan.id}
                 className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-xl transition-all relative bg-white dark:bg-slate-900 border ${
                   d.isPopular
-                    ? 'border-2 border-[#1E40FF] shadow-[#1E40FF]/15'
+                    ? 'border-2 border-(--brand) shadow-(--brand)/15'
                     : d.isLifetime
                     ? 'border-2 border-violet-500/70 shadow-violet-500/10'
                     : d.isYearly
                     ? 'border-2 border-sky-500/60 shadow-sky-500/10'
-                    : 'border-slate-200 dark:border-slate-800 hover:border-[#1E40FF]/40'
+                    : 'border-slate-200 dark:border-slate-800 hover:border-(--brand)/40'
                 }`}
               >
                 {d.badge && (
@@ -173,7 +173,7 @@ export const PricingPage: React.FC = () => {
                       d.isLifetime
                         ? 'bg-gradient-to-r from-violet-600 to-purple-500'
                         : d.isPopular
-                        ? 'bg-gradient-to-r from-[#1E40FF] to-blue-500'
+                        ? 'bg-gradient-to-r from-(--brand) to-blue-500'
                         : 'bg-gradient-to-r from-sky-600 to-cyan-500'
                     }`}
                   >
@@ -184,7 +184,7 @@ export const PricingPage: React.FC = () => {
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#1E40FF] dark:text-[#7d92ff]">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-(--brand) dark:text-(--brand-ink)">
                       {d.periodLabel} Plan
                     </span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
@@ -207,7 +207,7 @@ export const PricingPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2.5 py-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
-                    <div className="flex items-center gap-2 font-semibold text-[#1E40FF] dark:text-[#7d92ff]">
+                    <div className="flex items-center gap-2 font-semibold text-(--brand) dark:text-(--brand-ink)">
                       <Lock className="w-4 h-4 shrink-0" />
                       <span>{plan.max_devices} PC Hardware Lock</span>
                     </div>
@@ -224,7 +224,7 @@ export const PricingPage: React.FC = () => {
                   to={`/checkout/${plan.id}`}
                   className={`w-full mt-6 py-3 rounded-2xl font-bold text-xs text-center shadow-lg transition-all flex items-center justify-center gap-1.5 ${
                     d.isPopular
-                      ? 'bg-[#1E40FF] hover:bg-[#1740D6] text-white shadow-[#1E40FF]/30'
+                      ? 'bg-(--brand) hover:bg-(--brand-hover) text-white shadow-(--brand)/30'
                       : d.isLifetime
                       ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-violet-600/30'
                       : d.isYearly

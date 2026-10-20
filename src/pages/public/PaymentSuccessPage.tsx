@@ -90,11 +90,11 @@ export const PaymentSuccessPage: React.FC = () => {
       </div>
 
       {/* Prominent License Key Card */}
-      <div className="bg-gradient-to-b from-[#0A1330] to-slate-900 border-2 border-[#1E40FF]/80 rounded-3xl p-6 sm:p-8 shadow-2xl text-left space-y-4 relative overflow-hidden">
+      <div className="bg-gradient-to-b from-[#0A1330] to-slate-900 border-2 border-(--brand)/80 rounded-3xl p-6 sm:p-8 shadow-2xl text-left space-y-4 relative overflow-hidden">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <KeyRound className="w-5 h-5 text-[#8fa0ff]" />
-            <span className="text-xs font-bold uppercase tracking-wider text-[#aab8ff]">
+            <KeyRound className="w-5 h-5 text-(--brand-ink)" />
+            <span className="text-xs font-bold uppercase tracking-wider text-(--brand-ink)">
               Your Official License Key
             </span>
           </div>
@@ -109,7 +109,7 @@ export const PaymentSuccessPage: React.FC = () => {
           </span>
           <button
             onClick={handleCopy}
-            className="px-4 py-2 rounded-xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-bold text-xs shadow-md shadow-[#1E40FF]/30 flex items-center gap-1.5 shrink-0 transition-all"
+            className="px-4 py-2 rounded-xl bg-(--brand) hover:bg-(--brand-hover) text-white font-bold text-xs shadow-md shadow-(--brand)/30 flex items-center gap-1.5 shrink-0 transition-all"
           >
             {copied ? (
               <>
@@ -142,7 +142,7 @@ export const PaymentSuccessPage: React.FC = () => {
 
         <Link
           to="/account"
-          className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-bold text-sm shadow-xl shadow-[#1E40FF]/30 flex items-center justify-center gap-2 transition-all"
+          className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-(--brand) hover:bg-(--brand-hover) text-white font-bold text-sm shadow-xl shadow-(--brand)/30 flex items-center justify-center gap-2 transition-all"
         >
           <span>Go to Customer Dashboard</span>
           <ArrowRight className="w-4 h-4" />

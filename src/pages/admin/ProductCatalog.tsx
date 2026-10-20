@@ -43,9 +43,9 @@ function slugify(value: string): string {
 }
 
 const inputCls =
-  'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)';
 const primaryBtn =
-  'px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2';
+  'px-4 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2';
 
 export const ProductCatalog: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -200,7 +200,7 @@ export const ProductCatalog: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
-            <Package className="w-8 h-8 text-[#1E40FF] dark:text-[#8fa0ff]" />
+            <Package className="w-8 h-8 text-(--brand) dark:text-(--brand-ink)" />
             Product Catalog
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -254,8 +254,8 @@ export const ProductCatalog: React.FC = () => {
         </div>
       ) : products.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-10 sm:p-14 text-center shadow-sm dark:shadow-xl">
-          <div className="w-16 h-16 mx-auto rounded-full bg-[#EEF1FF] flex items-center justify-center mb-4">
-            <Package className="w-8 h-8 text-[#1E40FF]" />
+          <div className="w-16 h-16 mx-auto rounded-full bg-(--brand-soft) flex items-center justify-center mb-4">
+            <Package className="w-8 h-8 text-(--brand)" />
           </div>
           <h2 className="text-lg font-bold text-[#0A1330] dark:text-white">No products yet</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-md mx-auto">
@@ -275,7 +275,7 @@ export const ProductCatalog: React.FC = () => {
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25">
                     {product.category}
                   </span>
                   <button
@@ -299,8 +299,8 @@ export const ProductCatalog: React.FC = () => {
                       className="w-12 h-12 rounded-2xl object-cover ring-2 ring-slate-200 dark:ring-slate-800 shrink-0"
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-2xl bg-[#EEF1FF] flex items-center justify-center shrink-0">
-                      <Package className="w-6 h-6 text-[#1E40FF]" />
+                    <div className="w-12 h-12 rounded-2xl bg-(--brand-soft) flex items-center justify-center shrink-0">
+                      <Package className="w-6 h-6 text-(--brand)" />
                     </div>
                   )}
                   <div>
@@ -317,7 +317,7 @@ export const ProductCatalog: React.FC = () => {
                   <div className="space-y-1.5 py-3 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
                     {product.features.slice(0, 3).map((f, i) => (
                       <div key={i} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-[#1E40FF] dark:text-[#8fa0ff] shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-(--brand) dark:text-(--brand-ink) shrink-0" />
                         <span className="truncate">{f}</span>
                       </div>
                     ))}
@@ -331,7 +331,7 @@ export const ProductCatalog: React.FC = () => {
                     href={product.download_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs text-[#1E40FF] dark:text-[#8fa0ff] hover:underline flex items-center gap-1 font-semibold"
+                    className="text-xs text-(--brand) dark:text-(--brand-ink) hover:underline flex items-center gap-1 font-semibold"
                   >
                     <Download className="w-3.5 h-3.5" />
                     Download Build
@@ -478,7 +478,7 @@ export const ProductCatalog: React.FC = () => {
                   id="isActive"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 accent-[#1E40FF]"
+                  className="rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 accent-(--brand)"
                 />
                 <label htmlFor="isActive" className="text-slate-700 dark:text-slate-300 font-semibold cursor-pointer">
                   Product is Active & visible in storefront
@@ -497,7 +497,7 @@ export const ProductCatalog: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white font-semibold shadow-lg shadow-[#1E40FF]/30 flex items-center gap-2"
+                  className="px-5 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white font-semibold shadow-lg shadow-(--brand)/30 flex items-center gap-2"
                 >
                   {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {isSaving ? 'Saving…' : 'Save Product'}

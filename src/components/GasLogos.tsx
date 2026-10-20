@@ -91,7 +91,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: '1-Click Refill Booking, Cash Memo Auto-Print & Subsidies',
       img: '/images/logos/indianoil.jpg',
       tag: 'Indane Gas',
-      color: 'from-[#1E40FF]/10 to-sky-500/10 border-[#1E40FF]/30 text-[#1E40FF] dark:text-[#8fa0ff]',
+      color: 'from-(--brand)/10 to-sky-500/10 border-(--brand)/30 text-(--brand) dark:text-(--brand-ink)',
     },
     {
       name: 'HP Gas (HPCL)',
@@ -99,7 +99,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: 'Bulk Cash Memo Dispatch, PMUY 2.0 KYC & HWID Security',
       img: '/images/logos/hp-gas.png',
       tag: 'HPCL Portal',
-      color: 'from-sky-500/10 to-[#1E40FF]/10 border-sky-500/30 text-sky-600 dark:text-sky-400',
+      color: 'from-sky-500/10 to-(--brand)/10 border-sky-500/30 text-sky-600 dark:text-sky-400',
     },
     {
       name: 'Bharat Petroleum',
@@ -107,7 +107,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       desc: 'Smart Cylinder Reconciliation, Instant WhatsApp Receipts',
       img: '/images/logos/bharat-petroleum.png',
       tag: 'Bharat Gas',
-      color: 'from-[#1E40FF]/10 to-[#1E40FF]/10 border-[#1E40FF]/30 text-[#1E40FF] dark:text-[#8fa0ff]',
+      color: 'from-(--brand)/10 to-(--brand)/10 border-(--brand)/30 text-(--brand) dark:text-(--brand-ink)',
     },
   ];
 
@@ -134,7 +134,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
       {brands.map((b) => (
         <div
           key={b.name}
-          className="group relative rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-5 shadow-lg hover:shadow-2xl hover:border-[#1E40FF]/40 transition-all duration-300 transform hover:-translate-y-1 text-left"
+          className="group relative rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-5 shadow-lg hover:shadow-2xl hover:border-(--brand)/40 transition-all duration-300 transform hover:-translate-y-1 text-left"
         >
           <div className="flex items-center gap-4 mb-3">
             <div className="w-14 h-14 rounded-2xl bg-slate-50 dark:bg-white p-1.5 shadow-md border border-slate-300 dark:border-slate-600 ring-1 ring-slate-900/5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -149,7 +149,7 @@ export const GasBrandsShowcase: React.FC<{ compact?: boolean }> = ({ compact = f
               </h4>
             </div>
           </div>
-          <p className="text-xs font-semibold text-[#1E40FF] dark:text-[#8fa0ff] mb-1">
+          <p className="text-xs font-semibold text-(--brand) dark:text-(--brand-ink) mb-1">
             {b.category}
           </p>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">

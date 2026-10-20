@@ -23,9 +23,9 @@ import type { Coupon } from '@/types';
 type Banner = { type: 'success' | 'error'; message: string } | null;
 
 const inputCls =
-  'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)';
 const primaryBtn =
-  'px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2';
+  'px-4 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2';
 
 function isExpired(coupon: Coupon): boolean {
   return !!coupon.expires_at && new Date(coupon.expires_at) < new Date();
@@ -281,7 +281,7 @@ export const CouponsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
-            <Tag className="w-8 h-8 text-[#1E40FF] dark:text-[#8fa0ff]" />
+            <Tag className="w-8 h-8 text-(--brand) dark:text-(--brand-ink)" />
             Coupons &amp; Discounts
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -334,7 +334,7 @@ export const CouponsPage: React.FC = () => {
           className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-14 text-center shadow-sm dark:shadow-xl"
           aria-label="Loading coupons"
         >
-          <Loader2 className="w-8 h-8 animate-spin text-[#1E40FF] mx-auto" />
+          <Loader2 className="w-8 h-8 animate-spin text-(--brand) mx-auto" />
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-3">Loading coupons…</p>
         </div>
       ) : loadError ? (
@@ -350,8 +350,8 @@ export const CouponsPage: React.FC = () => {
         </div>
       ) : coupons.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl p-10 sm:p-14 text-center shadow-sm dark:shadow-xl">
-          <div className="w-16 h-16 mx-auto rounded-full bg-[#EEF1FF] flex items-center justify-center mb-4">
-            <Tag className="w-8 h-8 text-[#1E40FF]" />
+          <div className="w-16 h-16 mx-auto rounded-full bg-(--brand-soft) flex items-center justify-center mb-4">
+            <Tag className="w-8 h-8 text-(--brand)" />
           </div>
           <h2 className="text-lg font-bold text-[#0A1330] dark:text-white">No coupons yet</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5 max-w-md mx-auto">
@@ -407,7 +407,7 @@ export const CouponsPage: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-5 py-4">
-                        <span className="font-bold text-[#1E40FF] dark:text-[#8fa0ff]">
+                        <span className="font-bold text-(--brand) dark:text-(--brand-ink)">
                           {coupon.type === 'percentage' ? `${coupon.value}% OFF` : `₹${coupon.value} OFF`}
                         </span>
                       </td>
@@ -421,7 +421,7 @@ export const CouponsPage: React.FC = () => {
                         {coupon.usage_limit != null && (
                           <div className="w-24 h-1.5 mt-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-[#1E40FF]"
+                              className="h-full rounded-full bg-(--brand)"
                               style={{ width: `${usagePercent}%` }}
                             />
                           </div>
@@ -450,7 +450,7 @@ export const CouponsPage: React.FC = () => {
                             aria-label={`${coupon.is_active ? 'Deactivate' : 'Activate'} coupon ${coupon.code}`}
                             title={coupon.is_active ? 'Deactivate coupon' : 'Activate coupon'}
                             className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors disabled:opacity-50 ${
-                              coupon.is_active ? 'bg-[#1E40FF]' : 'bg-slate-300 dark:bg-slate-700'
+                              coupon.is_active ? 'bg-(--brand)' : 'bg-slate-300 dark:bg-slate-700'
                             }`}
                           >
                             {togglingId === coupon.id ? (
@@ -540,7 +540,7 @@ export const CouponsPage: React.FC = () => {
                     onClick={() => setType('percentage')}
                     className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                       type === 'percentage'
-                        ? 'bg-[#1E40FF] text-white shadow-md shadow-[#1E40FF]/30'
+                        ? 'bg-(--brand) text-white shadow-md shadow-(--brand)/30'
                         : 'text-slate-600 dark:text-slate-300 hover:text-[#0A1330] dark:hover:text-white'
                     }`}
                   >
@@ -551,7 +551,7 @@ export const CouponsPage: React.FC = () => {
                     onClick={() => setType('flat')}
                     className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all ${
                       type === 'flat'
-                        ? 'bg-[#1E40FF] text-white shadow-md shadow-[#1E40FF]/30'
+                        ? 'bg-(--brand) text-white shadow-md shadow-(--brand)/30'
                         : 'text-slate-600 dark:text-slate-300 hover:text-[#0A1330] dark:hover:text-white'
                     }`}
                   >
@@ -619,7 +619,7 @@ export const CouponsPage: React.FC = () => {
                   id="couponIsActive"
                   checked={isActive}
                   onChange={(e) => setIsActive(e.target.checked)}
-                  className="rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 accent-[#1E40FF]"
+                  className="rounded bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 accent-(--brand)"
                 />
                 <label htmlFor="couponIsActive" className="text-slate-700 dark:text-slate-300 font-semibold cursor-pointer">
                   Coupon is Active &amp; redeemable at checkout
@@ -638,7 +638,7 @@ export const CouponsPage: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white font-semibold shadow-lg shadow-[#1E40FF]/30 flex items-center gap-2"
+                  className="px-5 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white font-semibold shadow-lg shadow-(--brand)/30 flex items-center gap-2"
                 >
                   {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
                   {isSaving ? 'Saving…' : 'Save Coupon'}

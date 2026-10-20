@@ -4,6 +4,11 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import { getCompanyProfile } from './settingsService';
+import { getStoredAccentPalette } from '@/lib/accents';
+
+// Brand RGB for PDF rendering, resolved when the document is generated
+// from the accent stored by ThemeContext.
+const brandRgb = (): [number, number, number] => getStoredAccentPalette().rgb;
 
 // Normalize a joined profiles row: real DB columns are company / tax_id / status.
 function normalizeInvoice(row: any): Invoice {
@@ -125,7 +130,7 @@ export async function generateInvoicePDF(invoice: Invoice, company?: CompanyProf
     head: [['#', 'Item Description', 'Qty', 'Base Rate', 'Discount', 'Tax', 'Net Amount']],
     body: tableData,
     theme: 'striped',
-    headStyles: { fillColor: [30, 64, 255], textColor: [255, 255, 255], fontStyle: 'bold' },
+    headStyles: { fillColor: brandRgb(), textColor: [255, 255, 255], fontStyle: 'bold' },
     styles: { fontSize: 9, cellPadding: 4 },
   });
 
@@ -183,7 +188,8 @@ export function generateLicenseCertificatePDF(license: License, company?: Compan
   const doc = new jsPDF({ orientation: 'landscape' });
 
   // Elegant border
-  doc.setDrawColor(30, 64, 255);
+  const [br, bg, bb] = brandRgb();
+  doc.setDrawColor(br, bg, bb);
   doc.setLineWidth(4);
   doc.rect(8, 8, 281, 194);
   doc.setLineWidth(1);
@@ -192,7 +198,7 @@ export function generateLicenseCertificatePDF(license: License, company?: Compan
   // Header
   doc.setFontSize(28);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(30, 64, 255);
+  doc.setTextColor(br, bg, bb);
   doc.text('SOFTWARE LICENSE CERTIFICATE', 148, 38, { align: 'center' });
 
   doc.setFontSize(12);

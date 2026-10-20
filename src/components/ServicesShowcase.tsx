@@ -62,7 +62,7 @@ const toolCards = [
     badge: '1-Click Print Ready',
     icon: Printer,
     chip: 'bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400',
-    glow: 'group-hover:shadow-[0_28px_55px_-20px_rgba(30,64,255,0.45)]',
+    glow: 'group-hover:shadow-[0_28px_55px_-20px_rgba(var(--brand-rgb),0.45)]',
     description:
       'Your counter starts every morning with a pile of pending bookings. This tool pulls them straight from your agency system in a single click and generates clean, area-wise cash memos — ready to print and hand over to your delivery team. No manual sorting, no copy-paste, no waiting.',
     bullets: [
@@ -131,8 +131,8 @@ export const ServicesShowcase: React.FC = () => {
   return (
     <section id="services" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-28">
       {/* ambient glows */}
-      <div className="absolute top-10 -left-24 w-[320px] h-[320px] bg-[#1E40FF]/10 blur-[110px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-24 -right-24 w-[320px] h-[320px] bg-[#1E40FF]/10 blur-[110px] rounded-full pointer-events-none" />
+      <div className="absolute top-10 -left-24 w-[320px] h-[320px] bg-(--brand)/10 blur-[110px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-24 -right-24 w-[320px] h-[320px] bg-(--brand)/10 blur-[110px] rounded-full pointer-events-none" />
 
       {/* ============ HEADING ============ */}
       <Reveal className="relative text-center max-w-3xl mx-auto mb-14">
@@ -156,12 +156,12 @@ export const ServicesShowcase: React.FC = () => {
           return (
             <Reveal key={tool.id} delay={idx * 120} className="h-full">
               <div
-                className={`card-premium group relative overflow-hidden p-7 sm:p-8 shadow-brand h-full flex flex-col hover:-translate-y-1.5 hover:border-[#1E40FF]/40 transition-all duration-300 ${tool.glow}`}
+                className={`card-premium group relative overflow-hidden p-7 sm:p-8 shadow-brand h-full flex flex-col hover:-translate-y-1.5 hover:border-(--brand)/40 transition-all duration-300 ${tool.glow}`}
               >
                 {/* gradient top accent */}
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#1E40FF] via-[#5b83ff] to-[#1740D6] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-(--brand) via-(--brand-mid) to-(--brand-hover) opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 {/* soft hover glow */}
-                <div className="absolute -top-16 -right-16 w-40 h-40 bg-[#1E40FF]/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="absolute -top-16 -right-16 w-40 h-40 bg-(--brand)/10 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                 <div className="relative flex items-start justify-between gap-3 mb-6">
                   <div
@@ -172,7 +172,7 @@ export const ServicesShowcase: React.FC = () => {
                   <span className="pill-badge">{tool.badge}</span>
                 </div>
 
-                <h3 className="relative text-xl font-extrabold text-slate-900 dark:text-white mb-3 group-hover:text-[#1E40FF] dark:group-hover:text-[#8fa0ff] transition-colors">
+                <h3 className="relative text-xl font-extrabold text-slate-900 dark:text-white mb-3 group-hover:text-(--brand) dark:group-hover:text-(--brand-ink) transition-colors">
                   {tool.title}
                 </h3>
 
@@ -194,7 +194,7 @@ export const ServicesShowcase: React.FC = () => {
 
                 <Link
                   to="/products"
-                  className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:gap-2.5 transition-all"
+                  className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-bold text-(--brand) dark:text-(--brand-ink) hover:gap-2.5 transition-all"
                 >
                   <span>Explore Software Suites</span>
                   <ArrowRight className="w-4 h-4" />
@@ -207,7 +207,7 @@ export const ServicesShowcase: React.FC = () => {
 
       {/* ============ CUSTOM SERVICES BANNER ============ */}
       <Reveal delay={120} className="relative mt-8">
-        <div className="relative rounded-[28px] bg-gradient-to-br from-[#1E40FF] via-[#2447f5] to-[#1740D6] p-8 sm:p-12 shadow-brand overflow-hidden">
+        <div className="relative rounded-[28px] bg-gradient-to-br from-(--brand) via-(--brand) to-(--brand-hover) p-8 sm:p-12 shadow-brand overflow-hidden">
           {/* giant outlined background text */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden" aria-hidden="true">
             <span className="outline-text text-[22vw] lg:text-[9rem] font-black tracking-tight whitespace-nowrap leading-none">
@@ -262,7 +262,7 @@ export const ServicesShowcase: React.FC = () => {
                         href={WHATSAPP_LINK}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white text-[#1E40FF] font-extrabold text-sm shadow-xl hover:bg-blue-50 transition-all hover:-translate-y-0.5"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white text-(--brand) font-extrabold text-sm shadow-xl hover:bg-blue-50 transition-all hover:-translate-y-0.5"
                       >
                         <MessageCircle className="w-4 h-4" />
                         <span>{service.cta}</span>

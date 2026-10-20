@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { getStoredAccentPalette } from '@/lib/accents';
 import type { Plan, Product, Profile, PaymentMethod } from '@/types';
 import { generateCryptoRandomKey } from './keyGeneratorService';
 import { createInvoice } from './invoiceService';
@@ -157,7 +158,8 @@ export function openRazorpayCheckout(
         plan_id: payload.plan.id,
       },
       theme: {
-        color: '#1E40FF',
+        // Resolved at click time from the accent stored by ThemeContext.
+        color: getStoredAccentPalette().brand,
       },
       modal: {
         ondismiss: function () {

@@ -40,7 +40,7 @@ export const ProductDetailPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center gap-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400 mb-10">
-          <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-[#1E40FF] rounded-full animate-spin" />
+          <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-(--brand) rounded-full animate-spin" />
           Loading product details...
         </div>
         <div className="animate-pulse grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -70,7 +70,7 @@ export const ProductDetailPage: React.FC = () => {
       <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Product Not Found</h2>
         <p className="text-slate-500 dark:text-slate-400">The requested extension or script could not be found.</p>
-        <Link to="/products" className="inline-block px-5 py-2.5 bg-[#1E40FF] hover:bg-[#1740D6] text-white rounded-full font-bold transition-colors">
+        <Link to="/products" className="inline-block px-5 py-2.5 bg-(--brand) hover:bg-(--brand-hover) text-white rounded-full font-bold transition-colors">
           Back to Catalog
         </Link>
       </div>
@@ -82,7 +82,7 @@ export const ProductDetailPage: React.FC = () => {
       {/* Back button */}
       <Link
         to="/products"
-        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-[#1E40FF] transition-colors"
+        className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-(--brand) transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         <span>Back to All Products</span>
@@ -95,10 +95,10 @@ export const ProductDetailPage: React.FC = () => {
             <img
               src={product.logo_url || '/images/logos/hp-gas.png'}
               alt={product.name}
-              className="w-20 h-20 rounded-3xl object-cover ring-2 ring-[#1E40FF]/20 shadow-lg shrink-0"
+              className="w-20 h-20 rounded-3xl object-cover ring-2 ring-(--brand)/20 shadow-lg shrink-0"
             />
             <div>
-              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-[#EEF1FF]0/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/20">
+              <span className="px-3 py-1 rounded-full text-xs font-bold uppercase bg-(--brand-soft)0/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/20">
                 {product.category}
               </span>
               <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mt-2 leading-tight">
@@ -116,7 +116,7 @@ export const ProductDetailPage: React.FC = () => {
 
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
             <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#1E40FF]" />
+              <Sparkles className="w-5 h-5 text-(--brand)" />
               Verified Core Features
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
@@ -144,7 +144,7 @@ export const ProductDetailPage: React.FC = () => {
               href={product.download_url}
               target="_blank"
               rel="noreferrer"
-              className="w-full py-3 rounded-2xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#1E40FF]/30 transition-all"
+              className="w-full py-3 rounded-2xl bg-(--brand) hover:bg-(--brand-hover) text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-(--brand)/30 transition-all"
             >
               <Download className="w-4 h-4" />
               <span>Download Extension Binary</span>
@@ -156,7 +156,7 @@ export const ProductDetailPage: React.FC = () => {
               </p>
               <a
                 href="#plans"
-                className="w-full py-3 rounded-2xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#1E40FF]/30 transition-all"
+                className="w-full py-3 rounded-2xl bg-(--brand) hover:bg-(--brand-hover) text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-(--brand)/30 transition-all"
               >
                 <KeyRound className="w-4 h-4" />
                 <span>View Plans — Get Instant Access</span>
@@ -170,7 +170,7 @@ export const ProductDetailPage: React.FC = () => {
               <span>VirusTotal & Chrome Store Verified Clean</span>
             </div>
             <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-[#8fa0ff]" />
+              <Lock className="w-4 h-4 text-(--brand-ink)" />
               <span>Anti-Piracy Hardware Device Binding</span>
             </div>
           </div>
@@ -197,7 +197,7 @@ export const ProductDetailPage: React.FC = () => {
                 key={plan.id}
                 className={`bg-white dark:bg-slate-900 border rounded-3xl p-6 sm:p-7 flex flex-col justify-between shadow-xl hover:shadow-2xl transition-all relative ${
                   d.isPopular
-                    ? 'border-2 border-[#1E40FF] shadow-[#1E40FF]/15'
+                    ? 'border-2 border-(--brand) shadow-(--brand)/15'
                     : d.isLifetime
                     ? 'border-2 border-violet-500/70 shadow-violet-500/10'
                     : d.isYearly
@@ -211,7 +211,7 @@ export const ProductDetailPage: React.FC = () => {
                       d.isLifetime
                         ? 'bg-gradient-to-r from-violet-600 to-purple-500'
                         : d.isPopular
-                        ? 'bg-gradient-to-r from-[#1E40FF] to-blue-500'
+                        ? 'bg-gradient-to-r from-(--brand) to-blue-500'
                         : 'bg-gradient-to-r from-sky-600 to-cyan-500'
                     }`}
                   >
@@ -221,7 +221,7 @@ export const ProductDetailPage: React.FC = () => {
                 )}
 
                 <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1E40FF] dark:text-[#7d92ff]">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-(--brand) dark:text-(--brand-ink)">
                     {d.periodLabel} Plan
                   </span>
                   <h4 className="text-xl font-extrabold text-slate-900 dark:text-white mt-1">
@@ -239,7 +239,7 @@ export const ProductDetailPage: React.FC = () => {
                   </div>
 
                   <div className="space-y-2.5 py-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
-                    <div className="flex items-center gap-2 font-semibold text-[#1E40FF] dark:text-[#7d92ff]">
+                    <div className="flex items-center gap-2 font-semibold text-(--brand) dark:text-(--brand-ink)">
                       <Lock className="w-4 h-4 shrink-0" />
                       <span>{plan.max_devices} PC Hardware Lock</span>
                     </div>
@@ -256,7 +256,7 @@ export const ProductDetailPage: React.FC = () => {
                   to={`/checkout/${plan.id}`}
                   className={`w-full mt-6 py-3 rounded-2xl font-bold text-xs text-center shadow-lg transition-all flex items-center justify-center gap-1.5 ${
                     d.isPopular
-                      ? 'bg-[#1E40FF] hover:bg-[#1740D6] text-white shadow-[#1E40FF]/30'
+                      ? 'bg-(--brand) hover:bg-(--brand-hover) text-white shadow-(--brand)/30'
                       : d.isLifetime
                       ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-violet-600/30'
                       : d.isYearly

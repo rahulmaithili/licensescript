@@ -174,7 +174,7 @@ export const KeyGenerator: React.FC = () => {
   );
 
   const inputCls =
-    'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+    'w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)';
 
   const testData = testResult?.data;
   const testPlan = testData?.plan;
@@ -184,7 +184,7 @@ export const KeyGenerator: React.FC = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
-          <KeyRound className="w-8 h-8 text-[#1E40FF] dark:text-[#8fa0ff]" />
+          <KeyRound className="w-8 h-8 text-(--brand) dark:text-(--brand-ink)" />
           Cryptographic Key Generator
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -205,13 +205,13 @@ export const KeyGenerator: React.FC = () => {
         {/* Generator Controls */}
         <div className="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl">
           <h2 className="text-lg font-bold text-[#0A1330] dark:text-white mb-4 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#1E40FF] dark:text-[#8fa0ff]" />
+            <Sparkles className="w-5 h-5 text-(--brand) dark:text-(--brand-ink)" />
             Generation Parameters
           </h2>
 
           {isLoadingCatalog ? (
             <div className="flex flex-col items-center justify-center gap-3 py-12 text-slate-500 dark:text-slate-400" aria-busy="true">
-              <span className="w-8 h-8 border-2 border-slate-300 dark:border-slate-700 border-t-[#1E40FF] rounded-full animate-spin" />
+              <span className="w-8 h-8 border-2 border-slate-300 dark:border-slate-700 border-t-(--brand) rounded-full animate-spin" />
               <p className="text-xs font-medium">Loading products & plans…</p>
             </div>
           ) : (
@@ -342,7 +342,7 @@ export const KeyGenerator: React.FC = () => {
               <button
                 type="submit"
                 disabled={isGenerating || products.length === 0}
-                className="w-full py-3 mt-4 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-[#1E40FF]/30 flex items-center justify-center gap-2 transition-colors"
+                className="w-full py-3 mt-4 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-(--brand)/30 flex items-center justify-center gap-2 transition-colors"
               >
                 {isGenerating ? (
                   <>
@@ -408,7 +408,7 @@ export const KeyGenerator: React.FC = () => {
                   value={keySearch}
                   onChange={(e) => setKeySearch(e.target.value)}
                   placeholder="Filter generated keys…"
-                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF] font-mono"
+                  className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand) font-mono"
                 />
               </div>
             )}
@@ -432,7 +432,7 @@ export const KeyGenerator: React.FC = () => {
                 visibleKeys.map((k) => (
                   <div
                     key={k}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-[#EEF1FF] dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-[#1E40FF] dark:text-[#8fa0ff]"
+                    className="flex items-center justify-between p-2.5 rounded-xl bg-(--brand-soft) dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 text-(--brand) dark:text-(--brand-ink)"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-slate-500 text-[10px] w-6">{generatedKeys.indexOf(k) + 1}.</span>
@@ -472,7 +472,7 @@ export const KeyGenerator: React.FC = () => {
                 onChange={(e) => setTestKeyInput(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleTestKey(); }}
                 placeholder="Enter license key, e.g. LW-WAPRO-7K9A-4M2X-88PL"
-                className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                className="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-(--brand)"
               />
               <button
                 onClick={handleTestKey}
@@ -491,7 +491,7 @@ export const KeyGenerator: React.FC = () => {
             )}
 
             {testResult && (
-              <div className="mt-4 p-4 rounded-2xl border text-xs space-y-2 bg-[#EEF1FF] dark:bg-slate-800/80 border-slate-200 dark:border-slate-700">
+              <div className="mt-4 p-4 rounded-2xl border text-xs space-y-2 bg-(--brand-soft) dark:bg-slate-800/80 border-slate-200 dark:border-slate-700">
                 {testResult.exists && testData ? (
                   <div>
                     <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold mb-2">

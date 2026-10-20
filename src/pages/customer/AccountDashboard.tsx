@@ -200,7 +200,7 @@ export const AccountDashboard: React.FC = () => {
 
                       <div className="flex items-center gap-2">
                         {lic.is_trial && (
-                          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
+                          <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25">
                             {daysInfo.isExpired ? 'Trial Ended' : `Free Trial · ${daysInfo.days}d left`}
                           </span>
                         )}

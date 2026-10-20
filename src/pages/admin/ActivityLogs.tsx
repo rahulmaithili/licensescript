@@ -71,7 +71,7 @@ export const ActivityLogs: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
-            <Activity className="w-8 h-8 text-[#1E40FF]" />
+            <Activity className="w-8 h-8 text-(--brand)" />
             System & Security Audit Logs
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -82,7 +82,7 @@ export const ActivityLogs: React.FC = () => {
         <button
           onClick={loadLogs}
           disabled={isLoading}
-          className="px-4 py-2.5 rounded-full bg-white dark:bg-slate-800 hover:bg-[#EEF1FF] dark:hover:bg-slate-700 text-[#0A1330] dark:text-slate-300 text-sm font-semibold border border-slate-200 dark:border-slate-700 transition-all flex items-center gap-2 disabled:opacity-50 shrink-0"
+          className="px-4 py-2.5 rounded-full bg-white dark:bg-slate-800 hover:bg-(--brand-soft) dark:hover:bg-slate-700 text-[#0A1330] dark:text-slate-300 text-sm font-semibold border border-slate-200 dark:border-slate-700 transition-all flex items-center gap-2 disabled:opacity-50 shrink-0"
         >
           <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
           <span>Refresh Audit Trail</span>
@@ -98,13 +98,13 @@ export const ActivityLogs: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search action, IP, user name, details..."
-            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-[#0A1330] dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/40 focus:border-[#1E40FF]"
+            className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-[#0A1330] dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand)/40 focus:border-(--brand)"
           />
         </div>
         <select
           value={entityFilter}
           onChange={(e) => setEntityFilter(e.target.value)}
-          className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#0A1330] dark:text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/40 w-full md:w-auto"
+          className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[#0A1330] dark:text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-(--brand)/40 w-full md:w-auto"
         >
           <option value="all">All Entity Types</option>
           {entityTypes.map((t) => (
@@ -122,7 +122,7 @@ export const ActivityLogs: React.FC = () => {
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm dark:shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-            <thead className="bg-[#EEF1FF] dark:bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
+            <thead className="bg-(--brand-soft) dark:bg-slate-800/80 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-700">
               <tr>
                 <th className="p-4">Timestamp</th>
                 <th className="p-4">Action Event</th>
@@ -145,7 +145,7 @@ export const ActivityLogs: React.FC = () => {
               {!isLoading && logs.length === 0 && (
                 <tr>
                   <td colSpan={6} className="p-12 text-center">
-                    <Activity className="w-10 h-10 mx-auto text-[#1E40FF]/50" />
+                    <Activity className="w-10 h-10 mx-auto text-(--brand)/50" />
                     <p className="mt-3 font-bold text-[#0A1330] dark:text-white">No activity recorded yet</p>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                       The audit trail is empty. License activations, payment webhooks, and admin actions will be recorded here as they happen.
@@ -157,7 +157,7 @@ export const ActivityLogs: React.FC = () => {
               {!isLoading && logs.length > 0 && filteredLogs.length === 0 && (
                 <tr>
                   <td colSpan={6} className="p-12 text-center">
-                    <Search className="w-10 h-10 mx-auto text-[#1E40FF]/50" />
+                    <Search className="w-10 h-10 mx-auto text-(--brand)/50" />
                     <p className="mt-3 font-bold text-[#0A1330] dark:text-white">No log entries match your filters</p>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                       Try a different search term or entity type.
@@ -165,7 +165,7 @@ export const ActivityLogs: React.FC = () => {
                     {hasActiveFilter && (
                       <button
                         onClick={() => { setSearchQuery(''); setEntityFilter('all'); }}
-                        className="mt-4 px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-xs font-semibold transition-all"
+                        className="mt-4 px-4 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-xs font-semibold transition-all"
                       >
                         Clear filters
                       </button>
@@ -178,12 +178,12 @@ export const ActivityLogs: React.FC = () => {
                 filteredLogs.map((log) => {
                   const detailsText = formatDetails(log.details);
                   return (
-                    <tr key={log.id} className="hover:bg-[#EEF1FF]/60 dark:hover:bg-slate-800/50 transition-colors">
+                    <tr key={log.id} className="hover:bg-(--brand-soft)/60 dark:hover:bg-slate-800/50 transition-colors">
                       <td className="p-4 text-xs font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">
                         {formatDateTime(log.created_at)}
                       </td>
                       <td className="p-4">
-                        <span className="font-mono text-xs font-bold text-[#1E40FF] dark:text-[#B9C4FF] bg-[#EEF1FF] dark:bg-[#1E40FF]/15 px-2.5 py-1 rounded-lg border border-[#1E40FF]/20 dark:border-[#1E40FF]/30">
+                        <span className="font-mono text-xs font-bold text-(--brand) dark:text-(--brand-ink) bg-(--brand-soft) dark:bg-(--brand)/15 px-2.5 py-1 rounded-lg border border-(--brand)/20 dark:border-(--brand)/30">
                           {log.action}
                         </span>
                       </td>

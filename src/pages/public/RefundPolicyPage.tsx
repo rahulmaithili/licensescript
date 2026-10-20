@@ -61,7 +61,7 @@ export const RefundPolicyPage: React.FC = () => {
           items={[
             <>
               Email us at{' '}
-              <a href="mailto:support@licensewala.com" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+              <a href="mailto:support@licensewala.com" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
                 support@licensewala.com
               </a>{' '}
               or message us on WhatsApp from your registered mobile number.

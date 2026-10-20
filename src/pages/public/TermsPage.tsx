@@ -94,7 +94,7 @@ export const TermsPage: React.FC = () => {
       <LegalSection title="7. Refunds">
         <LegalP>
           Because our products are digital licenses, refunds are governed by our{' '}
-          <Link to="/refund-policy" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+          <Link to="/refund-policy" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
             Refund Policy
           </Link>
           , which forms part of these terms. In short: an activated license key is non-refundable, while an unused key may be

@@ -39,7 +39,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-[#0A1330] text-slate-300 relative overflow-hidden">
       {/* subtle top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[640px] h-[160px] bg-[#1E40FF]/15 blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[640px] h-[160px] bg-(--brand)/15 blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
@@ -48,7 +48,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-2.5">
               <GasAgencyMasterLogo size={40} />
               <span className="font-extrabold text-2xl tracking-tight text-white">
-                License<span className="text-[#7d92ff]">Wala</span>
+                License<span className="text-(--brand-ink)">Wala</span>
               </span>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
@@ -68,7 +68,7 @@ export const Footer: React.FC = () => {
               ) : (
                 <form
                   onSubmit={handleSubscribe}
-                  className="flex items-center gap-1 p-1 rounded-full bg-white/5 border border-white/15 focus-within:border-[#1E40FF]/60 transition-colors"
+                  className="flex items-center gap-1 p-1 rounded-full bg-white/5 border border-white/15 focus-within:border-(--brand)/60 transition-colors"
                 >
                   <input
                     type="email"
@@ -80,7 +80,7 @@ export const Footer: React.FC = () => {
                   />
                   <button
                     type="submit"
-                    className="flex items-center gap-1.5 pl-4 pr-3 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-sm font-bold transition-colors shrink-0"
+                    className="flex items-center gap-1.5 pl-4 pr-3 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-sm font-bold transition-colors shrink-0"
                   >
                     <span>Subscribe</span>
                     <Send className="w-3.5 h-3.5" />
@@ -101,7 +101,7 @@ export const Footer: React.FC = () => {
                     rel={s.href.startsWith('http') ? 'noreferrer' : undefined}
                     aria-label={s.label}
                     title={s.label}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-[#1E40FF] hover:border-[#1E40FF] transition-all"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-(--brand) hover:border-(--brand) transition-all"
                   >
                     <Icon className="w-4 h-4" />
                   </a>
@@ -118,32 +118,32 @@ export const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-2.5 text-sm text-slate-400">
                 <li>
-                  <Link to="/products/cdcms-pro" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/products/cdcms-pro" className="hover:text-(--brand-ink) transition-colors">
                     CDCMS Multi-Tool Suite (PRO)
                   </Link>
                 </li>
                 <li>
-                  <Link to="/products/cdc-tools" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/products/cdc-tools" className="hover:text-(--brand-ink) transition-colors">
                     CDC Tools Multi Extension
                   </Link>
                 </li>
                 <li>
-                  <Link to="/products/all-in-one-master" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/products/all-in-one-master" className="hover:text-(--brand-ink) transition-colors">
                     Ultimate All-in-One Master Bundle
                   </Link>
                 </li>
                 <li>
-                  <Link to="/products" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/products" className="hover:text-(--brand-ink) transition-colors">
                     All Tools & Extensions
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/pricing" className="hover:text-(--brand-ink) transition-colors">
                     Plans & Pricing
                   </Link>
                 </li>
                 <li>
-                  <a href="/#services" className="hover:text-[#7d92ff] transition-colors">
+                  <a href="/#services" className="hover:text-(--brand-ink) transition-colors">
                     Tools &amp; Services
                   </a>
                 </li>
@@ -156,32 +156,32 @@ export const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-2.5 text-sm text-slate-400">
                 <li>
-                  <Link to="/pricing" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/pricing" className="hover:text-(--brand-ink) transition-colors">
                     Transparent Pricing
                   </Link>
                 </li>
                 <li>
-                  <Link to="/account" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/account" className="hover:text-(--brand-ink) transition-colors">
                     Customer Portal & Invoices
                   </Link>
                 </li>
                 <li>
-                  <a href="/#faq" className="hover:text-[#7d92ff] transition-colors">
+                  <a href="/#faq" className="hover:text-(--brand-ink) transition-colors">
                     FAQ
                   </a>
                 </li>
                 <li>
-                  <Link to="/privacy" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/privacy" className="hover:text-(--brand-ink) transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link to="/terms" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/terms" className="hover:text-(--brand-ink) transition-colors">
                     Terms of Service
                   </Link>
                 </li>
                 <li>
-                  <Link to="/refund-policy" className="hover:text-[#7d92ff] transition-colors">
+                  <Link to="/refund-policy" className="hover:text-(--brand-ink) transition-colors">
                     Refund Policy
                   </Link>
                 </li>
@@ -194,20 +194,20 @@ export const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-3 text-sm text-slate-400">
                 <li className="flex items-center gap-2.5">
-                  <span className="w-8 h-8 rounded-full bg-[#1E40FF]/15 border border-[#1E40FF]/25 flex items-center justify-center shrink-0">
-                    <Mail className="w-3.5 h-3.5 text-[#7d92ff]" />
+                  <span className="w-8 h-8 rounded-full bg-(--brand)/15 border border-(--brand)/25 flex items-center justify-center shrink-0">
+                    <Mail className="w-3.5 h-3.5 text-(--brand-ink)" />
                   </span>
                   <span>support@licensewala.com</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <span className="w-8 h-8 rounded-full bg-[#1E40FF]/15 border border-[#1E40FF]/25 flex items-center justify-center shrink-0">
-                    <Phone className="w-3.5 h-3.5 text-[#7d92ff]" />
+                  <span className="w-8 h-8 rounded-full bg-(--brand)/15 border border-(--brand)/25 flex items-center justify-center shrink-0">
+                    <Phone className="w-3.5 h-3.5 text-(--brand-ink)" />
                   </span>
                   <span>+91 7564948617</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <span className="w-8 h-8 rounded-full bg-[#1E40FF]/15 border border-[#1E40FF]/25 flex items-center justify-center shrink-0">
-                    <MapPin className="w-3.5 h-3.5 text-[#7d92ff]" />
+                  <span className="w-8 h-8 rounded-full bg-(--brand)/15 border border-(--brand)/25 flex items-center justify-center shrink-0">
+                    <MapPin className="w-3.5 h-3.5 text-(--brand-ink)" />
                   </span>
                   <span>Tech Park, Mumbai &amp; Patna, India</span>
                 </li>
@@ -225,7 +225,7 @@ export const Footer: React.FC = () => {
                 key={b.label}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/12 text-xs font-bold text-slate-300"
               >
-                <Icon className="w-3.5 h-3.5 text-[#7d92ff]" />
+                <Icon className="w-3.5 h-3.5 text-(--brand-ink)" />
                 {b.label}
               </span>
             );

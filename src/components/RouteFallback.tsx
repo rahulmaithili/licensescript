@@ -13,8 +13,8 @@ export function RouteFallback() {
       aria-live="polite"
     >
       <div className="relative h-12 w-12">
-        <div className="absolute inset-0 rounded-full border-4 border-[#1E40FF]/15 dark:border-[#1E40FF]/25" />
-        <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-[#1E40FF]" />
+        <div className="absolute inset-0 rounded-full border-4 border-(--brand)/15 dark:border-(--brand)/25" />
+        <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-(--brand)" />
       </div>
       <p className="animate-pulse text-sm font-semibold tracking-wide text-slate-500 dark:text-slate-400">
         Loading…

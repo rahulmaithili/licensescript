@@ -121,7 +121,7 @@ export const RegisterPage: React.FC = () => {
         {/* Brand Header */}
         <div className="text-center space-y-2 mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1E40FF] to-blue-600 flex items-center justify-center text-white shadow-lg shadow-[#1E40FF]/30">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-(--brand) to-blue-600 flex items-center justify-center text-white shadow-lg shadow-(--brand)/30">
               <KeyRound className="w-6 h-6" />
             </div>
           </Link>
@@ -138,10 +138,10 @@ export const RegisterPage: React.FC = () => {
           type="button"
           onClick={handleGoogleLogin}
           disabled={googleLoading}
-          className="w-full py-3 px-4 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-[#1E40FF]/60 hover:shadow-[0_10px_30px_-10px_rgba(30,64,255,0.4)] text-slate-700 dark:text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60 mb-5"
+          className="w-full py-3 px-4 rounded-full bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-(--brand)/60 hover:shadow-[0_10px_30px_-10px_rgba(var(--brand-rgb),0.4)] text-slate-700 dark:text-slate-200 font-bold text-sm transition-all flex items-center justify-center gap-3 disabled:opacity-60 mb-5"
         >
           {googleLoading ? (
-            <span className="w-5 h-5 border-2 border-slate-300 border-t-[#1E40FF] rounded-full animate-spin" />
+            <span className="w-5 h-5 border-2 border-slate-300 border-t-(--brand) rounded-full animate-spin" />
           ) : (
             <GoogleIcon className="w-5 h-5" />
           )}
@@ -182,7 +182,7 @@ export const RegisterPage: React.FC = () => {
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Rahul Kumar"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -199,7 +199,7 @@ export const RegisterPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="rahul@example.com"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -217,7 +217,7 @@ export const RegisterPage: React.FC = () => {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -233,7 +233,7 @@ export const RegisterPage: React.FC = () => {
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Acme Media Pvt Ltd"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -251,7 +251,7 @@ export const RegisterPage: React.FC = () => {
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Mumbai / Delhi"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -265,7 +265,7 @@ export const RegisterPage: React.FC = () => {
                 value={gstNumber}
                 onChange={(e) => setGstNumber(e.target.value.toUpperCase())}
                 placeholder="27AABCL1234D1ZM"
-                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-(--brand)"
               />
             </div>
           </div>
@@ -283,7 +283,7 @@ export const RegisterPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Min 6 characters"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -300,7 +300,7 @@ export const RegisterPage: React.FC = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -312,7 +312,7 @@ export const RegisterPage: React.FC = () => {
               id="terms"
               checked={termsAccepted}
               onChange={(e) => setTermsAccepted(e.target.checked)}
-              className="rounded bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-[#1E40FF]"
+              className="rounded bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-(--brand)"
             />
             <label htmlFor="terms" className="text-slate-600 dark:text-slate-400 text-xs">
               I agree to the Software Licensing Terms & Privacy Policy
@@ -322,7 +322,7 @@ export const RegisterPage: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 mt-4 rounded-xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-bold text-sm shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3 mt-4 rounded-xl bg-(--brand) hover:bg-(--brand-hover) text-white font-bold text-sm shadow-lg shadow-(--brand)/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isLoading ? 'Creating Account...' : 'Complete Registration'}
             <ArrowRight className="w-4 h-4" />
@@ -333,7 +333,7 @@ export const RegisterPage: React.FC = () => {
           Already have an account?{' '}
           <Link
             to="/login"
-            className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline"
+            className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline"
           >
             Sign In here
           </Link>

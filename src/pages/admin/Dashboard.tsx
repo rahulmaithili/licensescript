@@ -20,6 +20,8 @@ import { getUsers } from '@/services/userService';
 import { getInvoices } from '@/services/invoiceService';
 import { getProducts } from '@/services/productService';
 import { formatCurrency, formatDate, calculateDaysLeft } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
+import { getAccent } from '@/lib/accents';
 import type { License, Profile, Invoice, Product } from '@/types';
 
 type DateRange = '7d' | '30d' | '90d' | 'all';
@@ -28,8 +30,6 @@ interface RevenueBucket {
   label: string;
   revenue: number;
 }
-
-const GATEWAY_COLORS = ['#1E40FF', '#10b981', '#0ea5e9', '#64748b', '#1740D6', '#94a3b8'];
 
 function invoiceDate(inv: Invoice): Date | null {
   const raw = inv.issued_at || inv.created_at;
@@ -124,6 +124,11 @@ function invoicesInRange(invoices: Invoice[], range: DateRange): Invoice[] {
 }
 
 export const AdminDashboard: React.FC = () => {
+  const { accentColor } = useTheme();
+  const accent = getAccent(accentColor);
+  // Donut palette: lead + fifth slots follow the active accent (brand/hover),
+  // the remaining slots are fixed categorical colours.
+  const gatewayColors = [accent.brand, '#10b981', '#0ea5e9', '#64748b', accent.hover, '#94a3b8'];
   const [licenses, setLicenses] = useState<License[]>([]);
   const [users, setUsers] = useState<Profile[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -201,10 +206,11 @@ export const AdminDashboard: React.FC = () => {
         name: name.charAt(0).toUpperCase() + name.slice(1),
         count,
         value: Math.round((count / total) * 100),
-        color: GATEWAY_COLORS[i % GATEWAY_COLORS.length],
+        color: gatewayColors[i % gatewayColors.length],
       }))
       .sort((a, b) => b.count - a.count);
-  }, [invoices]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invoices, accentColor]);
 
   // SVG Chart Geometry
   const chartHeight = 220;
@@ -243,7 +249,7 @@ export const AdminDashboard: React.FC = () => {
           ))}
         </div>
         <div className="h-80 rounded-3xl bg-slate-900 border border-slate-800 animate-pulse flex items-center justify-center">
-          <span className="w-8 h-8 border-2 border-slate-700 border-t-[#1E40FF] rounded-full animate-spin" />
+          <span className="w-8 h-8 border-2 border-slate-700 border-t-(--brand) rounded-full animate-spin" />
         </div>
       </div>
     );
@@ -261,15 +267,15 @@ export const AdminDashboard: React.FC = () => {
       )}
 
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#0A1330] p-6 sm:p-8 border border-[#1E40FF]/30 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-[#0A1330] p-6 sm:p-8 border border-(--brand)/30 shadow-2xl">
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E40FF]/15 text-[#8fa0ff] text-xs font-semibold mb-3 border border-[#1E40FF]/30">
-              <Sparkles className="w-3.5 h-3.5 text-[#8fa0ff]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-(--brand)/15 text-(--brand-ink) text-xs font-semibold mb-3 border border-(--brand)/30">
+              <Sparkles className="w-3.5 h-3.5 text-(--brand-ink)" />
               Live Super Admin Overview
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-              Welcome back, <span className="text-[#8fa0ff]">RM Rahul</span>!
+              Welcome back, <span className="text-(--brand-ink)">RM Rahul</span>!
             </h1>
             <p className="text-sm text-slate-300 mt-1 max-w-xl">
               Real-time software licensing metrics, automated key activations, subscription renewals, and live payment settlements.
@@ -279,7 +285,7 @@ export const AdminDashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <Link
               to="/admin/licenses"
-              className="px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2"
             >
               <KeyRound className="w-4 h-4" />
               <span>Issue New License</span>
@@ -294,7 +300,7 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-[#1E40FF]/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-(--brand)/10 rounded-full blur-3xl pointer-events-none"></div>
       </div>
 
       {/* KPI Cards Grid */}
@@ -302,7 +308,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all shadow-sm">
           <div className="flex items-center justify-between text-slate-400">
             <span className="text-xs font-medium">Total Licenses</span>
-            <ShieldCheck className="w-4 h-4 text-[#8fa0ff]" />
+            <ShieldCheck className="w-4 h-4 text-(--brand-ink)" />
           </div>
           <div className="mt-2">
             <span className="text-2xl font-bold text-white">{totalLicenses}</span>
@@ -371,7 +377,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-400">Total Invoiced Revenue</span>
-            <div className="p-2 rounded-xl bg-[#1E40FF]/10 text-[#8fa0ff]">
+            <div className="p-2 rounded-xl bg-(--brand)/10 text-(--brand-ink)">
               <IndianRupee className="w-5 h-5" />
             </div>
           </div>
@@ -388,7 +394,7 @@ export const AdminDashboard: React.FC = () => {
             <span className="text-sm font-medium text-slate-400">
               Revenue — {dateRange === 'all' ? 'All Time' : `Last ${dateRange.replace('d', ' Days')}`}
             </span>
-            <div className="p-2 rounded-xl bg-[#1E40FF]/10 text-[#8fa0ff]">
+            <div className="p-2 rounded-xl bg-(--brand)/10 text-(--brand-ink)">
               <Receipt className="w-5 h-5" />
             </div>
           </div>
@@ -403,7 +409,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-400">Total Registered Users</span>
-            <div className="p-2 rounded-xl bg-[#1E40FF]/10 text-[#8fa0ff]">
+            <div className="p-2 rounded-xl bg-(--brand)/10 text-(--brand-ink)">
               <Users className="w-5 h-5" />
             </div>
           </div>
@@ -427,8 +433,8 @@ export const AdminDashboard: React.FC = () => {
               <p className="text-xs text-slate-400">Invoice totals (INR) grouped from real invoices</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="hidden sm:flex items-center gap-1.5 text-xs text-[#8fa0ff] font-semibold mr-1">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1E40FF]"></span> Revenue
+              <span className="hidden sm:flex items-center gap-1.5 text-xs text-(--brand-ink) font-semibold mr-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-(--brand)"></span> Revenue
               </span>
               {(['7d', '30d', '90d', 'all'] as const).map((r) => (
                 <button
@@ -436,7 +442,7 @@ export const AdminDashboard: React.FC = () => {
                   onClick={() => { setDateRange(r); setHoveredPoint(null); }}
                   className={`px-3 py-1 rounded-full text-xs font-semibold uppercase transition-all ${
                     dateRange === r
-                      ? 'bg-[#1E40FF] hover:bg-[#1740D6] text-white'
+                      ? 'bg-(--brand) hover:bg-(--brand-hover) text-white'
                       : 'bg-slate-800 text-slate-400 hover:text-white'
                   }`}
                 >
@@ -456,7 +462,7 @@ export const AdminDashboard: React.FC = () => {
             <div className="relative w-full overflow-hidden" onMouseLeave={() => setHoveredPoint(null)}>
               {hoveredPoint !== null && revenueData[hoveredPoint] && (
                 <div
-                  className="absolute -top-1 z-10 -translate-x-1/2 bg-[#0A1330] border border-[#1E40FF]/40 text-white text-[11px] font-semibold rounded-xl px-2.5 py-1.5 pointer-events-none whitespace-nowrap shadow-xl"
+                  className="absolute -top-1 z-10 -translate-x-1/2 bg-[#0A1330] border border-(--brand)/40 text-white text-[11px] font-semibold rounded-xl px-2.5 py-1.5 pointer-events-none whitespace-nowrap shadow-xl"
                   style={{ left: `${(pointX(hoveredPoint) / chartWidth) * 100}%` }}
                 >
                   {revenueData[hoveredPoint].label}: {formatCurrency(revenueData[hoveredPoint].revenue)}
@@ -465,8 +471,8 @@ export const AdminDashboard: React.FC = () => {
               <svg viewBox={`0 0 ${chartWidth} ${chartHeight + 16}`} className="w-full h-64 overflow-visible">
                 <defs>
                   <linearGradient id="svgRevGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#1E40FF" stopOpacity="0.4" />
-                    <stop offset="100%" stopColor="#1E40FF" stopOpacity="0.0" />
+                    <stop offset="0%" stopColor={accent.brand} stopOpacity="0.4" />
+                    <stop offset="100%" stopColor={accent.brand} stopOpacity="0.0" />
                   </linearGradient>
                 </defs>
 
@@ -484,7 +490,7 @@ export const AdminDashboard: React.FC = () => {
 
                 {revenueArea && <polygon points={revenueArea} fill="url(#svgRevGrad)" />}
                 {revenueData.length > 1 && (
-                  <polyline fill="none" stroke="#1E40FF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" points={revenuePoints} />
+                  <polyline fill="none" stroke={accent.brand} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" points={revenuePoints} />
                 )}
 
                 {revenueData.map((d, i) => {
@@ -495,7 +501,7 @@ export const AdminDashboard: React.FC = () => {
                         cx={pointX(i)}
                         cy={pointY(d.revenue)}
                         r={hoveredPoint === i ? '6.5' : '4.5'}
-                        fill="#1E40FF"
+                        fill={accent.brand}
                         stroke="#0f172a"
                         strokeWidth="2"
                         onMouseEnter={() => setHoveredPoint(i)}
@@ -579,7 +585,7 @@ export const AdminDashboard: React.FC = () => {
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-white">Recent License Purchases</h3>
-            <Link to="/admin/licenses" className="text-xs font-semibold text-[#8fa0ff] hover:underline">
+            <Link to="/admin/licenses" className="text-xs font-semibold text-(--brand-ink) hover:underline">
               View All
             </Link>
           </div>
@@ -589,7 +595,7 @@ export const AdminDashboard: React.FC = () => {
               <ShieldCheck className="w-10 h-10 mb-3 opacity-40" />
               <p className="text-sm font-semibold text-slate-400">No licenses yet</p>
               <p className="text-xs mt-1 mb-4">Issue the first license to see it here.</p>
-              <Link to="/admin/licenses" className="px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-xs font-bold transition-colors">
+              <Link to="/admin/licenses" className="px-4 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-xs font-bold transition-colors">
                 Issue License
               </Link>
             </div>
@@ -600,7 +606,7 @@ export const AdminDashboard: React.FC = () => {
                   <div>
                     <div className="font-semibold text-sm text-white">{lic.user?.full_name || 'Customer'}</div>
                     <div className="text-xs text-slate-400">{lic.product?.name || '—'}</div>
-                    <div className="font-mono text-[11px] text-[#8fa0ff] mt-0.5">{lic.license_key}</div>
+                    <div className="font-mono text-[11px] text-(--brand-ink) mt-0.5">{lic.license_key}</div>
                   </div>
                   <div className="text-right">
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase border ${

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { AccentColor } from '@/types';
+import { getAccent, isAccentColor, DEFAULT_ACCENT } from '@/lib/accents';
 
 type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -19,7 +20,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   });
 
   const [accentColor, setAccentColorState] = useState<AccentColor>(() => {
-    return (localStorage.getItem('lw_accent_color') as AccentColor) || 'indigo';
+    const stored = localStorage.getItem('lw_accent_color');
+    return isAccentColor(stored) ? stored : DEFAULT_ACCENT;
   });
 
   const [isDark, setIsDark] = useState<boolean>(true);
@@ -28,6 +30,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     root.setAttribute('data-theme-color', accentColor);
     localStorage.setItem('lw_accent_color', accentColor);
+    // Keep the browser chrome colour in sync with the active accent.
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) {
+      themeMeta.setAttribute('content', getAccent(accentColor).brand);
+    }
   }, [accentColor]);
 
   useEffect(() => {

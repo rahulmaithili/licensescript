@@ -4,7 +4,7 @@ export type LicenseStatus = 'active' | 'expiring_soon' | 'expiring_today' | 'exp
 export type PaymentStatus = 'paid' | 'unpaid' | 'partial' | 'pending' | 'failed' | 'refunded';
 export type PaymentMethod = 'razorpay' | 'cashfree' | 'upi' | 'bank_transfer' | 'cash' | 'manual';
 export type LicensePriority = 'normal' | 'high' | 'vip' | 'urgent';
-export type AccentColor = 'indigo' | 'emerald' | 'rose' | 'amber' | 'sky' | 'violet';
+export type AccentColor = 'royal' | 'indigo' | 'emerald' | 'rose' | 'amber' | 'sky' | 'violet';
 
 export interface Profile {
   id: string;

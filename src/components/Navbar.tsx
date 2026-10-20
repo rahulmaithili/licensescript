@@ -41,8 +41,8 @@ export const Navbar: React.FC = () => {
 
   const linkClass = (active: boolean) =>
     active
-      ? 'px-4 py-1.5 rounded-full bg-[#1E40FF] text-white text-sm font-bold shadow-[0_6px_16px_-6px_rgba(30,64,255,0.6)] transition-all'
-      : 'px-4 py-1.5 rounded-full text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-[#1E40FF] dark:hover:text-white transition-colors';
+      ? 'px-4 py-1.5 rounded-full bg-(--brand) text-white text-sm font-bold shadow-[0_6px_16px_-6px_rgba(var(--brand-rgb),0.6)] transition-all'
+      : 'px-4 py-1.5 rounded-full text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-(--brand) dark:hover:text-white transition-colors';
 
   return (
     <header className="sticky top-0 z-50">
@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
                 <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
                   License<span className="text-gradient-brand">Wala</span>
                 </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
+                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25">
                   LPG Suite
                 </span>
               </div>
@@ -87,7 +87,7 @@ export const Navbar: React.FC = () => {
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="w-10 h-10 rounded-full flex items-center justify-center border border-slate-200/70 dark:border-white/10 bg-white/60 dark:bg-white/5 text-slate-500 dark:text-slate-300 hover:text-[#1E40FF] dark:hover:text-[#8fa0ff] transition-colors"
+              className="w-10 h-10 rounded-full flex items-center justify-center border border-slate-200/70 dark:border-white/10 bg-white/60 dark:bg-white/5 text-slate-500 dark:text-slate-300 hover:text-(--brand) dark:hover:text-(--brand-ink) transition-colors"
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
             </button>
@@ -105,9 +105,9 @@ export const Navbar: React.FC = () => {
                 )}
                 <Link
                   to="/account"
-                  className="flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full bg-slate-100/80 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-800 dark:text-slate-200 text-sm font-bold hover:border-[#1E40FF]/40 transition-colors"
+                  className="flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full bg-slate-100/80 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-800 dark:text-slate-200 text-sm font-bold hover:border-(--brand)/40 transition-colors"
                 >
-                  <span className="w-7 h-7 rounded-full bg-[#1E40FF] text-white flex items-center justify-center">
+                  <span className="w-7 h-7 rounded-full bg-(--brand) text-white flex items-center justify-center">
                     <User className="w-4 h-4" />
                   </span>
                   <span>{profile?.full_name?.split(' ')[0] || 'My Account'}</span>
@@ -124,7 +124,7 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-[#1E40FF] dark:hover:text-white transition-colors"
+                  className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-(--brand) dark:hover:text-white transition-colors"
                 >
                   Sign In
                 </Link>
@@ -166,7 +166,7 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`block px-4 py-2.5 rounded-2xl font-semibold text-sm transition-colors ${
                     link.active
-                      ? 'bg-[#1E40FF] text-white'
+                      ? 'bg-(--brand) text-white'
                       : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10'
                   }`}
                 >
@@ -202,7 +202,7 @@ export const Navbar: React.FC = () => {
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center justify-center gap-2 py-2.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-slate-200 font-bold text-sm"
                   >
-                    <User className="w-4 h-4 text-[#1E40FF]" />
+                    <User className="w-4 h-4 text-(--brand)" />
                     My Licenses & Account
                   </Link>
                   <button

@@ -88,12 +88,12 @@ export const AdminLayout: React.FC = () => {
   const menuLinkClasses = (isActive: boolean) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
       isActive
-        ? 'bg-[#1E40FF] text-white shadow-lg shadow-[#1E40FF]/30'
+        ? 'bg-(--brand) text-white shadow-lg shadow-(--brand)/30'
         : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/80'
     }`;
 
   return (
-    <div className="h-screen overflow-hidden bg-[#EEF1FF] dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased">
+    <div className="h-screen overflow-hidden bg-(--brand-soft) dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col antialiased">
       {/* Top Header */}
       <header className="sticky top-0 z-40 h-16 border-b border-slate-200 dark:border-slate-800 bg-white/85 dark:bg-slate-900/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
         {/* Left: Mobile hamburger + Brand */}
@@ -106,12 +106,12 @@ export const AdminLayout: React.FC = () => {
           </button>
 
           <Link to="/admin" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#1E40FF] to-sky-500 flex items-center justify-center text-white shadow-md shadow-[#1E40FF]/25">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-(--brand) to-sky-500 flex items-center justify-center text-white shadow-md shadow-(--brand)/25">
               <KeyRound className="w-5 h-5" />
             </div>
             <div className="hidden sm:block">
               <span className="font-extrabold text-lg text-slate-900 dark:text-white">LicenseWala</span>
-              <span className="ml-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border border-[#1E40FF]/25">
+              <span className="ml-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25">
                 Admin Suite
               </span>
             </div>
@@ -127,7 +127,7 @@ export const AdminLayout: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search licenses, keys, customers, invoices..."
-              className="w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-full pl-10 pr-4 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF] transition-all"
+              className="w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 rounded-full pl-10 pr-4 py-1.5 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand) transition-all"
             />
           </form>
         </div>
@@ -159,10 +159,10 @@ export const AdminLayout: React.FC = () => {
                   <img
                     src={profile.avatar_url}
                     alt={displayName}
-                    className="w-9 h-9 rounded-full ring-2 ring-[#1E40FF]/40 object-cover"
+                    className="w-9 h-9 rounded-full ring-2 ring-(--brand)/40 object-cover"
                   />
                 ) : (
-                  <div className="w-9 h-9 rounded-full ring-2 ring-[#1E40FF]/40 bg-[#1E40FF] text-white flex items-center justify-center text-xs font-extrabold">
+                  <div className="w-9 h-9 rounded-full ring-2 ring-(--brand)/40 bg-(--brand) text-white flex items-center justify-center text-xs font-extrabold">
                     {initials || 'A'}
                   </div>
                 )}
@@ -172,7 +172,7 @@ export const AdminLayout: React.FC = () => {
                 <span className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
                   {displayName}
                 </span>
-                <span className="text-[10px] text-[#1E40FF] dark:text-[#8fa0ff] font-semibold tracking-wide">
+                <span className="text-[10px] text-(--brand) dark:text-(--brand-ink) font-semibold tracking-wide">
                   {roleLabel}
                 </span>
               </div>
@@ -250,7 +250,7 @@ export const AdminLayout: React.FC = () => {
             <div className="relative w-72 max-w-[80vw] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 h-full flex flex-col p-4 shadow-2xl z-10">
               <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#1E40FF] flex items-center justify-center text-white">
+                  <div className="w-8 h-8 rounded-lg bg-(--brand) flex items-center justify-center text-white">
                     <KeyRound className="w-4 h-4" />
                   </div>
                   <span className="font-bold text-slate-900 dark:text-white">LicenseWala</span>
@@ -295,7 +295,7 @@ export const AdminLayout: React.FC = () => {
         )}
 
         {/* Page Content Area */}
-        <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#EEF1FF] dark:bg-slate-950">
+        <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-(--brand-soft) dark:bg-slate-950">
           <Outlet />
         </main>
       </div>

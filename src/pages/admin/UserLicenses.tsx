@@ -422,7 +422,7 @@ export const UserLicenses: React.FC = () => {
   const detailsDaysInfo = detailsLicense ? calculateDaysLeft(detailsLicense.expiry_date) : null;
 
   const inputCls =
-    'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]';
+    'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)';
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-16">
@@ -430,7 +430,7 @@ export const UserLicenses: React.FC = () => {
       {notification && (
         <div
           className={`fixed bottom-6 right-6 z-50 text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3 ${
-            notification.type === 'error' ? 'bg-rose-600' : 'bg-[#1E40FF]'
+            notification.type === 'error' ? 'bg-rose-600' : 'bg-(--brand)'
           }`}
           role="status"
         >
@@ -456,7 +456,7 @@ export const UserLicenses: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white flex items-center gap-2.5">
-            <ShieldCheck className="w-8 h-8 text-[#8fa0ff]" />
+            <ShieldCheck className="w-8 h-8 text-(--brand-ink)" />
             User Licenses Management
           </h1>
           <p className="text-sm text-slate-400 mt-1">
@@ -467,7 +467,7 @@ export const UserLicenses: React.FC = () => {
         <div className="flex items-center gap-2.5 flex-wrap">
           <button
             onClick={() => { setAddModalOpen(true); setFormError(null); }}
-            className="px-4 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2"
+            className="px-4 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             <span>Issue License</span>
@@ -485,7 +485,7 @@ export const UserLicenses: React.FC = () => {
             <button
               onClick={() => setViewMode('table')}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                viewMode === 'table' ? 'bg-[#1E40FF] text-white' : 'text-slate-400 hover:text-white'
+                viewMode === 'table' ? 'bg-(--brand) text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
               Table View
@@ -493,7 +493,7 @@ export const UserLicenses: React.FC = () => {
             <button
               onClick={() => setViewMode('kanban')}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                viewMode === 'kanban' ? 'bg-[#1E40FF] text-white' : 'text-slate-400 hover:text-white'
+                viewMode === 'kanban' ? 'bg-(--brand) text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
               Kanban Board
@@ -511,7 +511,7 @@ export const UserLicenses: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search key, name, email..."
-            className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+            className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand)"
           />
         </div>
 
@@ -521,7 +521,7 @@ export const UserLicenses: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+              className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-(--brand)"
             >
               <option value="all">All Statuses</option>
               <option value="active">Active</option>
@@ -536,7 +536,7 @@ export const UserLicenses: React.FC = () => {
           <select
             value={productFilter}
             onChange={(e) => setProductFilter(e.target.value)}
-            className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+            className="bg-slate-800 border border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-(--brand)"
           >
             <option value="all">All Products</option>
             {products.map((p) => (
@@ -550,14 +550,14 @@ export const UserLicenses: React.FC = () => {
 
       {/* Bulk Action Controls */}
       {selectedIds.length > 0 && (
-        <div className="bg-[#0A1330] border border-[#1E40FF]/40 rounded-2xl p-3 px-5 flex flex-wrap items-center justify-between gap-3 text-sm">
+        <div className="bg-[#0A1330] border border-(--brand)/40 rounded-2xl p-3 px-5 flex flex-wrap items-center justify-between gap-3 text-sm">
           <span className="text-slate-200 font-semibold">
             {selectedIds.length} licenses selected
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => handleBulkLock(true)}
-              className="px-3 py-1.5 bg-[#1E40FF] hover:bg-[#1740D6] text-white rounded-full text-xs font-semibold"
+              className="px-3 py-1.5 bg-(--brand) hover:bg-(--brand-hover) text-white rounded-full text-xs font-semibold"
             >
               Lock Selected
             </button>
@@ -581,7 +581,7 @@ export const UserLicenses: React.FC = () => {
       {isLoading ? (
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 shadow-xl" aria-busy="true">
           <div className="flex flex-col items-center justify-center gap-3 text-slate-400">
-            <span className="w-8 h-8 border-2 border-slate-700 border-t-[#1E40FF] rounded-full animate-spin" />
+            <span className="w-8 h-8 border-2 border-slate-700 border-t-(--brand) rounded-full animate-spin" />
             <p className="text-sm font-medium">Loading licenses…</p>
           </div>
           <div className="mt-8 space-y-3">
@@ -629,7 +629,7 @@ export const UserLicenses: React.FC = () => {
                           <p className="text-xs text-slate-500 mt-1 mb-4">Issue the first license for a registered customer.</p>
                           <button
                             onClick={() => { setAddModalOpen(true); setFormError(null); }}
-                            className="px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white text-xs font-bold"
+                            className="px-4 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white text-xs font-bold"
                           >
                             Issue License
                           </button>
@@ -660,7 +660,7 @@ export const UserLicenses: React.FC = () => {
                       <tr
                         key={lic.id}
                         className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${
-                          isSelected ? 'bg-[#1E40FF]/5' : ''
+                          isSelected ? 'bg-(--brand)/5' : ''
                         }`}
                       >
                         <td className="p-4">
@@ -696,7 +696,7 @@ export const UserLicenses: React.FC = () => {
                             </div>
                           )}
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="font-mono text-xs font-bold text-[#8fa0ff] bg-[#0A1330] px-2.5 py-1 rounded-lg border border-[#1E40FF]/30">
+                            <span className="font-mono text-xs font-bold text-(--brand-ink) bg-[#0A1330] px-2.5 py-1 rounded-lg border border-(--brand)/30">
                               {lic.license_key}
                             </span>
                             <button
@@ -721,7 +721,7 @@ export const UserLicenses: React.FC = () => {
                               daysInfo.isExpired
                                 ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'
                                 : daysInfo.isLifetime
-                                ? 'bg-[#1E40FF]/15 text-[#1E40FF] dark:text-[#8fa0ff] border-[#1E40FF]/30'
+                                ? 'bg-(--brand)/15 text-(--brand) dark:text-(--brand-ink) border-(--brand)/30'
                                 : daysInfo.days <= 7
                                 ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30'
                                 : daysInfo.days <= 30
@@ -741,7 +741,7 @@ export const UserLicenses: React.FC = () => {
                           </div>
                           <button
                             onClick={() => handleResetHWID(lic)}
-                            className="text-[10px] text-[#8fa0ff] hover:underline mt-1 block"
+                            className="text-[10px] text-(--brand-ink) hover:underline mt-1 block"
                           >
                             Reset Activations
                           </button>
@@ -752,7 +752,7 @@ export const UserLicenses: React.FC = () => {
                               displayStatus === 'active'
                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
                                 : displayStatus === 'locked'
-                                ? 'bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border-[#1E40FF]/30'
+                                ? 'bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border-(--brand)/30'
                                 : displayStatus === 'paused'
                                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
                                 : displayStatus === 'expired' || displayStatus === 'revoked'
@@ -813,14 +813,14 @@ export const UserLicenses: React.FC = () => {
                             <button
                               onClick={() => generateLicenseCertificatePDF(lic)}
                               title="Print Certificate PDF"
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-[#8fa0ff] hover:bg-slate-800"
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-(--brand-ink) hover:bg-slate-800"
                             >
                               <Printer className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleRegenerateKey(lic)}
                               title="Regenerate Key"
-                              className="p-1.5 rounded-lg text-slate-400 hover:text-[#8fa0ff] hover:bg-slate-800"
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-(--brand-ink) hover:bg-slate-800"
                             >
                               <RefreshCw className="w-4 h-4" />
                             </button>
@@ -854,7 +854,7 @@ export const UserLicenses: React.FC = () => {
                 <select
                   value={pageSize}
                   onChange={(e) => setPageSize(Number(e.target.value))}
-                  className="bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="bg-slate-800 border border-slate-700 text-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 >
                   {[10, 25, 50, 100].map((n) => (
                     <option key={n} value={n}>{n}</option>
@@ -931,7 +931,7 @@ export const UserLicenses: React.FC = () => {
                               cardDisplay === 'active'
                                 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
                                 : cardDisplay === 'locked'
-                                ? 'bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] border-[#1E40FF]/30'
+                                ? 'bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border-(--brand)/30'
                                 : cardDisplay === 'paused'
                                 ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
                                 : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'
@@ -941,7 +941,7 @@ export const UserLicenses: React.FC = () => {
                           </span>
                         </div>
                         <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{lic.product?.name || '—'}</div>
-                        <div className="font-mono text-[11px] text-[#1E40FF] dark:text-[#8fa0ff] font-bold bg-slate-100 dark:bg-slate-950/50 p-1.5 rounded-lg break-all">
+                        <div className="font-mono text-[11px] text-(--brand) dark:text-(--brand-ink) font-bold bg-slate-100 dark:bg-slate-950/50 p-1.5 rounded-lg break-all">
                           {lic.license_key}
                         </div>
                         <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-1">
@@ -953,7 +953,7 @@ export const UserLicenses: React.FC = () => {
                             cardDays.isExpired
                               ? 'text-rose-600 dark:text-rose-400'
                               : cardDays.isLifetime
-                              ? 'text-[#1E40FF] dark:text-[#8fa0ff]'
+                              ? 'text-(--brand) dark:text-(--brand-ink)'
                               : cardDays.days <= 7
                               ? 'text-amber-600 dark:text-amber-400'
                               : cardDays.days <= 30
@@ -986,7 +986,7 @@ export const UserLicenses: React.FC = () => {
             </button>
 
             <h2 className="text-xl font-bold text-white flex items-center gap-2 mb-1">
-              <Plus className="w-5 h-5 text-[#8fa0ff]" />
+              <Plus className="w-5 h-5 text-(--brand-ink)" />
               Issue License (Manual / Offline Sale)
             </h2>
             <p className="text-xs text-slate-400 mb-6">
@@ -1176,7 +1176,7 @@ export const UserLicenses: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isCreating || users.length === 0 || products.length === 0}
-                  className="px-5 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30"
+                  className="px-5 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30"
                 >
                   {isCreating ? 'Creating…' : 'Generate & Activate'}
                 </button>
@@ -1198,7 +1198,7 @@ export const UserLicenses: React.FC = () => {
             </button>
 
             <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-1">
-              <Edit className="w-5 h-5 text-[#8fa0ff]" />
+              <Edit className="w-5 h-5 text-(--brand-ink)" />
               Edit License
             </h3>
             <p className="text-xs text-slate-400 mb-4 font-mono">{editLicense.license_key}</p>
@@ -1244,7 +1244,7 @@ export const UserLicenses: React.FC = () => {
                 <button type="button" onClick={() => setEditLicense(null)} className="px-4 py-2 rounded-full bg-slate-800 text-slate-300 text-sm font-semibold">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSavingEdit} className="px-5 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30">
+                <button type="submit" disabled={isSavingEdit} className="px-5 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30">
                   {isSavingEdit ? 'Saving…' : 'Save Changes'}
                 </button>
               </div>
@@ -1285,7 +1285,7 @@ export const UserLicenses: React.FC = () => {
                       onClick={() => setRenewDays(d)}
                       className={`py-2 rounded-full text-xs font-bold transition-all ${
                         renewDays === d
-                          ? 'bg-[#1E40FF] text-white'
+                          ? 'bg-(--brand) text-white'
                           : 'bg-slate-800 text-slate-400 hover:text-white'
                       }`}
                     >
@@ -1340,9 +1340,9 @@ export const UserLicenses: React.FC = () => {
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">Full audit details, hardware device limits and customer profile.</p>
 
             <div className="space-y-4 text-xs">
-              <div className="bg-[#EEF1FF] dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+              <div className="bg-(--brand-soft) dark:bg-slate-800/80 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <span className="text-slate-500 dark:text-slate-400 block mb-1">License Key</span>
-                <span className="font-mono text-sm font-bold text-[#1E40FF] dark:text-[#8fa0ff] block break-all">
+                <span className="font-mono text-sm font-bold text-(--brand) dark:text-(--brand-ink) block break-all">
                   {detailsLicense.license_key}
                 </span>
               </div>
@@ -1384,7 +1384,7 @@ export const UserLicenses: React.FC = () => {
                         detailsDaysInfo.isExpired
                           ? 'text-rose-600 dark:text-rose-400'
                           : detailsDaysInfo.isLifetime
-                          ? 'text-[#1E40FF] dark:text-[#8fa0ff]'
+                          ? 'text-(--brand) dark:text-(--brand-ink)'
                           : detailsDaysInfo.days <= 7
                           ? 'text-amber-600 dark:text-amber-400'
                           : detailsDaysInfo.days <= 30
@@ -1411,7 +1411,7 @@ export const UserLicenses: React.FC = () => {
                         : detailsEffectiveStatus === 'paused'
                         ? 'text-amber-600 dark:text-amber-400'
                         : detailsEffectiveStatus === 'locked'
-                        ? 'text-[#1E40FF] dark:text-[#8fa0ff]'
+                        ? 'text-(--brand) dark:text-(--brand-ink)'
                         : 'text-slate-600 dark:text-slate-400'
                     }`}
                   >
@@ -1446,7 +1446,7 @@ export const UserLicenses: React.FC = () => {
                 <span className="text-slate-500 block mb-2 font-semibold">Device Activations</span>
                 {isLoadingActivations ? (
                   <div className="flex items-center gap-2 text-slate-400 py-2">
-                    <span className="w-4 h-4 border-2 border-slate-600 border-t-[#1E40FF] rounded-full animate-spin" />
+                    <span className="w-4 h-4 border-2 border-slate-600 border-t-(--brand) rounded-full animate-spin" />
                     Loading activations…
                   </div>
                 ) : activations.length === 0 ? (
@@ -1489,7 +1489,7 @@ export const UserLicenses: React.FC = () => {
                 </button>
                 <button
                   onClick={() => generateLicenseCertificatePDF(detailsLicense)}
-                  className="px-4 py-2 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white font-semibold flex items-center gap-2"
+                  className="px-4 py-2 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white font-semibold flex items-center gap-2"
                 >
                   <Printer className="w-4 h-4" />
                   Print Official Certificate

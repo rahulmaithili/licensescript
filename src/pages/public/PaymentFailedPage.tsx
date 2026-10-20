@@ -29,7 +29,7 @@ export const PaymentFailedPage: React.FC = () => {
       <div className="flex flex-col gap-3 pt-4">
         <Link
           to="/products"
-          className="w-full py-3.5 rounded-2xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-bold text-sm shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-2xl bg-(--brand) hover:bg-(--brand-hover) text-white font-bold text-sm shadow-lg shadow-(--brand)/30 transition-all flex items-center justify-center gap-2"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Try Again</span>

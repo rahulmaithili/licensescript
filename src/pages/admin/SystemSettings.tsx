@@ -24,7 +24,7 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 };
 
 const inputClass =
-  'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-[#0A1330] dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1E40FF]/40 focus:border-[#1E40FF]';
+  'w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-[#0A1330] dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-(--brand)/40 focus:border-(--brand)';
 const labelClass = 'block font-semibold text-slate-700 dark:text-slate-300 mb-1';
 const cardClass =
   'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm dark:shadow-xl space-y-4';
@@ -127,7 +127,7 @@ export const SystemSettings: React.FC = () => {
     description: string,
     danger = false
   ) => (
-    <div className="flex items-center justify-between gap-4 p-3 rounded-2xl bg-[#EEF1FF] dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+    <div className="flex items-center justify-between gap-4 p-3 rounded-2xl bg-(--brand-soft) dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
       <div>
         <span className={`font-semibold text-xs block ${danger ? 'text-rose-600 dark:text-rose-400' : 'text-[#0A1330] dark:text-white'}`}>
           {title}
@@ -140,7 +140,7 @@ export const SystemSettings: React.FC = () => {
         disabled={savingToggle === field}
         onChange={(e) => handleToggle(field, e.target.checked)}
         aria-label={title}
-        className={`w-4 h-4 rounded shrink-0 disabled:opacity-50 ${danger ? 'accent-rose-600' : 'accent-[#1E40FF]'}`}
+        className={`w-4 h-4 rounded shrink-0 disabled:opacity-50 ${danger ? 'accent-rose-600' : 'accent-(--brand)'}`}
       />
     </div>
   );
@@ -150,7 +150,7 @@ export const SystemSettings: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A1330] dark:text-white flex items-center gap-2.5">
-            <Settings className="w-8 h-8 text-[#1E40FF]" />
+            <Settings className="w-8 h-8 text-(--brand)" />
             System & Billing Configuration
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -161,7 +161,7 @@ export const SystemSettings: React.FC = () => {
         <button
           onClick={() => handleSave()}
           disabled={isSaving}
-          className="px-5 py-2.5 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-[#1E40FF]/30 transition-all flex items-center gap-2 shrink-0"
+          className="px-5 py-2.5 rounded-full bg-(--brand) hover:bg-(--brand-hover) disabled:opacity-50 text-white text-sm font-semibold shadow-lg shadow-(--brand)/30 transition-all flex items-center gap-2 shrink-0"
         >
           {savedSuccess ? (
             <>
@@ -193,7 +193,7 @@ export const SystemSettings: React.FC = () => {
       <form onSubmit={handleSave} className="space-y-6">
         <div className={cardClass}>
           <h2 className="text-base font-bold text-[#0A1330] dark:text-white flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-[#1E40FF]" />
+            <Sliders className="w-5 h-5 text-(--brand)" />
             Platform Defaults
           </h2>
 
@@ -255,7 +255,7 @@ export const SystemSettings: React.FC = () => {
 
         <div className={cardClass}>
           <h2 className="text-base font-bold text-[#0A1330] dark:text-white flex items-center gap-2">
-            <Lock className="w-5 h-5 text-[#1E40FF]" />
+            <Lock className="w-5 h-5 text-(--brand)" />
             Security & Feature Policies
           </h2>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 -mt-2">
@@ -289,7 +289,7 @@ export const SystemSettings: React.FC = () => {
 
         <div className={cardClass}>
           <h2 className="text-base font-bold text-[#0A1330] dark:text-white flex items-center gap-2">
-            <Mail className="w-5 h-5 text-[#1E40FF]" />
+            <Mail className="w-5 h-5 text-(--brand)" />
             Email (SMTP)
           </h2>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 -mt-2">
@@ -342,7 +342,7 @@ export const SystemSettings: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowSmtpPass((v) => !v)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-[#1E40FF]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-(--brand)"
                   aria-label={showSmtpPass ? 'Hide SMTP password' : 'Show SMTP password'}
                 >
                   {showSmtpPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

@@ -18,10 +18,10 @@ interface LegalShellProps {
 export const LegalShell: React.FC<LegalShellProps> = ({ icon: Icon, badge, title, intro, children }) => {
   return (
     <div className="relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[640px] h-[240px] bg-[#1E40FF]/10 blur-[120px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[640px] h-[240px] bg-(--brand)/10 blur-[120px] pointer-events-none rounded-full" />
 
       <div className="relative max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
-        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#1E40FF]/10 text-[#1E40FF] dark:text-[#8fa0ff] text-xs font-bold border border-[#1E40FF]/25 mb-6">
+        <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) text-xs font-bold border border-(--brand)/25 mb-6">
           <Icon className="w-3.5 h-3.5" />
           {badge}
         </span>
@@ -41,12 +41,12 @@ export const LegalShell: React.FC<LegalShellProps> = ({ icon: Icon, badge, title
         </div>
 
         {/* Contact strip */}
-        <div className="mt-8 rounded-3xl bg-[#EEF1FF] dark:bg-[#1E40FF]/10 border border-[#1E40FF]/20 p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-5">
+        <div className="mt-8 rounded-3xl bg-(--brand-soft) dark:bg-(--brand)/10 border border-(--brand)/20 p-6 sm:p-7 flex flex-col sm:flex-row sm:items-center gap-5">
           <div className="flex-1">
             <h2 className="text-base font-extrabold text-slate-900 dark:text-white">Questions about this policy?</h2>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               Our support team replies within one business day. Reach us any time at{' '}
-              <a href="mailto:support@licensewala.com" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+              <a href="mailto:support@licensewala.com" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
                 support@licensewala.com
               </a>
               .
@@ -55,7 +55,7 @@ export const LegalShell: React.FC<LegalShellProps> = ({ icon: Icon, badge, title
           <div className="flex flex-col sm:flex-row gap-2.5 shrink-0">
             <a
               href="mailto:support@licensewala.com"
-              className="px-5 py-3 rounded-full bg-[#1E40FF] hover:bg-[#1740D6] text-white font-extrabold text-sm transition-all flex items-center justify-center gap-2"
+              className="px-5 py-3 rounded-full bg-(--brand) hover:bg-(--brand-hover) text-white font-extrabold text-sm transition-all flex items-center justify-center gap-2"
             >
               <Mail className="w-4 h-4" />
               Email Support
@@ -64,9 +64,9 @@ export const LegalShell: React.FC<LegalShellProps> = ({ icon: Icon, badge, title
               href="https://wa.me/917564948617"
               target="_blank"
               rel="noreferrer"
-              className="px-5 py-3 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-extrabold text-sm hover:border-[#1E40FF]/50 transition-all flex items-center justify-center gap-2"
+              className="px-5 py-3 rounded-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-extrabold text-sm hover:border-(--brand)/50 transition-all flex items-center justify-center gap-2"
             >
-              <MessageCircle className="w-4 h-4 text-[#1E40FF]" />
+              <MessageCircle className="w-4 h-4 text-(--brand)" />
               WhatsApp Us
             </a>
           </div>
@@ -74,15 +74,15 @@ export const LegalShell: React.FC<LegalShellProps> = ({ icon: Icon, badge, title
 
         <p className="mt-8 text-center text-xs text-slate-400 dark:text-slate-500">
           See also our{' '}
-          <Link to="/terms" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+          <Link to="/terms" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
             Terms of Service
           </Link>
           ,{' '}
-          <Link to="/privacy" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+          <Link to="/privacy" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
             Privacy Policy
           </Link>{' '}
           and{' '}
-          <Link to="/refund-policy" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+          <Link to="/refund-policy" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
             Refund Policy
           </Link>
           .
@@ -107,7 +107,7 @@ export const LegalList: React.FC<{ items: React.ReactNode[] }> = ({ items }) => 
   <ul className="space-y-2">
     {items.map((item, i) => (
       <li key={i} className="flex gap-2.5 text-sm sm:text-[15px] text-slate-600 dark:text-slate-400 leading-relaxed">
-        <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-[#1E40FF] shrink-0" />
+        <span className="mt-[9px] w-1.5 h-1.5 rounded-full bg-(--brand) shrink-0" />
         <span>{item}</span>
       </li>
     ))}

@@ -91,7 +91,7 @@ export const CheckoutPage: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <div className="inline-flex items-center gap-2.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
-          <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-[#1E40FF] rounded-full animate-spin" />
+          <span className="w-4 h-4 border-2 border-slate-300 dark:border-slate-600 border-t-(--brand) rounded-full animate-spin" />
           Loading checkout session...
         </div>
       </div>
@@ -102,7 +102,7 @@ export const CheckoutPage: React.FC = () => {
     return (
       <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Plan Not Found</h2>
-        <Link to="/pricing" className="inline-block px-5 py-2.5 bg-[#1E40FF] hover:bg-[#1740D6] text-white rounded-full font-bold transition-colors">
+        <Link to="/pricing" className="inline-block px-5 py-2.5 bg-(--brand) hover:bg-(--brand-hover) text-white rounded-full font-bold transition-colors">
           View Pricing Plans
         </Link>
       </div>
@@ -208,7 +208,7 @@ export const CheckoutPage: React.FC = () => {
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-          <ShieldCheck className="w-8 h-8 text-[#1E40FF]" />
+          <ShieldCheck className="w-8 h-8 text-(--brand)" />
           Complete Your License Order
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -230,7 +230,7 @@ export const CheckoutPage: React.FC = () => {
             {/* Billing Information Card */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
               <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <User className="w-4 h-4 text-[#1E40FF]" />
+                <User className="w-4 h-4 text-(--brand)" />
                 Licensee & Billing Details
               </h2>
 
@@ -245,7 +245,7 @@ export const CheckoutPage: React.FC = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Rahul Sharma"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                   />
                 </div>
 
@@ -259,7 +259,7 @@ export const CheckoutPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="customer@gmail.com"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                   />
                 </div>
               </div>
@@ -274,7 +274,7 @@ export const CheckoutPage: React.FC = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+91 98765 43210"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                   />
                 </div>
 
@@ -287,7 +287,7 @@ export const CheckoutPage: React.FC = () => {
                     value={gst}
                     onChange={(e) => setGst(e.target.value.toUpperCase())}
                     placeholder="27AABCL1234D1ZM"
-                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:ring-2 focus:ring-(--brand)"
                   />
                 </div>
               </div>
@@ -301,7 +301,7 @@ export const CheckoutPage: React.FC = () => {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Office 402, Tech Park, Mumbai"
-                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#1E40FF]"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-(--brand)"
                 />
               </div>
             </div>
@@ -309,7 +309,7 @@ export const CheckoutPage: React.FC = () => {
             {/* Select Gateway Card */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
               <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-[#1E40FF]" />
+                <CreditCard className="w-4 h-4 text-(--brand)" />
                 Select Payment Method
               </h2>
 
@@ -319,7 +319,7 @@ export const CheckoutPage: React.FC = () => {
                   onClick={() => setSelectedGateway('razorpay')}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center gap-3.5 ${
                     selectedGateway === 'razorpay'
-                      ? 'bg-[#EEF1FF] dark:bg-[#1E40FF]/10 border-[#1E40FF] ring-2 ring-[#1E40FF]/20'
+                      ? 'bg-(--brand-soft) dark:bg-(--brand)/10 border-(--brand) ring-2 ring-(--brand)/20'
                       : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:border-slate-300'
                   }`}
                 >
@@ -342,7 +342,7 @@ export const CheckoutPage: React.FC = () => {
             <button
               type="submit"
               disabled={isProcessing}
-              className="w-full py-4 rounded-2xl bg-[#1E40FF] hover:bg-[#1740D6] text-white font-extrabold text-base shadow-xl shadow-[#1E40FF]/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl bg-(--brand) hover:bg-(--brand-hover) text-white font-extrabold text-base shadow-xl shadow-(--brand)/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isProcessing ? (
                 <span>Launching Secure Gateway...</span>
@@ -363,7 +363,7 @@ export const CheckoutPage: React.FC = () => {
             <h3 className="font-bold text-base text-slate-900 dark:text-white">Order Summary</h3>
 
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#1E40FF] dark:text-[#8fa0ff]">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-(--brand) dark:text-(--brand-ink)">
                 {plan.product?.name || 'Software Extension'}
               </span>
               <div className="text-sm font-extrabold text-slate-900 dark:text-white">
@@ -429,13 +429,13 @@ export const CheckoutPage: React.FC = () => {
 
               <div className="flex justify-between text-base font-black text-slate-900 dark:text-white pt-3 border-t border-slate-200 dark:border-slate-800">
                 <span>Total Due</span>
-                <span className="text-[#1E40FF] dark:text-[#8fa0ff]">{formatCurrency(grandTotal)}</span>
+                <span className="text-(--brand) dark:text-(--brand-ink)">{formatCurrency(grandTotal)}</span>
               </div>
             </div>
           </div>
 
           {/* Trust Guarantees */}
-          <div className="p-4 rounded-2xl bg-[#EEF1FF]0/10 border border-[#1E40FF]/20 text-xs text-[#1740D6] dark:text-[#aab8ff] space-y-2">
+          <div className="p-4 rounded-2xl bg-(--brand-soft)0/10 border border-(--brand)/20 text-xs text-(--brand-hover) dark:text-(--brand-ink) space-y-2">
             <div className="flex items-center gap-2 font-bold">
               <Sparkles className="w-4 h-4 text-amber-400" />
               <span>Instant Key Guarantee</span>

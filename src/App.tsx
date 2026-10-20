@@ -55,7 +55,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1E40FF]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-(--brand)"></div>
       </div>
     );
   }
@@ -67,7 +67,7 @@ function AdminRoute({ children }: { children: React.ReactNode }) {
   if (user && !profile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#1E40FF]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-(--brand)"></div>
       </div>
     );
   }

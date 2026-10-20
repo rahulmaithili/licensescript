@@ -111,7 +111,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           In line with the Digital Personal Data Protection Act, 2023 (India), you may request access to the personal data we
           hold about you, correction of inaccurate data, and deletion of your data where the law permits. You may also withdraw
           consent for non-essential processing. To exercise any of these rights, write to us at{' '}
-          <a href="mailto:support@licensewala.com" className="font-bold text-[#1E40FF] dark:text-[#8fa0ff] hover:underline">
+          <a href="mailto:support@licensewala.com" className="font-bold text-(--brand) dark:text-(--brand-ink) hover:underline">
             support@licensewala.com
           </a>
           . We may verify your identity before acting on a request, and we respond within the timelines required by law.

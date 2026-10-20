@@ -9,9 +9,18 @@
     --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* Premium brand tokens */
+    /* Premium brand tokens — driven by the selected accent preset
+       (ThemeContext sets `data-theme-color` on <html>; the preset blocks
+       below override these). Default preset: Royal Blue — these values are
+       exactly the original hardcoded brand colours. */
     --brand: #1E40FF;
     --brand-hover: #1740D6;
+    --brand-soft: #EEF1FF;
+    --brand-soft-hover: #E0E6FF;
+    --brand-ink: #8fa0ff;
+    --brand-mid: #5b83ff;
+    --brand-rgb: 30, 64, 255;
+    --brand-ink-rgb: 143, 160, 255;
     --ink: #0A1330;
     --periwinkle: #EEF1FF;
 
@@ -22,11 +31,34 @@
     --accent-rgb: 79, 70, 229;
   }
 
+  [data-theme-color="royal"] {
+    --brand: #1E40FF;
+    --brand-hover: #1740D6;
+    --brand-soft: #EEF1FF;
+    --brand-soft-hover: #E0E6FF;
+    --brand-ink: #8fa0ff;
+    --brand-mid: #5b83ff;
+    --brand-rgb: 30, 64, 255;
+    --brand-ink-rgb: 143, 160, 255;
+    --accent: #1E40FF;
+    --accent-hover: #1740D6;
+    --accent-light: #EEF1FF;
+    --accent-rgb: 30, 64, 255;
+  }
+
   [data-theme-color="indigo"] {
     --accent: #4f46e5;
     --accent-hover: #4338ca;
     --accent-light: #e0e7ff;
     --accent-rgb: 79, 70, 229;
+    --brand: #4f46e5;
+    --brand-hover: #4338ca;
+    --brand-soft: #e0e7ff;
+    --brand-soft-hover: #c7d2fe;
+    --brand-ink: #a5b4fc;
+    --brand-mid: #818cf8;
+    --brand-rgb: 79, 70, 229;
+    --brand-ink-rgb: 165, 180, 252;
   }
 
   [data-theme-color="emerald"] {
@@ -34,6 +66,14 @@
     --accent-hover: #047857;
     --accent-light: #d1fae5;
     --accent-rgb: 5, 150, 105;
+    --brand: #059669;
+    --brand-hover: #047857;
+    --brand-soft: #d1fae5;
+    --brand-soft-hover: #a7f3d0;
+    --brand-ink: #6ee7b7;
+    --brand-mid: #34d399;
+    --brand-rgb: 5, 150, 105;
+    --brand-ink-rgb: 110, 231, 183;
   }
 
   [data-theme-color="rose"] {
@@ -41,6 +81,14 @@
     --accent-hover: #be123c;
     --accent-light: #ffe4e6;
     --accent-rgb: 225, 29, 72;
+    --brand: #e11d48;
+    --brand-hover: #be123c;
+    --brand-soft: #ffe4e6;
+    --brand-soft-hover: #fecdd3;
+    --brand-ink: #fda4af;
+    --brand-mid: #fb7185;
+    --brand-rgb: 225, 29, 72;
+    --brand-ink-rgb: 253, 164, 175;
   }
 
   [data-theme-color="amber"] {
@@ -48,6 +96,14 @@
     --accent-hover: #b45309;
     --accent-light: #fef3c7;
     --accent-rgb: 217, 119, 6;
+    --brand: #d97706;
+    --brand-hover: #b45309;
+    --brand-soft: #fef3c7;
+    --brand-soft-hover: #fde68a;
+    --brand-ink: #fcd34d;
+    --brand-mid: #fbbf24;
+    --brand-rgb: 217, 119, 6;
+    --brand-ink-rgb: 252, 211, 77;
   }
 
   [data-theme-color="sky"] {
@@ -55,6 +111,14 @@
     --accent-hover: #0369a1;
     --accent-light: #e0f2fe;
     --accent-rgb: 2, 132, 199;
+    --brand: #0284c7;
+    --brand-hover: #0369a1;
+    --brand-soft: #e0f2fe;
+    --brand-soft-hover: #bae6fd;
+    --brand-ink: #7dd3fc;
+    --brand-mid: #38bdf8;
+    --brand-rgb: 2, 132, 199;
+    --brand-ink-rgb: 125, 211, 252;
   }
 
   [data-theme-color="violet"] {
@@ -62,6 +126,14 @@
     --accent-hover: #6d28d9;
     --accent-light: #ede9fe;
     --accent-rgb: 124, 58, 237;
+    --brand: #7c3aed;
+    --brand-hover: #6d28d9;
+    --brand-soft: #ede9fe;
+    --brand-soft-hover: #ddd6fe;
+    --brand-ink: #c4b5fd;
+    --brand-mid: #a78bfa;
+    --brand-rgb: 124, 58, 237;
+    --brand-ink-rgb: 196, 181, 253;
   }
 
   body {
@@ -152,14 +224,14 @@ html {
   color: #fff;
   font-weight: 800;
   padding: 0.9rem 1.9rem;
-  box-shadow: 0 16px 35px -12px rgba(30, 64, 255, 0.55);
+  box-shadow: 0 16px 35px -12px rgba(var(--brand-rgb), 0.55);
   transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
 }
 .btn-brand:hover {
   background: var(--brand-hover);
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px -12px rgba(30, 64, 255, 0.6);
+  box-shadow: 0 20px 40px -12px rgba(var(--brand-rgb), 0.6);
 }
 .btn-brand:active {
   transform: translateY(0);
@@ -175,15 +247,15 @@ html {
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.04em;
-  background: rgba(30, 64, 255, 0.08);
+  background: rgba(var(--brand-rgb), 0.08);
   color: var(--brand);
-  border: 1px solid rgba(30, 64, 255, 0.22);
+  border: 1px solid rgba(var(--brand-rgb), 0.22);
   white-space: nowrap;
 }
 .dark .pill-badge {
-  background: rgba(30, 64, 255, 0.16);
-  border-color: rgba(120, 140, 255, 0.35);
-  color: #b9c4ff;
+  background: rgba(var(--brand-rgb), 0.16);
+  border-color: rgba(var(--brand-ink-rgb), 0.35);
+  color: color-mix(in srgb, var(--brand-ink) 62%, white);
 }
 
 /* Premium white card */
@@ -199,15 +271,15 @@ html {
 
 /* Soft blue-tinted shadow */
 .shadow-brand {
-  box-shadow: 0 20px 45px -18px rgba(30, 64, 255, 0.25);
+  box-shadow: 0 20px 45px -18px rgba(var(--brand-rgb), 0.25);
 }
 .dark .shadow-brand {
-  box-shadow: 0 20px 45px -18px rgba(30, 64, 255, 0.35);
+  box-shadow: 0 20px 45px -18px rgba(var(--brand-rgb), 0.35);
 }
 
 /* Blue gradient text accent */
 .text-gradient-brand {
-  background: linear-gradient(100deg, #1e40ff 5%, #5b83ff 55%, #1740d6 100%);
+  background: linear-gradient(100deg, var(--brand) 5%, var(--brand-mid) 55%, var(--brand-hover) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -216,14 +288,14 @@ html {
 /* Subtle CSS grid pattern background */
 .grid-pattern {
   background-image:
-    linear-gradient(to right, rgba(30, 64, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 64, 255, 0.07) 1px, transparent 1px);
+    linear-gradient(to right, rgba(var(--brand-rgb), 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--brand-rgb), 0.07) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 .dark .grid-pattern {
   background-image:
-    linear-gradient(to right, rgba(140, 160, 255, 0.09) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(140, 160, 255, 0.09) 1px, transparent 1px);
+    linear-gradient(to right, rgba(var(--brand-ink-rgb), 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(var(--brand-ink-rgb), 0.09) 1px, transparent 1px);
 }
 
 /* Giant outlined background text */
@@ -273,7 +345,7 @@ html {
   position: relative;
   width: 22px;
   height: 22px;
-  color: rgba(30, 64, 255, 0.35);
+  color: rgba(var(--brand-rgb), 0.35);
   flex-shrink: 0;
 }
 .plus-decor::before,
@@ -295,12 +367,12 @@ html {
   height: 100%;
 }
 .dark .plus-decor {
-  color: rgba(160, 175, 255, 0.4);
+  color: color-mix(in srgb, color-mix(in srgb, var(--brand-ink) 85%, white) 40%, transparent);
 }
 
 /* Periwinkle section helper (dark-mode aware) */
 .section-periwinkle {
-  background: var(--periwinkle);
+  background: var(--brand-soft);
 }
 .dark .section-periwinkle {
   background: rgba(10, 19, 48, 0.55);
