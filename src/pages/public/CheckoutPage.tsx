@@ -5,7 +5,8 @@ import { getPlanById, validateCoupon } from '@/services/productService';
 import { getIntegrationSettings, getSystemSettings } from '@/services/settingsService';
 import {
   openRazorpayCheckout,
-  processPaymentSuccess,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
 } from '@/services/paymentService';
 import {
   KeyRound,
@@ -46,6 +47,7 @@ export const CheckoutPage: React.FC = () => {
   // Payment Selection
   const [selectedGateway, setSelectedGateway] = useState<PaymentMethod>('razorpay');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Coupon
@@ -141,66 +143,73 @@ export const CheckoutPage: React.FC = () => {
       return;
     }
 
+    if (selectedGateway !== 'razorpay') return;
+
     setIsProcessing(true);
 
-    const checkoutPayload = {
-      product: plan.product || {
-        id: plan.product_id,
-        name: 'Software License',
-        slug: 'software-license',
-        category: 'Extension',
-        sort_order: 1,
-        is_active: true,
-        created_at: new Date().toISOString(),
-      },
-      plan,
-      user: profile || {
-        id: user?.id || `usr-${Date.now()}`,
-        email,
-        full_name: name,
-        phone,
-        role: 'customer' as const,
-        is_blocked: false,
-        created_at: new Date().toISOString(),
-      },
-      billingDetails: {
-        name,
-        email,
-        phone,
-        address,
-        gst,
-      },
-      couponCode: appliedDiscount > 0 ? couponCode : undefined,
-      discountAmount: appliedDiscount,
-      taxAmount,
-      totalAmount: grandTotal,
-      paymentGateway: selectedGateway,
-    };
+    const billing = { name, email, phone, address, gst };
 
-    if (selectedGateway === 'razorpay') {
-      openRazorpayCheckout(
-        checkoutPayload,
-        integrations?.razorpay_key_id || '',
-        async (response) => {
-          const result = await processPaymentSuccess(
-            checkoutPayload,
-            response.razorpay_payment_id || `pay_${Date.now()}`
-          );
+    // 1. The SERVER creates the Razorpay order — it computes the amount
+    // from the plan and validates the coupon. Nothing about the price is
+    // trusted from this browser.
+    let serverOrder;
+    try {
+      serverOrder = await createRazorpayOrder({
+        planId: plan.id,
+        couponCode: appliedDiscount > 0 ? couponCode.trim() : undefined,
+        billing,
+      });
+    } catch (err: any) {
+      setIsProcessing(false);
+      setErrorMsg(err?.message || 'Could not start the payment. Please try again.');
+      return;
+    }
+
+    // 2. Open the widget bound to that server order.
+    openRazorpayCheckout(
+      {
+        keyId: serverOrder.keyId || integrations?.razorpay_key_id || '',
+        orderId: serverOrder.orderId,
+        amountPaise: serverOrder.amount,
+        productName: plan.product?.name || 'Software License',
+        planName: plan.name,
+        logoUrl: (plan.product as any)?.logo_url,
+        billing,
+      },
+      async (response) => {
+        // 3. The widget's success is NOT proof of payment — the server
+        // verifies the Razorpay signature and only then issues the
+        // license + invoice. No key exists anywhere before this passes.
+        setIsVerifying(true);
+        try {
+          const verified = await verifyRazorpayPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            billing,
+          });
           navigate('/payment-success', {
             state: {
-              licenseKey: result.licenseKey,
-              invoiceNumber: result.invoiceNumber,
+              licenseKey: verified.licenseKey,
+              invoiceNumber: verified.invoiceNumber,
               productName: plan.product?.name || 'Software License',
-              amount: grandTotal,
+              amount: verified.total,
             },
           });
-        },
-        (error) => {
+        } catch (err: any) {
           setIsProcessing(false);
-          setErrorMsg(error.message || 'Razorpay checkout cancelled or failed');
+          setIsVerifying(false);
+          setErrorMsg(
+            'Payment could not be verified. If money was deducted from your account, please contact support on WhatsApp with your payment ID — do not pay again.'
+          );
         }
-      );
-    }
+      },
+      (error) => {
+        setIsProcessing(false);
+        setIsVerifying(false);
+        setErrorMsg(error.message || 'Razorpay checkout cancelled or failed');
+      }
+    );
   };
 
   return (
@@ -345,7 +354,7 @@ export const CheckoutPage: React.FC = () => {
               className="w-full py-4 rounded-2xl bg-(--brand) hover:bg-(--brand-hover) text-white font-extrabold text-base shadow-xl shadow-(--brand)/30 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isProcessing ? (
-                <span>Launching Secure Gateway...</span>
+                <span>{isVerifying ? 'Verifying Payment Securely...' : 'Launching Secure Gateway...'}</span>
               ) : (
                 <>
                   <span>Pay {formatCurrency(grandTotal)} Securely</span>

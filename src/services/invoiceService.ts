@@ -10,16 +10,47 @@ import { getStoredAccentPalette } from '@/lib/accents';
 // from the accent stored by ThemeContext.
 const brandRgb = (): [number, number, number] => getStoredAccentPalette().rgb;
 
-// Normalize a joined profiles row: real DB columns are company / tax_id / status.
+// The LIVE invoices table is shaped differently from the app's Invoice
+// type: invoice_no (not invoice_number), customer_id (not user_id),
+// subtotal/tax/discount/total (not amount/tax_amount/...) and the
+// product/plan/billing detail lives in the `items` JSONB. Map rows in
+// both directions here so every consumer (account page, admin billing
+// center, PDF generator) works against real stored records.
 function normalizeInvoice(row: any): Invoice {
   if (!row) return row;
-  const inv = { ...row } as any;
-  if (inv.user) {
+  const item = Array.isArray(row.items) ? row.items[0] || {} : {};
+  const inv: any = {
+    ...row,
+    id: row.id,
+    invoice_number: row.invoice_number ?? row.invoice_no,
+    user_id: row.user_id ?? row.customer_id,
+    product_name: row.product_name ?? item.product_name ?? '',
+    plan_name: row.plan_name ?? item.plan_name ?? '',
+    amount: row.amount ?? row.subtotal ?? 0,
+    tax_rate: row.tax_rate ?? item.tax_rate ?? 18,
+    tax_amount: row.tax_amount ?? row.tax ?? 0,
+    discount_amount: row.discount_amount ?? row.discount ?? 0,
+    total_amount: row.total_amount ?? row.total ?? 0,
+    currency: row.currency ?? 'INR',
+    payment_status: row.payment_status ?? row.status ?? 'paid',
+    payment_method: row.payment_method ?? item.payment_method ?? 'razorpay',
+    payment_id: row.payment_id ?? item.payment_id,
+    billing_name: row.billing_name ?? row.customer_name ?? '',
+    billing_email: row.billing_email ?? row.customer_email ?? '',
+    billing_phone: row.billing_phone ?? item.billing_phone,
+    billing_address: row.billing_address ?? item.billing_address,
+    billing_gst: row.billing_gst ?? item.billing_gst,
+    issued_at: row.issued_at ?? row.created_at,
+    paid_at: row.paid_at ?? item.paid_at ?? row.created_at,
+    created_at: row.created_at,
+  };
+  // Normalize a joined profiles row: real DB columns are company / tax_id / status.
+  if (row.user) {
     inv.user = {
-      ...inv.user,
-      company_name: inv.user.company_name ?? inv.user.company ?? undefined,
-      gst_number: inv.user.gst_number ?? inv.user.tax_id ?? undefined,
-      is_blocked: inv.user.is_blocked ?? inv.user.status === 'blocked',
+      ...row.user,
+      company_name: row.user.company_name ?? row.user.company ?? undefined,
+      gst_number: row.user.gst_number ?? row.user.tax_id ?? undefined,
+      is_blocked: row.user.is_blocked ?? row.user.status === 'blocked',
     };
   }
   return inv as Invoice;
@@ -29,9 +60,19 @@ export async function getInvoices(userId?: string): Promise<Invoice[]> {
   try {
     let query = supabase.from('invoices').select('*, user:profiles(*)').order('created_at', { ascending: false });
     if (userId) {
-      query = query.eq('user_id', userId);
+      query = query.eq('customer_id', userId);
     }
-    const { data, error } = await query;
+    let { data, error } = await query;
+    if (error) {
+      // Fall back to a plain select if the profiles embed is unavailable.
+      let retry = supabase.from('invoices').select('*').order('created_at', { ascending: false });
+      if (userId) {
+        retry = retry.eq('customer_id', userId);
+      }
+      const second = await retry;
+      data = second.data;
+      error = second.error;
+    }
     if (error) {
       console.error('Failed to load invoices:', error.message);
       return [];
@@ -49,14 +90,38 @@ export async function createInvoice(invoice: Partial<Invoice>): Promise<{ succes
     const randomSeq = Math.floor(1000 + Math.random() * 9000);
     const invoiceNumber = invoice.invoice_number || `INV-${year}-${randomSeq}`;
 
-    const newInvoice: Partial<Invoice> = {
-      ...invoice,
-      invoice_number: invoiceNumber,
-      issued_at: invoice.issued_at || new Date().toISOString(),
-      created_at: new Date().toISOString(),
+    // Translate the app-shaped invoice into the LIVE table's columns.
+    const row: Record<string, any> = {
+      invoice_no: invoiceNumber,
+      customer_id: invoice.user_id || null,
+      customer_name: invoice.billing_name || '',
+      customer_email: invoice.billing_email || '',
+      items: [
+        {
+          product_name: invoice.product_name || '',
+          plan_name: invoice.plan_name || '',
+          quantity: 1,
+          unit_price: invoice.amount ?? 0,
+          tax_rate: invoice.tax_rate ?? 18,
+          tax_amount: invoice.tax_amount ?? 0,
+          discount: invoice.discount_amount ?? 0,
+          total: invoice.total_amount ?? 0,
+          payment_method: invoice.payment_method || 'razorpay',
+          payment_id: invoice.payment_id,
+          billing_phone: invoice.billing_phone,
+          billing_address: invoice.billing_address,
+          billing_gst: invoice.billing_gst,
+          paid_at: invoice.paid_at,
+        },
+      ],
+      subtotal: invoice.amount ?? 0,
+      tax: invoice.tax_amount ?? 0,
+      discount: invoice.discount_amount ?? 0,
+      total: invoice.total_amount ?? 0,
+      status: invoice.payment_status || 'paid',
     };
 
-    const { data, error } = await supabase.from('invoices').insert([newInvoice]).select().single();
+    const { data, error } = await supabase.from('invoices').insert([row]).select().single();
     if (error) {
       return { success: false, error: error.message };
     }

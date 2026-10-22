@@ -1,9 +1,5 @@
 import { supabase } from '@/lib/supabase';
 import { getStoredAccentPalette } from '@/lib/accents';
-import type { Plan, Product, Profile, PaymentMethod } from '@/types';
-import { generateCryptoRandomKey } from './keyGeneratorService';
-import { createInvoice } from './invoiceService';
-import { redeemCoupon } from './couponService';
 
 declare global {
   interface Window {
@@ -11,118 +7,139 @@ declare global {
   }
 }
 
-export interface CheckoutPayload {
-  product: Product;
-  plan: Plan;
-  user: Profile;
-  billingDetails: {
-    name: string;
-    email: string;
-    phone: string;
-    address: string;
-    gst?: string;
-  };
-  couponCode?: string;
-  discountAmount: number;
-  taxAmount: number;
-  totalAmount: number;
-  paymentGateway: PaymentMethod;
+export interface BillingDetails {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  gst?: string;
 }
 
-export async function processPaymentSuccess(payload: CheckoutPayload, paymentId: string): Promise<{
-  success: boolean;
+export interface ServerOrder {
+  orderId: string; // Razorpay order id (goes into the widget)
+  internalOrderId: string; // our orders-table row id
+  keyId: string;
+  amount: number; // paise, computed server-side
+  currency: string;
+  subtotal: number;
+  discount: number;
+  tax: number;
+  total: number; // ₹ grand total, computed server-side
+}
+
+export interface VerifiedPayment {
   licenseKey: string;
   invoiceNumber: string;
+  expiryDate: string;
   orderId: string;
-}> {
-  // 1. Generate unique license key
-  const licenseKey = generateCryptoRandomKey({ prefix: 'LW' });
+  total: number;
+}
 
-  // 2. Calculate expiry
-  const now = new Date();
-  const durationDays = payload.plan.duration_days;
-  const expiryDate = durationDays >= 3650 
-    ? '9999-12-31T23:59:59Z' 
-    : new Date(now.getTime() + durationDays * 24 * 60 * 60 * 1000).toISOString();
-
-  // 3. Create invoice
-  const year = now.getFullYear();
-  const invoiceNumber = `INV-${year}-${Math.floor(10000 + Math.random() * 90000)}`;
-
-  try {
-    const { invoice } = await createInvoice({
-      invoice_number: invoiceNumber,
-      user_id: payload.user.id,
-      product_name: payload.product.name,
-      plan_name: payload.plan.name,
-      amount: payload.plan.price,
-      tax_rate: 18,
-      tax_amount: payload.taxAmount,
-      discount_amount: payload.discountAmount,
-      total_amount: payload.totalAmount,
-      currency: 'INR',
-      payment_status: 'paid',
-      payment_method: payload.paymentGateway,
-      payment_id: paymentId,
-      billing_name: payload.billingDetails.name,
-      billing_email: payload.billingDetails.email,
-      billing_phone: payload.billingDetails.phone,
-      billing_address: payload.billingDetails.address,
-      billing_gst: payload.billingDetails.gst,
-      issued_at: now.toISOString(),
-      paid_at: now.toISOString(),
-    });
-
-    // 4. Create license record
-    const { error: licenseError } = await supabase.from('licenses').insert([
-      {
-        license_key: licenseKey,
-        customer_id: payload.user.id,
-        product_id: payload.product.id,
-        plan_id: payload.plan.id,
-        invoice_id: invoice?.id || null,
-        status: 'active',
-        issue_date: now.toISOString(),
-        expiry_date: expiryDate,
-        max_devices: payload.plan.max_devices || 1,
-        is_locked: false,
-        priority: 'normal',
-        notes: `Purchased via ${payload.paymentGateway.toUpperCase()} (${paymentId})`,
-        created_at: now.toISOString(),
-      },
-    ]);
-    if (licenseError) {
-      console.error('Payment succeeded but license record failed to save:', licenseError.message);
-    }
-
-    // 5. Redeem coupon (best-effort — redeemCoupon never throws, and this
-    // guard ensures a coupon failure can never break checkout).
-    if (!licenseError && payload.couponCode) {
-      try {
-        await redeemCoupon(payload.couponCode);
-      } catch (redeemErr) {
-        console.warn('Coupon redemption failed after payment success:', redeemErr);
-      }
-    }
-  } catch (err) {
-    console.error('Payment recording failed:', err);
+async function authHeaders(): Promise<Record<string, string>> {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.access_token) {
+    throw new Error('Please sign in to complete your purchase.');
   }
-
   return {
-    success: true,
-    licenseKey,
-    invoiceNumber,
-    orderId: `ORD-${Date.now().toString(36).toUpperCase()}`,
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${session.access_token}`,
   };
 }
 
+/**
+ * Ask the server to create the Razorpay order. The server computes the
+ * amount from the plan (and validates the coupon) — the client never sets
+ * the price. Throws with a user-facing message on any failure.
+ */
+export async function createRazorpayOrder(input: {
+  planId: string;
+  couponCode?: string;
+  billing: BillingDetails;
+}): Promise<ServerOrder> {
+  const headers = await authHeaders();
+  const res = await fetch('/.netlify/functions/create-razorpay-order', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      plan_id: input.planId,
+      coupon_code: input.couponCode || undefined,
+      billing: input.billing,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Could not start the payment. Please try again.');
+  }
+  return {
+    orderId: data.order_id,
+    internalOrderId: data.internal_order_id,
+    keyId: data.key_id,
+    amount: data.amount,
+    currency: data.currency || 'INR',
+    subtotal: data.subtotal,
+    discount: data.discount,
+    tax: data.tax,
+    total: data.total,
+  };
+}
+
+/**
+ * After the Razorpay widget reports success, the SERVER verifies the
+ * payment signature and only then issues the license + invoice. The
+ * license key returned here is the only one the customer ever sees.
+ */
+export async function verifyRazorpayPayment(input: {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  billing: BillingDetails;
+}): Promise<VerifiedPayment> {
+  const headers = await authHeaders();
+  const res = await fetch('/.netlify/functions/verify-razorpay-payment', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      razorpay_order_id: input.razorpay_order_id,
+      razorpay_payment_id: input.razorpay_payment_id,
+      razorpay_signature: input.razorpay_signature,
+      billing: input.billing,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || 'Payment could not be verified.');
+  }
+  return {
+    licenseKey: data.license_key,
+    invoiceNumber: data.invoice_number,
+    expiryDate: data.expiry_date,
+    orderId: data.order_id,
+    total: data.total,
+  };
+}
+
+/**
+ * Open the Razorpay widget for a SERVER-CREATED order. The widget is bound
+ * to the server order id and the server-computed amount — the success
+ * handler receives Razorpay's (order_id, payment_id, signature) triple,
+ * which must still be verified server-side before anything is issued.
+ */
 export function openRazorpayCheckout(
-  payload: CheckoutPayload,
-  keyId: string,
+  options: {
+    keyId: string;
+    orderId: string;
+    amountPaise: number;
+    productName: string;
+    planName: string;
+    logoUrl?: string;
+    billing: BillingDetails;
+  },
   onSuccess: (response: any) => void,
   onFailure: (err: any) => void
 ) {
-  if (!keyId) {
+  if (!options.keyId) {
     onFailure(new Error('Razorpay is not configured yet. Add your Razorpay Key ID in Admin → Integrations.'));
     return;
   }
@@ -138,24 +155,25 @@ export function openRazorpayCheckout(
   }
 
   function launchRazorpay() {
-    const options = {
-      key: keyId,
-      amount: Math.round(payload.totalAmount * 100), // in paise
+    const rzpOptions = {
+      key: options.keyId,
+      order_id: options.orderId,
+      amount: options.amountPaise, // in paise — server-computed
       currency: 'INR',
       name: 'LicenseWala',
-      description: `${payload.product.name} — ${payload.plan.name}`,
-      image: payload.product.logo_url || '',
+      description: `${options.productName} — ${options.planName}`,
+      image: options.logoUrl || '',
       handler: function (response: any) {
         onSuccess(response);
       },
       prefill: {
-        name: payload.billingDetails.name,
-        email: payload.billingDetails.email,
-        contact: payload.billingDetails.phone,
+        name: options.billing.name,
+        email: options.billing.email,
+        contact: options.billing.phone,
       },
       notes: {
-        product_id: payload.product.id,
-        plan_id: payload.plan.id,
+        product_name: options.productName,
+        plan_name: options.planName,
       },
       theme: {
         // Resolved at click time from the accent stored by ThemeContext.
@@ -169,7 +187,7 @@ export function openRazorpayCheckout(
     };
 
     try {
-      const rzp = new window.Razorpay(options);
+      const rzp = new window.Razorpay(rzpOptions);
       rzp.on('payment.failed', function (response: any) {
         onFailure(response.error);
       });
@@ -179,4 +197,3 @@ export function openRazorpayCheckout(
     }
   }
 }
-
