@@ -160,9 +160,13 @@ exports.handler = async (event, context) => {
     let couponRow = null;
     let discount = 0;
     if (couponCode) {
+      // select('*') on purpose: coupons.min_order_amount only exists once
+      // migration 20261020010000 has been run — naming it here would make
+      // PostgREST error the whole query on databases without it. It is
+      // read defensively below, exactly like the storefront checkout.
       const { data: coupon } = await supabase
         .from("coupons")
-        .select("id, code, type, value, usage_limit, used_count, expires_at, is_active, min_order_amount")
+        .select("*")
         .eq("code", couponCode)
         .eq("is_active", true)
         .maybeSingle();
