@@ -15,6 +15,11 @@ function deriveBillingPeriod(row: any): Plan['billing_period'] {
 function normalizeProduct(row: any): Product {
   return {
     ...row,
+    // The products table's image column is `image_url` — there is NO
+    // `logo_url` column. Expose the value under both names so every
+    // consumer reading `logo_url` gets the uploaded image.
+    image_url: row.image_url ?? row.logo_url ?? null,
+    logo_url: row.image_url ?? row.logo_url ?? null,
     sort_order: row.display_order ?? row.sort_order ?? 1,
   } as Product;
 }
@@ -22,6 +27,9 @@ function normalizeProduct(row: any): Product {
 function normalizePlan(row: any): Plan {
   return {
     ...row,
+    // Joined product rows bypass normalizeProduct — normalize them too so
+    // plan.product.logo_url (e.g. on CheckoutPage) resolves to image_url.
+    product: row.product ? normalizeProduct(row.product) : row.product,
     billing_period: deriveBillingPeriod(row),
     sort_order: row.display_order ?? row.sort_order ?? 1,
   } as Plan;
@@ -104,6 +112,11 @@ export async function saveProduct(product: Partial<Product>): Promise<{ success:
       payload.display_order = payload.sort_order;
       delete payload.sort_order;
     }
+    // The DB column is `image_url`, not `logo_url` — translate before
+    // sending so the admin form's Logo URL actually persists and
+    // PostgREST never receives the non-existent column.
+    payload.image_url = payload.image_url ?? payload.logo_url;
+    delete payload.logo_url;
 
     if (payload.id) {
       const { data, error } = await supabase

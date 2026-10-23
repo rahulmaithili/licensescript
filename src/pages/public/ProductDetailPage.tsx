@@ -95,6 +95,12 @@ export const ProductDetailPage: React.FC = () => {
             <img
               src={product.logo_url || '/images/logos/hp-gas.png'}
               alt={product.name}
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (!img.src.endsWith('/images/logos/hp-gas.png')) {
+                  img.src = '/images/logos/hp-gas.png';
+                }
+              }}
               className="w-20 h-20 rounded-3xl object-cover ring-2 ring-(--brand)/20 shadow-lg shrink-0"
             />
             <div>

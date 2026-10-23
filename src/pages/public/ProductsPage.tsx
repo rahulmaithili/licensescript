@@ -150,6 +150,12 @@ export const ProductsPage: React.FC = () => {
                     <img
                       src={p.logo_url || '/images/logos/hp-gas.png'}
                       alt={p.name}
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        if (!img.src.endsWith('/images/logos/hp-gas.png')) {
+                          img.src = '/images/logos/hp-gas.png';
+                        }
+                      }}
                       className="w-16 h-16 rounded-2xl object-cover ring-2 ring-(--brand)/20 group-hover:scale-105 transition-transform shrink-0"
                     />
                     <div>

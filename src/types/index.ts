@@ -29,6 +29,7 @@ export interface Product {
   description?: string;
   short_description?: string;
   category: string;
+  image_url?: string;
   logo_url?: string;
   banner_url?: string;
   version?: string;

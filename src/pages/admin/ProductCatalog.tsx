@@ -296,6 +296,12 @@ export const ProductCatalog: React.FC = () => {
                     <img
                       src={product.logo_url}
                       alt={product.name}
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        if (!img.src.endsWith('/images/logos/hp-gas.png')) {
+                          img.src = '/images/logos/hp-gas.png';
+                        }
+                      }}
                       className="w-12 h-12 rounded-2xl object-cover ring-2 ring-slate-200 dark:ring-slate-800 shrink-0"
                     />
                   ) : (

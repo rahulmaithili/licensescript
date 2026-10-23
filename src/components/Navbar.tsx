@@ -12,7 +12,7 @@ import {
   LogOut,
   ArrowUpRight,
 } from 'lucide-react';
-import { GasAgencyMasterLogo } from '@/components/GasLogos';
+import { SiteLogo } from '@/components/SiteLogo';
 
 export const Navbar: React.FC = () => {
   const { user, profile, isAdmin, isSuperAdmin, signOut } = useAuth();
@@ -51,20 +51,7 @@ export const Navbar: React.FC = () => {
         <div className="rounded-full bg-white/80 dark:bg-[#0A1330]/80 backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-brand px-3 xl:px-4 h-16 flex items-center justify-between">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <GasAgencyMasterLogo size={38} className="group-hover:scale-105 transition-transform" />
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-lg xl:text-xl tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
-                  License<span className="text-gradient-brand">Wala</span>
-                </span>
-                <span className="hidden xl:inline-block px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25 whitespace-nowrap">
-                  LPG Suite
-                </span>
-              </div>
-              <span className="hidden xl:block text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide whitespace-nowrap">
-                IndianOil • HP Gas • Bharat Petroleum
-              </span>
-            </div>
+            <SiteLogo variant="navbar" />
           </Link>
 
           {/* Center pill nav */}

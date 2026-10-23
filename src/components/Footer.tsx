@@ -11,7 +11,7 @@ import {
   Database,
   CheckCircle2,
 } from 'lucide-react';
-import { GasAgencyMasterLogo } from './GasLogos';
+import { SiteLogo } from './SiteLogo';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -46,10 +46,7 @@ export const Footer: React.FC = () => {
           {/* Brand + newsletter */}
           <div className="lg:col-span-4 space-y-5">
             <div className="flex items-center gap-2.5">
-              <GasAgencyMasterLogo size={40} />
-              <span className="font-extrabold text-2xl tracking-tight text-white">
-                License<span className="text-(--brand-ink)">Wala</span>
-              </span>
+              <SiteLogo variant="footer" />
             </div>
             <p className="text-sm text-slate-400 leading-relaxed">
               India's premier LPG gas agency automation and licensing software platform. Instant license activation, 1-click cash memo printing, and 24/7 AnyDesk remote assistance for IndianOil, HP Gas, and Bharat Petroleum distributors.
