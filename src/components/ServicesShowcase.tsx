@@ -129,7 +129,7 @@ const customServices = [
 
 export const ServicesShowcase: React.FC = () => {
   return (
-    <section id="services" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-28">
+    <section id="services" className="relative overflow-x-clip max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-28">
       {/* ambient glows */}
       <div className="absolute top-10 -left-24 w-[320px] h-[320px] bg-(--brand)/10 blur-[110px] rounded-full pointer-events-none" />
       <div className="absolute bottom-24 -right-24 w-[320px] h-[320px] bg-(--brand)/10 blur-[110px] rounded-full pointer-events-none" />

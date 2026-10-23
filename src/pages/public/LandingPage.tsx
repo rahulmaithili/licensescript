@@ -249,7 +249,7 @@ export const LandingPage: React.FC = () => {
                 <span>India&apos;s #1 LPG Gas Agency Automation</span>
               </div>
 
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
+              <h1 className="text-5xl sm:text-6xl xl:text-7xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.08]">
                 Book. Print. Deliver.{' '}
                 <span className="text-gradient-brand">All in One Click.</span>
               </h1>
@@ -320,7 +320,7 @@ export const LandingPage: React.FC = () => {
               <Plus className="absolute top-10 right-2 sm:right-10 w-6 h-6 text-(--brand)/30 dark:text-(--brand-ink)/30" aria-hidden="true" />
 
               <div className="relative">
-                <div className="float-y card-premium shadow-brand p-6 sm:p-7 w-[320px] sm:w-[360px] relative z-10">
+                <div className="float-y card-premium shadow-brand p-6 sm:p-7 w-[320px] lg:w-[300px] xl:w-[360px] relative z-10">
                   <div className="flex items-start justify-between">
                     <div className="w-12 h-12 rounded-2xl bg-(--brand)/10 dark:bg-(--brand)/20 flex items-center justify-center">
                       <KeyRound className="w-6 h-6 text-(--brand) dark:text-(--brand-ink)" />
@@ -348,7 +348,7 @@ export const LandingPage: React.FC = () => {
                 </div>
 
                 {/* Floating stat chips */}
-                <div className="float-y-slow hidden sm:flex absolute -left-24 top-6 card-premium shadow-brand px-4 py-3 items-center gap-2.5 z-20">
+                <div className="float-y-slow hidden sm:flex absolute -left-6 xl:-left-24 top-6 card-premium shadow-brand px-4 py-3 items-center gap-2.5 z-20">
                   <span className="w-9 h-9 rounded-full bg-emerald-500/15 flex items-center justify-center">
                     <ShieldCheck className="w-4 h-4 text-emerald-500" />
                   </span>
@@ -357,7 +357,7 @@ export const LandingPage: React.FC = () => {
                     <span className="block text-[11px] text-slate-500 mt-0.5">stationery cost</span>
                   </span>
                 </div>
-                <div className="float-y hidden sm:flex absolute -right-16 bottom-8 card-premium shadow-brand px-4 py-3 items-center gap-2.5 z-20">
+                <div className="float-y hidden sm:flex absolute -right-4 xl:-right-6 bottom-8 card-premium shadow-brand px-4 py-3 items-center gap-2.5 z-20">
                   <span className="w-9 h-9 rounded-full bg-(--brand)/10 flex items-center justify-center">
                     <Zap className="w-4 h-4 text-(--brand) dark:text-(--brand-ink)" />
                   </span>

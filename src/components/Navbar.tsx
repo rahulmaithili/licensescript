@@ -41,34 +41,34 @@ export const Navbar: React.FC = () => {
 
   const linkClass = (active: boolean) =>
     active
-      ? 'px-4 py-1.5 rounded-full bg-(--brand) text-white text-sm font-bold shadow-[0_6px_16px_-6px_rgba(var(--brand-rgb),0.6)] transition-all'
-      : 'px-4 py-1.5 rounded-full text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-(--brand) dark:hover:text-white transition-colors';
+      ? 'whitespace-nowrap px-2 xl:px-3 2xl:px-4 py-1.5 rounded-full bg-(--brand) text-white text-[13px] 2xl:text-sm font-bold shadow-[0_6px_16px_-6px_rgba(var(--brand-rgb),0.6)] transition-all'
+      : 'whitespace-nowrap px-2 xl:px-3 2xl:px-4 py-1.5 rounded-full text-[13px] 2xl:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-(--brand) dark:hover:text-white transition-colors';
 
   return (
     <header className="sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-3">
         {/* Floating pill bar */}
-        <div className="rounded-full bg-white/80 dark:bg-[#0A1330]/80 backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-brand px-4 h-16 flex items-center justify-between">
+        <div className="rounded-full bg-white/80 dark:bg-[#0A1330]/80 backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-brand px-3 xl:px-4 h-16 flex items-center justify-between">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
             <GasAgencyMasterLogo size={38} className="group-hover:scale-105 transition-transform" />
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
+                <span className="font-extrabold text-lg xl:text-xl tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
                   License<span className="text-gradient-brand">Wala</span>
                 </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25">
+                <span className="hidden xl:inline-block px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-(--brand)/10 text-(--brand) dark:text-(--brand-ink) border border-(--brand)/25 whitespace-nowrap">
                   LPG Suite
                 </span>
               </div>
-              <span className="hidden lg:block text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide">
+              <span className="hidden xl:block text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide whitespace-nowrap">
                 IndianOil • HP Gas • Bharat Petroleum
               </span>
             </div>
           </Link>
 
           {/* Center pill nav */}
-          <nav className="hidden lg:flex items-center gap-1 rounded-full bg-slate-100/70 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 p-1">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 rounded-full bg-slate-100/70 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 p-1">
             {navLinks.map((link) =>
               link.to ? (
                 <Link key={link.label} to={link.to} className={linkClass(link.active)}>
@@ -83,54 +83,55 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Actions */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-1.5 xl:gap-2">
             <button
               onClick={toggleTheme}
               aria-label="Toggle theme"
-              className="w-10 h-10 rounded-full flex items-center justify-center border border-slate-200/70 dark:border-white/10 bg-white/60 dark:bg-white/5 text-slate-500 dark:text-slate-300 hover:text-(--brand) dark:hover:text-(--brand-ink) transition-colors"
+              className="w-9 h-9 xl:w-10 xl:h-10 shrink-0 rounded-full flex items-center justify-center border border-slate-200/70 dark:border-white/10 bg-white/60 dark:bg-white/5 text-slate-500 dark:text-slate-300 hover:text-(--brand) dark:hover:text-(--brand-ink) transition-colors"
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
             </button>
 
             {user ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 xl:gap-2">
                 {isAdmin && (
                   <Link
                     to="/admin"
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25 text-xs font-bold hover:bg-amber-500/20 transition-colors"
+                    title="Admin Panel"
+                    className="flex items-center gap-1.5 px-2.5 xl:px-3.5 py-2 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25 text-xs font-bold hover:bg-amber-500/20 transition-colors whitespace-nowrap"
                   >
-                    <Shield className="w-4 h-4" />
-                    Admin Panel
+                    <Shield className="w-4 h-4 shrink-0" />
+                    <span className="hidden xl:inline">Admin Panel</span>
                   </Link>
                 )}
                 <Link
                   to="/account"
-                  className="flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full bg-slate-100/80 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-800 dark:text-slate-200 text-sm font-bold hover:border-(--brand)/40 transition-colors"
+                  className="flex items-center gap-2 pl-1.5 pr-2.5 xl:pr-3.5 py-1.5 rounded-full bg-slate-100/80 dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-800 dark:text-slate-200 text-sm font-bold hover:border-(--brand)/40 transition-colors whitespace-nowrap"
                 >
-                  <span className="w-7 h-7 rounded-full bg-(--brand) text-white flex items-center justify-center">
+                  <span className="w-7 h-7 shrink-0 rounded-full bg-(--brand) text-white flex items-center justify-center">
                     <User className="w-4 h-4" />
                   </span>
-                  <span>{profile?.full_name?.split(' ')[0] || 'My Account'}</span>
+                  <span className="max-w-[72px] xl:max-w-[140px] truncate">{profile?.full_name?.split(' ')[0] || 'My Account'}</span>
                 </Link>
                 <button
                   onClick={handleSignOut}
                   title="Sign out"
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-colors"
+                  className="w-9 h-9 xl:w-10 xl:h-10 shrink-0 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 xl:gap-2">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-(--brand) dark:hover:text-white transition-colors"
+                  className="px-2 xl:px-3 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-(--brand) dark:hover:text-white transition-colors whitespace-nowrap"
                 >
                   Sign In
                 </Link>
-                <Link to="/register" className="btn-brand text-sm">
+                <Link to="/register" className="btn-brand btn-brand-nav text-sm whitespace-nowrap">
                   <span>Get Started</span>
-                  <ArrowUpRight className="w-4 h-4" />
+                  <ArrowUpRight className="w-4 h-4 shrink-0" />
                 </Link>
               </div>
             )}

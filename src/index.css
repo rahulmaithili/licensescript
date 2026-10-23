@@ -219,6 +219,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Safety net: no page may ever scroll sideways. `clip` (not `hidden`)
+   does not create a scroll container, so position: sticky keeps working. */
+html, body {
+  overflow-x: clip;
+}
+
 /* Royal-blue pill CTA button */
 .btn-brand {
   display: inline-flex;
@@ -241,6 +247,13 @@ html {
 }
 .btn-brand:active {
   transform: translateY(0);
+}
+
+/* Navbar CTA variant: tighter padding below xl so the pill bar never wraps */
+@media (max-width: 1279.98px) {
+  .btn-brand.btn-brand-nav {
+    padding: 0.68rem 1.15rem;
+  }
 }
 
 /* Small rounded-full label badge */
