@@ -139,9 +139,14 @@ export async function saveProduct(product: Partial<Product>): Promise<{ success:
       if (error) throw error;
       return { success: true, data: data as Product };
     } else {
+      // The live table's id default cannot be relied on (inserts without an
+      // id fail with "null value in column id violates not-null constraint"),
+      // so generate the id client-side for every new product.
+      const insertPayload = { ...payload, created_at: new Date().toISOString() };
+      if (!insertPayload.id) insertPayload.id = crypto.randomUUID();
       const { data, error } = await supabase
         .from('products')
-        .insert([{ ...payload, created_at: new Date().toISOString() }])
+        .insert([insertPayload])
         .select()
         .maybeSingle();
       if (error) throw error;
@@ -182,9 +187,13 @@ export async function savePlan(plan: Partial<Plan>): Promise<{ success: boolean;
       if (error) throw error;
       return { success: true, data: data as Plan };
     } else {
+      // Same id-default problem as products: generate the id client-side
+      // so a new plan never inserts with a null id.
+      const insertPayload = { ...payload, created_at: new Date().toISOString() };
+      if (!insertPayload.id) insertPayload.id = crypto.randomUUID();
       const { data, error } = await supabase
         .from('plans')
-        .insert([{ ...payload, created_at: new Date().toISOString() }])
+        .insert([insertPayload])
         .select()
         .maybeSingle();
       if (error) throw error;

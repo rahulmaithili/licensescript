@@ -120,7 +120,7 @@ export const ProductCatalog: React.FC = () => {
       return;
     }
     const payload: Partial<Product> = {
-      id: editingProduct?.id,
+      ...(editingProduct?.id ? { id: editingProduct.id } : {}),
       name: name.trim(),
       slug: finalSlug,
       category,

@@ -48,6 +48,9 @@ export async function createCoupon(
 ): Promise<{ success: boolean; data?: Coupon; error?: string }> {
   try {
     const payload = buildPayload(input);
+    // Do not rely on the table's id default (see products/plans): a new
+    // coupon always carries a client-generated id.
+    if (!payload.id) payload.id = crypto.randomUUID();
 
     let result = await supabase.from('coupons').insert([payload]).select().single();
 

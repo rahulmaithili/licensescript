@@ -140,7 +140,7 @@ export const PricingPlans: React.FC = () => {
     // NOTE: billing_period is sent as-is on purpose — productService.savePlan
     // strips it before saving and syncs the real is_lifetime column from it.
     const payload: Partial<Plan> = {
-      id: editingPlan?.id,
+      ...(editingPlan?.id ? { id: editingPlan.id } : {}),
       product_id: productId,
       name: name.trim(),
       description,
