@@ -150,35 +150,123 @@ export async function saveCompanyProfile(profile: Partial<CompanyProfile>): Prom
   }
 }
 
+// The integration_settings table is per-gateway, NOT one row with flat
+// columns: rows { gateway (UNIQUE), is_enabled, mode ('test'/'live'),
+// public_key, webhook_url, currency, settings JSONB, updated_at }.
+// The app's IntegrationSettings type is a flat view over the razorpay +
+// cashfree rows, with the shared Supabase/webhook fields tucked into the
+// razorpay row's settings JSONB. Translate in both directions here so no
+// non-existent column is ever sent to PostgREST (that is what used to make
+// every save fail with a misleading "check your connection" error).
+type IntegrationRow = {
+  gateway: string;
+  is_enabled: boolean;
+  mode: string | null;
+  public_key: string | null;
+  settings: Record<string, any> | null;
+};
+
+function parseIntegrationSettings(raw: any): Record<string, any> {
+  if (!raw) return {};
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+  return typeof raw === 'object' ? raw : {};
+}
+
+function mapIntegrationRows(rows: IntegrationRow[]): IntegrationSettings {
+  const razorpay = rows.find((r) => r.gateway === 'razorpay');
+  const cashfree = rows.find((r) => r.gateway === 'cashfree');
+  const rzSettings = parseIntegrationSettings(razorpay?.settings);
+  return {
+    ...DEFAULT_INTEGRATION_SETTINGS,
+    id: (razorpay as any)?.id ?? DEFAULT_INTEGRATION_SETTINGS.id,
+    razorpay_enabled: razorpay?.is_enabled ?? DEFAULT_INTEGRATION_SETTINGS.razorpay_enabled,
+    razorpay_key_id: razorpay?.public_key ?? DEFAULT_INTEGRATION_SETTINGS.razorpay_key_id,
+    cashfree_enabled: cashfree?.is_enabled ?? DEFAULT_INTEGRATION_SETTINGS.cashfree_enabled,
+    cashfree_app_id: cashfree?.public_key ?? DEFAULT_INTEGRATION_SETTINGS.cashfree_app_id,
+    cashfree_mode:
+      cashfree?.mode === 'live' ? 'production' : DEFAULT_INTEGRATION_SETTINGS.cashfree_mode,
+    supabase_url: rzSettings.supabase_url ?? DEFAULT_INTEGRATION_SETTINGS.supabase_url,
+    supabase_anon_key:
+      rzSettings.supabase_anon_key ?? DEFAULT_INTEGRATION_SETTINGS.supabase_anon_key,
+    webhook_secret: rzSettings.webhook_secret ?? DEFAULT_INTEGRATION_SETTINGS.webhook_secret,
+  };
+}
+
 export async function getIntegrationSettings(): Promise<IntegrationSettings> {
   try {
-    const { data, error } = await supabase.from('integration_settings').select('*').limit(1).maybeSingle();
-    if (error || !data) {
+    const { data, error } = await supabase
+      .from('integration_settings')
+      .select('id, gateway, is_enabled, mode, public_key, settings')
+      .limit(10);
+    if (error || !data || data.length === 0) {
       return DEFAULT_INTEGRATION_SETTINGS;
     }
-    return data as IntegrationSettings;
+    return mapIntegrationRows(data as IntegrationRow[]);
   } catch {
     return DEFAULT_INTEGRATION_SETTINGS;
   }
 }
 
-export async function saveIntegrationSettings(settings: Partial<IntegrationSettings>): Promise<boolean> {
+export async function saveIntegrationSettings(
+  settings: Partial<IntegrationSettings>,
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const { data } = await supabase.from('integration_settings').select('id').limit(1).maybeSingle();
-    if (data?.id) {
-      const { error } = await supabase
-        .from('integration_settings')
-        .update({ ...settings, updated_at: new Date().toISOString() })
-        .eq('id', data.id);
-      return !error;
-    } else {
-      const { error } = await supabase
-        .from('integration_settings')
-        .insert([{ ...DEFAULT_INTEGRATION_SETTINGS, ...settings, updated_at: new Date().toISOString() }]);
-      return !error;
-    }
-  } catch {
-    return false;
+    // Read existing rows first so partial saves (e.g. a gateway toggle)
+    // never clobber fields the caller didn't pass, and so the razorpay
+    // mode — which the UI has no field for — is preserved as-is.
+    const { data: existing, error: readError } = await supabase
+      .from('integration_settings')
+      .select('id, gateway, is_enabled, mode, public_key, settings')
+      .limit(10);
+    if (readError) throw readError;
+    const rows = (existing ?? []) as IntegrationRow[];
+    const razorpay = rows.find((r) => r.gateway === 'razorpay');
+    const cashfree = rows.find((r) => r.gateway === 'cashfree');
+
+    const rzSettings = {
+      ...parseIntegrationSettings(razorpay?.settings),
+      ...(settings.webhook_secret !== undefined ? { webhook_secret: settings.webhook_secret } : {}),
+      ...(settings.supabase_url !== undefined ? { supabase_url: settings.supabase_url } : {}),
+      ...(settings.supabase_anon_key !== undefined
+        ? { supabase_anon_key: settings.supabase_anon_key }
+        : {}),
+    };
+    const razorpayRow = {
+      gateway: 'razorpay',
+      is_enabled: settings.razorpay_enabled ?? razorpay?.is_enabled ?? false,
+      mode: razorpay?.mode ?? 'test',
+      public_key: settings.razorpay_key_id ?? razorpay?.public_key ?? '',
+      settings: rzSettings,
+      updated_at: new Date().toISOString(),
+    };
+    const cashfreeRow = {
+      gateway: 'cashfree',
+      is_enabled: settings.cashfree_enabled ?? cashfree?.is_enabled ?? false,
+      mode:
+        settings.cashfree_mode !== undefined
+          ? settings.cashfree_mode === 'production'
+            ? 'live'
+            : 'test'
+          : cashfree?.mode ?? 'test',
+      public_key: settings.cashfree_app_id ?? cashfree?.public_key ?? '',
+      settings: parseIntegrationSettings(cashfree?.settings),
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await supabase
+      .from('integration_settings')
+      .upsert([razorpayRow, cashfreeRow], { onConflict: 'gateway' });
+    if (error) throw error;
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Unknown error' };
   }
 }
 

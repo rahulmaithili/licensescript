@@ -79,12 +79,12 @@ export const Integrations: React.FC = () => {
     if (!settings) return;
     setIsSaving(true);
     setSaveError('');
-    const success = await saveIntegrationSettings(settings);
+    const { success, error } = await saveIntegrationSettings(settings);
     setIsSaving(false);
     if (success) {
       flashSaved();
     } else {
-      setSaveError('Could not save integration settings. Please check your connection and try again.');
+      setSaveError(error || 'Could not save integration settings. Please check your connection and try again.');
     }
   };
 
@@ -99,13 +99,13 @@ export const Integrations: React.FC = () => {
     setSettings(next);
     setSavingToggle(field);
     setSaveError('');
-    const success = await saveIntegrationSettings(next);
+    const { success, error } = await saveIntegrationSettings(next);
     setSavingToggle(null);
     if (success) {
       flashSaved();
     } else {
       setSettings(settings);
-      setSaveError('Could not update the gateway switch. Your change was not saved.');
+      setSaveError(error || 'Could not update the gateway switch. Your change was not saved.');
     }
   };
 
