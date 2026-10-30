@@ -63,7 +63,6 @@ export const PricingPlans: React.FC = () => {
   // Form State
   const [productId, setProductId] = useState('');
   const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const [price, setPrice] = useState(999);
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
   const [durationDays, setDurationDays] = useState(30);
@@ -96,7 +95,6 @@ export const PricingPlans: React.FC = () => {
     setModalError(null);
     setProductId(products[0]?.id || '');
     setName('');
-    setDescription('');
     setPrice(999);
     setBillingPeriod('monthly');
     setDurationDays(30);
@@ -111,7 +109,6 @@ export const PricingPlans: React.FC = () => {
     setModalError(null);
     setProductId(p.product_id);
     setName(p.name);
-    setDescription(p.description || '');
     setPrice(p.price);
     // billing_period is derived by the service from is_lifetime/duration —
     // it is the correct current label for the form's period selector.
@@ -143,7 +140,6 @@ export const PricingPlans: React.FC = () => {
       ...(editingPlan?.id ? { id: editingPlan.id } : {}),
       product_id: productId,
       name: name.trim(),
-      description,
       price: Number(price),
       billing_period: billingPeriod,
       duration_days: Number(durationDays),
@@ -431,17 +427,6 @@ export const PricingPlans: React.FC = () => {
                     className={inputCls}
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Description</label>
-                <textarea
-                  rows={2}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="What this edition includes…"
-                  className={inputCls}
-                />
               </div>
 
               <div className="grid grid-cols-3 gap-3">

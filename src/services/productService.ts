@@ -166,6 +166,9 @@ export async function savePlan(plan: Partial<Plan>): Promise<{ success: boolean;
   try {
     const payload: any = { ...plan };
     delete payload.sort_order;
+    // There is NO `description` column on plans — never send it to the DB
+    // (PostgREST rejects the whole save for the unknown column).
+    delete payload.description;
     // billing_period is derived, not a real column — never send it to the DB.
     delete payload.billing_period;
     // Never send joined data back to the table.
