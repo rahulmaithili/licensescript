@@ -20,6 +20,10 @@ function normalizeProduct(row: any): Product {
     // consumer reading `logo_url` gets the uploaded image.
     image_url: row.image_url ?? row.logo_url ?? null,
     logo_url: row.image_url ?? row.logo_url ?? null,
+    // There is NO `short_description` column — the single real column
+    // is `description`. Expose it under both names so consumers reading
+    // `short_description || description` keep working.
+    short_description: row.short_description ?? row.description ?? null,
     sort_order: row.display_order ?? row.sort_order ?? 1,
   } as Product;
 }
@@ -117,6 +121,13 @@ export async function saveProduct(product: Partial<Product>): Promise<{ success:
     // PostgREST never receives the non-existent column.
     payload.image_url = payload.image_url ?? payload.logo_url;
     delete payload.logo_url;
+    // There is NO `short_description` column — the single real column
+    // is `description`. Fold a short value into it only when description
+    // is empty, then always drop the key so PostgREST never sees it.
+    if (!payload.description && payload.short_description) {
+      payload.description = payload.short_description;
+    }
+    delete payload.short_description;
 
     if (payload.id) {
       const { data, error } = await supabase

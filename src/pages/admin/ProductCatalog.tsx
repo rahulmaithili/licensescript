@@ -60,7 +60,6 @@ export const ProductCatalog: React.FC = () => {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [category, setCategory] = useState('Browser Extension');
-  const [shortDesc, setShortDesc] = useState('');
   const [description, setDescription] = useState('');
   const [version, setVersion] = useState('v1.0.0');
   const [downloadUrl, setDownloadUrl] = useState('');
@@ -88,7 +87,6 @@ export const ProductCatalog: React.FC = () => {
     setName('');
     setSlug('');
     setCategory('Browser Extension');
-    setShortDesc('');
     setDescription('');
     setVersion('v1.0.0');
     setDownloadUrl('');
@@ -104,7 +102,6 @@ export const ProductCatalog: React.FC = () => {
     setName(p.name);
     setSlug(p.slug);
     setCategory(p.category);
-    setShortDesc(p.short_description || '');
     setDescription(p.description || '');
     setVersion(p.version || 'v1.0.0');
     setDownloadUrl(p.download_url || '');
@@ -127,7 +124,6 @@ export const ProductCatalog: React.FC = () => {
       name: name.trim(),
       slug: finalSlug,
       category,
-      short_description: shortDesc,
       description,
       version,
       download_url: downloadUrl,
@@ -427,11 +423,6 @@ export const ProductCatalog: React.FC = () => {
                   className={`${inputCls} font-mono`}
                 />
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Used in the storefront URL. Leave the auto-generated value unless you need a custom one.</p>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Short Headline</label>
-                <input type="text" value={shortDesc} onChange={(e) => setShortDesc(e.target.value)} className={inputCls} />
               </div>
 
               <div>
