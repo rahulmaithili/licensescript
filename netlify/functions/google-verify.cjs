@@ -199,7 +199,7 @@ exports.handler = async (event, context) => {
     // ---- 2. Find the website account for this email ----
     const { data: profile } = await supabase
       .from("profiles")
-      .select("id, full_name, email")
+      .select("id, full_name, email, status")
       .eq("email", email)
       .maybeSingle();
 
@@ -209,6 +209,17 @@ exports.handler = async (event, context) => {
         active: false,
         reason: "no_account",
         message: "No LicenseWala account exists for this Google email. Please register on the website first.",
+        renew_url: RENEW_URL
+      });
+    }
+
+    // ---- 2b. Blocked account: no license of a blocked user activates ----
+    if (profile.status === "blocked") {
+      logDecision("account_blocked", "", null);
+      return respond(200, {
+        active: false,
+        reason: "account_blocked",
+        message: "This account has been blocked by the administrator. Contact support@licensewala.com",
         renew_url: RENEW_URL
       });
     }

@@ -167,6 +167,28 @@ exports.handler = async (event, context) => {
         });
       }
 
+      // Admin-disabled license (same rule as google-verify)
+      if (license.is_enabled === false) {
+        logDecision("disabled", null);
+        return respond(200, {
+          valid: false,
+          status: "disabled",
+          message: "This license has been disabled by the administrator."
+        });
+      }
+
+      // Blocked account: when the owning user's profile is blocked, none of
+      // their licenses validate — even ones that are otherwise active.
+      const owner = license.user || {};
+      if (owner.status === "blocked" || owner.is_blocked === true) {
+        logDecision("account_blocked", null);
+        return respond(200, {
+          valid: false,
+          status: "account_blocked",
+          message: "This account has been blocked by the administrator. Contact support@licensewala.com"
+        });
+      }
+
       // Trial marker shared by the active and grace responses
       const trialFields = license.is_trial === true
         ? { trial: true, trial_ends_at: license.expiry_date }
@@ -284,19 +306,9 @@ exports.handler = async (event, context) => {
       });
     }
 
-    // 2. Fallback check for demo keys or legacy table
-    if (cleanKey.startsWith("LW-")) {
-      logDecision("active", 180);
-      return respond(200, {
-        valid: true,
-        status: "active",
-        product_name: "Software Extension",
-        days_left: 180,
-        expires_at: new Date(Date.now() + 180 * 86400000).toISOString(),
-        max_devices: 2,
-        message: "Demo license verified successfully."
-      });
-    }
+    // 2. No demo fallback: a key not found in the licenses table is invalid.
+    // Real trials are DB rows created by trial-license.cjs and are found by
+    // the query above, so genuine trials keep working.
 
     logDecision("invalid", null);
     return respond(200, {
